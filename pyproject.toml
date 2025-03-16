@@ -1,0 +1,49 @@
+[project]
+name = "webapp-clean-archi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "psycopg[binary]>=3.2.6",
+    "pydantic-settings>=2.8.1",
+    "sqlalchemy>=2.0.39",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.7.0",
+    "pre-commit>=4.1.0",
+    "pyright>=1.1.396",
+    "pytest>=8.3.5",
+    "ruff>=0.11.0",
+]
+
+[tool.ruff]
+output-format = "concise"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",  # Pyflakes
+    "UP",  # pyupgrade
+    "B",  # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "I",  # isort
+    "PL",  # Pylint
+    "RUF",
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(name)30s - %(message)s"
