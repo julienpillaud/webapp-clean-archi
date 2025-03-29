@@ -6,6 +6,13 @@ from typing import Concatenate, ParamSpec, Protocol, TypeVar
 
 from app.domain.context import ContextProtocol
 from app.domain.exceptions import DomainError
+from app.domain.post.commands import (
+    create_post_command,
+    delete_post_command,
+    get_post_command,
+    get_posts_command,
+    update_post_command,
+)
 from app.domain.user.commands import (
     create_user_command,
     delete_user_command,
@@ -41,7 +48,7 @@ class Domain:
                     result = func(self.context, *args, **kwargs)
                 except DomainError as error:
                     self.context.rollback()
-                    logger.error(f"Rollback - Domain error: {error}")
+                    logger.info(f"Domain error: {error} - Rolling back transaction")
                     raise error
 
                 self.context.commit()
@@ -51,6 +58,12 @@ class Domain:
 
     def __init__(self, context: TransactionalContextProtocol):
         self.context = context
+
+        self.create_post = self._command_handler(create_post_command)
+        self.delete_post = self._command_handler(delete_post_command)
+        self.get_post = self._command_handler(get_post_command)
+        self.get_posts = self._command_handler(get_posts_command)
+        self.update_post = self._command_handler(update_post_command)
 
         self.create_user = self._command_handler(create_user_command)
         self.delete_user = self._command_handler(delete_user_command)

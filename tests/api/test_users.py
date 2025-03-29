@@ -36,6 +36,7 @@ def test_get_user(user_factory: UserFactory, client: TestClient):
     assert result["id"] == str(user.id)
     assert result["username"] == user.username
     assert result["email"] == user.email
+    assert result["posts"] == []
 
 
 def test_get_user_not_found(client: TestClient):

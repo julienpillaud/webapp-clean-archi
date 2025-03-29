@@ -2,6 +2,7 @@ import uuid
 
 from pydantic import BaseModel
 
+from app.api.dtos.post import PostDTO
 from app.domain.user.entities import UserCreate, UserUpdate
 
 
@@ -9,6 +10,7 @@ class UserDTO(BaseModel):
     id: uuid.UUID
     username: str
     email: str
+    posts: list[PostDTO]
 
 
 class UserCreateDTO(UserCreate):

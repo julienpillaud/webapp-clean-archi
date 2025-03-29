@@ -1,9 +1,11 @@
 import uuid
-from typing import Generic, TypeVar
+from typing import Generic, NewType, TypeVar
 
 from pydantic import BaseModel, ConfigDict, NonNegativeInt, PositiveInt
 
 T = TypeVar("T", bound="DomainModel")
+
+TagName = NewType("TagName", str)
 
 DEFAULT_PAGINATION_LIMIT = 10
 

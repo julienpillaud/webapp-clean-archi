@@ -12,7 +12,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage>=7.7",
-    "faker>=37.1.0",
+    "faker>=37.1",
+    "mypy>=1.15",
     "pre-commit>=4.1",
     "pyright>=1.1",
     "pytest>=8.3",
@@ -38,6 +39,18 @@ select = [
 venvPath = "."
 venv = ".venv"
 typeCheckingMode = "strict"
+
+[tool.mypy]
+strict = true
+disable_error_code = [
+    "prop-decorator",
+]
+
+[[tool.mypy.overrides]]
+module = ["tests.*", "app.api.routes.*"]
+disable_error_code = [
+    "no-untyped-def",
+]
 
 [tool.pytest.ini_options]
 testpaths = [

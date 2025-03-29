@@ -15,12 +15,13 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
         id=uuid.uuid4(),
         username=data.username,
         email=data.email,
+        posts=[],
     )
     context.user_repository.create(user)
     return user
 
 
-def delete_user_command(context: ContextProtocol, user_id: uuid.UUID):
+def delete_user_command(context: ContextProtocol, user_id: uuid.UUID) -> None:
     user = context.user_repository.get_by_id(user_id)
     if not user:
         raise NotFoundError(f"User '{user_id}' not found")
@@ -36,16 +37,13 @@ def get_user_command(context: ContextProtocol, user_id: uuid.UUID) -> User:
 
 
 def get_users_command(
-    context: ContextProtocol,
-    pagination: Pagination,
+    context: ContextProtocol, pagination: Pagination
 ) -> PaginatedResponse[User]:
     return context.user_repository.get_all(pagination=pagination)
 
 
 def update_user_command(
-    context: ContextProtocol,
-    user_id: uuid.UUID,
-    data: UserUpdate,
+    context: ContextProtocol, user_id: uuid.UUID, data: UserUpdate
 ) -> User:
     user = context.user_repository.get_by_id(user_id)
     if not user:

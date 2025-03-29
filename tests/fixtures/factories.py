@@ -4,7 +4,7 @@ import pytest
 from faker import Faker
 from sqlalchemy.orm import Session
 
-from app.infrastructure.repository.models import OrmUser
+from app.infrastructure.repository.models import OrmPost, OrmTag, OrmUser
 
 T = TypeVar("T")
 
@@ -43,6 +43,30 @@ class UserFactory(BaseFactory[OrmUser]):
         )
 
 
+class PostFactory(BaseFactory[OrmPost]):
+    def __init__(self, session: Session, user_factory: UserFactory):
+        super().__init__(session)
+        self.user_factory = user_factory
+
+    def _make(self, **kwargs: Any) -> OrmPost:
+        if not (author_id := kwargs.get("author_id")):
+            author_id = self.user_factory.create_one().id
+
+        if not (tags := kwargs.get("tags")):
+            num_tags = self.faker.random_int(min=1, max=3)
+            tags = [
+                OrmTag(name=f"{self.faker.unique.lexify(text='?????')}{i}")
+                for i in range(num_tags)
+            ]
+
+        return OrmPost(
+            title=kwargs.get("title", self.faker.sentence()),
+            content=kwargs.get("content", self.faker.text()),
+            author_id=author_id,
+            tags=tags,
+        )
+
+
 @pytest.fixture
 def faker() -> Faker:
     return Faker()
@@ -51,3 +75,8 @@ def faker() -> Faker:
 @pytest.fixture
 def user_factory(session: Session) -> UserFactory:
     return UserFactory(session=session)
+
+
+@pytest.fixture
+def post_factory(session: Session, user_factory: UserFactory) -> PostFactory:
+    return PostFactory(session=session, user_factory=user_factory)

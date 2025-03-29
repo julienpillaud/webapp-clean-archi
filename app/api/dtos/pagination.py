@@ -8,7 +8,7 @@ T = TypeVar("T", bound=BaseModel)
 
 
 class PaginationDTO(Pagination):
-    def to_domain(self):
+    def to_domain(self) -> Pagination:
         return Pagination.model_validate(self)
 
 

@@ -42,11 +42,11 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
         orm_entity = self._get_entity_by_id(entity_id=entity_id)
         return self.orm_to_domain_entity(orm_entity=orm_entity) if orm_entity else None
 
-    def create(self, entity: Domain_T, /):
+    def create(self, entity: Domain_T, /) -> None:
         orm_entity = self.domain_to_orm_entity(entity=entity)
         self.session.add(orm_entity)
 
-    def update(self, entity: Domain_T, /):
+    def update(self, entity: Domain_T, /) -> None:
         orm_entity = self._get_entity_by_id(entity_id=entity.id)
         if not orm_entity:
             raise NotFoundError("Entity not found")
@@ -55,7 +55,7 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
             if hasattr(orm_entity, key):
                 setattr(orm_entity, key, value)
 
-    def delete(self, entity_id: uuid.UUID):
+    def delete(self, entity_id: uuid.UUID) -> None:
         orm_entity = self._get_entity_by_id(entity_id=entity_id)
         self.session.delete(orm_entity)
 

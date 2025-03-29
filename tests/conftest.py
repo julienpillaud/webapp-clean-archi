@@ -16,24 +16,24 @@ pytest_plugins = [
 
 
 @pytest.fixture(scope="session")
-def settings():
+def settings() -> Settings:
     project_path = pathlib.Path(__file__).parent.parent
     env_file = project_path / "tests/.env.test"
     return Settings(_env_file=env_file)  # type: ignore
 
 
 @pytest.fixture(scope="session")
-def context(settings: Settings):
+def context(settings: Settings) -> Context:
     return Context(settings=settings)
 
 
 @pytest.fixture(scope="session")
-def domain(context: TransactionalContextProtocol):
+def domain(context: TransactionalContextProtocol) -> Domain:
     return Domain(context=context)
 
 
 @pytest.fixture(scope="session")
-def app(domain: Domain):
+def app(domain: Domain) -> FastAPI:
     return app_factory(domain=domain)
 
 
