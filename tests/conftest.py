@@ -1,13 +1,12 @@
 import pathlib
+from collections.abc import Iterator
 
 import pytest
-from fastapi import FastAPI
 from starlette.testclient import TestClient
 
-from app.api.app import app_factory
+from app.api.dependencies import get_settings
+from app.core.app import app
 from app.core.config import Settings
-from app.core.context import Context
-from app.domain.domain import Domain, TransactionalContextProtocol
 
 pytest_plugins = [
     "tests.fixtures.database",
@@ -23,21 +22,10 @@ def settings() -> Settings:
 
 
 @pytest.fixture(scope="session")
-def context(settings: Settings) -> Context:
-    return Context(settings=settings)
+def client(settings: Settings) -> Iterator[TestClient]:
+    def get_settings_override() -> Settings:
+        return settings
 
-
-@pytest.fixture(scope="session")
-def domain(context: TransactionalContextProtocol) -> Domain:
-    return Domain(context=context)
-
-
-@pytest.fixture(scope="session")
-def app(domain: Domain) -> FastAPI:
-    return app_factory(domain=domain)
-
-
-@pytest.fixture(scope="session")
-def client(app: FastAPI):
-    with TestClient(app) as client_:
-        yield client_
+    app.dependency_overrides[get_settings] = get_settings_override
+    yield TestClient(app)
+    app.dependency_overrides.clear()

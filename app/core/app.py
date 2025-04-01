@@ -1,12 +1,11 @@
-from app.api.app import app_factory
-from app.core.config import Settings
-from app.core.context import Context
-from app.domain.domain import Domain
+from fastapi import FastAPI
 
-settings = Settings(_env_file=".env")  # type: ignore
+from app.api.handlers import add_exception_handler
+from app.api.routers.posts import router as posts_router
+from app.api.routers.users import router as users_router
 
-context = Context(settings=settings)
+app = FastAPI()
+add_exception_handler(app=app)
 
-domain = Domain(context=context)
-
-app = app_factory(domain=domain)
+app.include_router(posts_router)
+app.include_router(users_router)
