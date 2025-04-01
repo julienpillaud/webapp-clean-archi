@@ -1,0 +1,22 @@
+services:
+  postgres-dev:
+    container_name: postgres-dev
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "db-dev"
+    ports:
+      - "5433:5432"
+
+  postgres-test:
+    container_name: postgres-test
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "db-test"
+    ports:
+      - "5432:5432"
