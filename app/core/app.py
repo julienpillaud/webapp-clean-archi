@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
 from app.api.handlers import add_exception_handler
-from app.api.routers.posts import router as posts_router
-from app.api.routers.users import router as users_router
+from app.api.posts.router import router as posts_router
+from app.api.users.router import router as users_router
 
 app = FastAPI()
 add_exception_handler(app=app)

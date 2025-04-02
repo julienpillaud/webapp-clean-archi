@@ -1,7 +1,7 @@
 from typing import Protocol
 
-from app.domain.post.repository import PostRepositoryProtocol
-from app.domain.user.repository import UserRepositoryProtocol
+from app.domain.posts.repository import PostRepositoryProtocol
+from app.domain.users.repository import UserRepositoryProtocol
 
 
 class ContextProtocol(Protocol):

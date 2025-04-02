@@ -1,4 +1,5 @@
 import logging
+import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from functools import wraps
@@ -6,14 +7,14 @@ from typing import Concatenate, ParamSpec, Protocol, TypeVar
 
 from app.domain.context import ContextProtocol
 from app.domain.exceptions import DomainError
-from app.domain.post.commands import (
+from app.domain.posts.commands import (
     create_post_command,
     delete_post_command,
     get_post_command,
     get_posts_command,
     update_post_command,
 )
-from app.domain.user.commands import (
+from app.domain.users.commands import (
     create_user_command,
     delete_user_command,
     get_user_command,
@@ -38,20 +39,28 @@ class TransactionalContextProtocol(UnitOfWorkProtocol, ContextProtocol): ...
 
 
 class Domain:
-    def _command_handler(
+    def command_handler(
         self, func: Callable[Concatenate[TransactionalContextProtocol, P], R]
     ) -> Callable[P, R]:
         @wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+            start_time = time.perf_counter()
             with self.context.transaction():
                 try:
                     result = func(self.context, *args, **kwargs)
                 except DomainError as error:
                     self.context.rollback()
-                    logger.info(f"Domain error: {error} - Rolling back transaction")
+                    logger.debug(
+                        f"Command '{func.__name__}' failed with "
+                        f"{error.__class__.__name__}: {error}"
+                    )
                     raise error
 
                 self.context.commit()
+                duration = time.perf_counter() - start_time
+                logger.debug(
+                    f"Command '{func.__name__}' succeeded in {duration * 1000:.1f} ms",
+                )
                 return result
 
         return wrapper
@@ -59,14 +68,14 @@ class Domain:
     def __init__(self, context: TransactionalContextProtocol):
         self.context = context
 
-        self.create_post = self._command_handler(create_post_command)
-        self.delete_post = self._command_handler(delete_post_command)
-        self.get_post = self._command_handler(get_post_command)
-        self.get_posts = self._command_handler(get_posts_command)
-        self.update_post = self._command_handler(update_post_command)
+        self.create_post = self.command_handler(create_post_command)
+        self.delete_post = self.command_handler(delete_post_command)
+        self.get_post = self.command_handler(get_post_command)
+        self.get_posts = self.command_handler(get_posts_command)
+        self.update_post = self.command_handler(update_post_command)
 
-        self.create_user = self._command_handler(create_user_command)
-        self.delete_user = self._command_handler(delete_user_command)
-        self.get_user = self._command_handler(get_user_command)
-        self.get_users = self._command_handler(get_users_command)
-        self.update_user = self._command_handler(update_user_command)
+        self.create_user = self.command_handler(create_user_command)
+        self.delete_user = self.command_handler(delete_user_command)
+        self.get_user = self.command_handler(get_user_command)
+        self.get_users = self.command_handler(get_users_command)
+        self.update_user = self.command_handler(update_user_command)

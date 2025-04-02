@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
-from app.domain.user.entities import User
-from app.domain.user.repository import UserRepositoryProtocol
+from app.domain.users.entities import User
+from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.repository.base import BaseSqlRepository
 from app.infrastructure.repository.models import OrmUser
 

@@ -4,8 +4,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.dependencies import get_domain
-from app.api.dtos.pagination import PaginatedResponseDTO, PaginationDTO
-from app.api.dtos.user import UserCreateDTO, UserDTO, UserUpdateDTO
+from app.api.pagination.dtos import PaginatedResponseDTO, PaginationDTO
+from app.api.users.dtos import UserCreateDTO, UserDTO, UserUpdateDTO
 from app.domain.domain import Domain
 
 router = APIRouter(prefix="/users", tags=["users"])

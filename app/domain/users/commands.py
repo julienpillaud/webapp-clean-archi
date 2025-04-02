@@ -3,7 +3,7 @@ import uuid
 from app.domain.context import ContextProtocol
 from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.exceptions import AlreadyExistsError, NotFoundError
-from app.domain.user.entities import User, UserCreate, UserUpdate
+from app.domain.users.entities import User, UserCreate, UserUpdate
 
 
 def create_user_command(context: ContextProtocol, data: UserCreate) -> User:

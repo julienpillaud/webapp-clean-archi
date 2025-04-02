@@ -1,7 +1,7 @@
 from app.domain.entities import TagName
 from app.domain.exceptions import NotFoundError
-from app.domain.post.entities import Post
-from app.domain.post.repository import PostRepositoryProtocol
+from app.domain.posts.entities import Post
+from app.domain.posts.repository import PostRepositoryProtocol
 from app.infrastructure.repository.base import BaseSqlRepository
 from app.infrastructure.repository.models import OrmPost, OrmTag
 

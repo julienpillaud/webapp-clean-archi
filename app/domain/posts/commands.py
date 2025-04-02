@@ -3,7 +3,7 @@ import uuid
 from app.domain.context import ContextProtocol
 from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.exceptions import NotFoundError
-from app.domain.post.entities import Post, PostCreate, PostUpdate
+from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 
 def create_post_command(context: ContextProtocol, data: PostCreate) -> Post:

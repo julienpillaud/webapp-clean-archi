@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from app.domain.entities import DomainModel
-from app.domain.post.entities import Post
+from app.domain.posts.entities import Post
 
 
 class User(DomainModel):
