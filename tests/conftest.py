@@ -1,7 +1,8 @@
-import pathlib
+import os
 from collections.abc import Iterator
 
 import pytest
+from dotenv import load_dotenv
 from starlette.testclient import TestClient
 
 from app.api.dependencies import get_settings
@@ -13,12 +14,18 @@ pytest_plugins = [
     "tests.fixtures.factories",
 ]
 
+load_dotenv()
+
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
-    project_path = pathlib.Path(__file__).parent.parent
-    env_file = project_path / "tests/.env.test"
-    return Settings(_env_file=env_file)  # type: ignore
+    return Settings(
+        POSTGRES_USER=os.getenv("POSTGRES_USER", "user"),
+        POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD", "password"),
+        POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost"),
+        POSTGRES_PORT=int(os.getenv("POSTGRES_PORT_TEST", "5432")),
+        POSTGRES_DB=os.getenv("POSTGRES_DB_TEST", "database_test"),
+    )
 
 
 @pytest.fixture(scope="session")
