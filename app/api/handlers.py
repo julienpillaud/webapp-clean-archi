@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from app.domain.exceptions import AlreadyExistsError, DomainError, NotFoundError
 
 
-def add_exception_handler(app: FastAPI) -> None:
+def add_exceptions_handler(app: FastAPI) -> None:
     @app.exception_handler(DomainError)
     async def api_exception_handler(
         request: Request, error: DomainError
