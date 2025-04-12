@@ -1,8 +1,22 @@
 services:
-  postgres-dev:
-    container_name: postgres-dev
+  app:
+    container_name: app
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: .
+          ignore:
+            - .venv/
+
+  postgres:
+    container_name: postgres
     image: postgres:17
-    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -10,13 +24,24 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
 
-  postgres-test:
-    container_name: postgres-test
-    image: postgres:17
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB_TEST}
-    ports:
-      - ${POSTGRES_PORT_TEST}:5432
+#  postgres-dev:
+#    container_name: postgres-dev
+#    image: postgres:17
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB}
+#    ports:
+#      - ${POSTGRES_PORT}:5432
+#
+#  postgres-test:
+#    container_name: postgres-test
+#    image: postgres:17
+#    restart: unless-stopped
+#    environment:
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#      POSTGRES_DB: ${POSTGRES_DB_TEST}
+#    ports:
+#      - ${POSTGRES_PORT_TEST}:5432
