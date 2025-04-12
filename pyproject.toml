@@ -15,9 +15,9 @@ dev = [
     "faker>=37.1",
     "mypy>=1.15",
     "pre-commit>=4.1",
-    "pyright>=1.1",
+    "pyright==1.1.399",
     "pytest>=8.3",
-    "ruff>=0.11",
+    "ruff==0.11.5",
 ]
 
 [tool.ruff]
