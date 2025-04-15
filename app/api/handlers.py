@@ -1,14 +1,18 @@
 # pyright: reportUnusedFunction=false
+import logging
+
 from fastapi import FastAPI, status
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from app.domain.exceptions import AlreadyExistsError, DomainError, NotFoundError
 
+logger = logging.getLogger(__name__)
+
 
 def add_exceptions_handler(app: FastAPI) -> None:
     @app.exception_handler(DomainError)
-    async def api_exception_handler(
+    async def app_exception_handler(
         request: Request, error: DomainError
     ) -> JSONResponse:
         if isinstance(error, NotFoundError):
@@ -21,6 +25,8 @@ def add_exceptions_handler(app: FastAPI) -> None:
                 status_code=status.HTTP_409_CONFLICT,
                 content={"detail": error.detail},
             )
+
+        logger.error("Unhandled DomainError", exc_info=True)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={"detail": "Internal Server Error"},

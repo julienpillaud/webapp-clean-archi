@@ -6,7 +6,10 @@ from functools import wraps
 from typing import Concatenate, ParamSpec, Protocol, TypeVar
 
 from app.domain.context import ContextProtocol
-from app.domain.exceptions import DomainError
+from app.domain.dev.commands import (
+    unexpected_domain_error_command,
+    unexpected_error_command,
+)
 from app.domain.posts.commands import (
     create_post_command,
     delete_post_command,
@@ -48,7 +51,8 @@ class Domain:
             with self.context.transaction():
                 try:
                     result = func(self.context, *args, **kwargs)
-                except DomainError as error:
+                # Catch all exceptions to ensure rollback
+                except Exception as error:
                     self.context.rollback()
                     logger.debug(
                         f"Command '{func.__name__}' failed with "
@@ -79,3 +83,8 @@ class Domain:
         self.get_user = self.command_handler(get_user_command)
         self.get_users = self.command_handler(get_users_command)
         self.update_user = self.command_handler(update_user_command)
+
+        self.unexpected_error = self.command_handler(unexpected_error_command)
+        self.unexpected_domain_error = self.command_handler(
+            unexpected_domain_error_command
+        )
