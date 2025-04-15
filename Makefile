@@ -9,7 +9,7 @@ help:
 	@echo "  lint       - Format and check code"
 
 init:
-	uv sync --all-extras
+	uv sync
 	uv run pre-commit install
 
 pre-commit:
