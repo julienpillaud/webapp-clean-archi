@@ -58,7 +58,7 @@ class Domain:
                         f"Command '{func.__name__}' failed with "
                         f"{error.__class__.__name__}: {error}"
                     )
-                    raise error
+                    raise
 
                 self.context.commit()
                 duration = time.perf_counter() - start_time
