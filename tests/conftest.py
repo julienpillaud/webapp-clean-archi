@@ -24,7 +24,7 @@ def settings() -> Settings:
         POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD", "password"),
         POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost"),
         POSTGRES_PORT=int(os.getenv("POSTGRES_PORT_TEST", "5432")),
-        POSTGRES_DB=os.getenv("POSTGRES_DB_TEST", "database_test"),
+        POSTGRES_DB=os.getenv("POSTGRES_DB_TEST", "database"),
     )
 
 

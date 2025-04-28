@@ -3,21 +3,24 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi[standard]>=0.115",
+    "fastapi>=0.115",
     "psycopg[binary]>=3.2",
     "pydantic-settings>=2.8",
     "sqlalchemy>=2.0",
+    "uvicorn>=0.34",
 ]
 
 [dependency-groups]
 dev = [
     "coverage>=7.7",
     "faker>=37.1",
+    "httpx>=0.28.1",
     "mypy>=1.15",
     "pre-commit>=4.1",
-    "pyright==1.1.399",
+    "pyright==1.1.400",
     "pytest>=8.3",
-    "ruff==0.11.5",
+    "ruff==0.11.7",
+    "watchfiles>=1.0",
 ]
 
 [tool.ruff]

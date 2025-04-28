@@ -9,14 +9,14 @@ router = APIRouter(tags=["dev"])
 
 
 @router.get("/unexpected-error")
-async def simulate_unexpected_error(
+def simulate_unexpected_error(
     domain: Annotated[Domain, Depends(get_domain)],
 ):
     domain.unexpected_error()
 
 
 @router.get("/unexpected-domain-error")
-async def simulate_unexpected_domain_error(
+def simulate_unexpected_domain_error(
     domain: Annotated[Domain, Depends(get_domain)],
 ):
     domain.unexpected_domain_error()

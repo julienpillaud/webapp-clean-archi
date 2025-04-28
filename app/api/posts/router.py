@@ -12,7 +12,7 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 @router.get("", response_model=PaginatedResponseDTO[PostDTO])
-async def get_posts(
+def get_posts(
     domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[PaginationDTO, Query()],
 ):
@@ -20,7 +20,7 @@ async def get_posts(
 
 
 @router.get("/{post_id}", response_model=PostDTO)
-async def get_post(
+def get_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
 ):
@@ -28,7 +28,7 @@ async def get_post(
 
 
 @router.post("", response_model=PostDTO, status_code=status.HTTP_201_CREATED)
-async def create_post(
+def create_post(
     domain: Annotated[Domain, Depends(get_domain)],
     data: PostCreateDTO,
 ):
@@ -36,7 +36,7 @@ async def create_post(
 
 
 @router.patch("/{post_id}", response_model=PostDTO)
-async def update_post(
+def update_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
     data: PostUpdateDTO,
@@ -45,7 +45,7 @@ async def update_post(
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_post(
+def delete_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
 ):
