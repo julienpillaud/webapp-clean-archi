@@ -1,69 +1,105 @@
+import uuid
 from typing import Any, Generic, TypeVar
 
 import pytest
 from faker import Faker
 from sqlalchemy.orm import Session
 
+from app.domain.entities import DomainModel, TagName
+from app.domain.posts.entities import Post
+from app.domain.users.entities import User
 from app.infrastructure.repository.models import OrmPost, OrmTag, OrmUser
 
-T = TypeVar("T")
+T = TypeVar("T", bound=DomainModel)
+P = TypeVar("P")
 
 
-class BaseFactory(Generic[T]):
-    def __init__(self, session: Session):
-        self.session = session
+class BaseFactory(Generic[T, P]):
+    def __init__(self):
         self.faker = Faker()
 
     def create_one(self, **kwargs: Any) -> T:
-        instance = self._make(**kwargs)
-        self._create([instance])
-        return instance
+        entity = self._build_entity(**kwargs)
+        self._insert([entity])
+        return entity
 
     def create_many(self, count: int, /, **kwargs: Any) -> list[T]:
-        instances = [self._make(**kwargs) for _ in range(count)]
-        self._create(instances)
-        return instances
+        entities = [self._build_entity(**kwargs) for _ in range(count)]
+        self._insert(entities)
+        return entities
 
-    def _create(self, instances: list[T]) -> None:
-        self.session.add_all(instances)
+    def _build_entity(self, **kwargs: Any) -> T:
+        """Build a domain entity with the given kwargs."""
+        ...
+
+    def _insert(self, entities: list[T]) -> None:
+        """Insert the entities into the database."""
+        ...
+
+    def _to_database_entity(self, entity: T) -> P:
+        """Convert the domain entity to a database-compatible format."""
+        ...
+
+
+class SqlBaseFactory(BaseFactory[T, P]):
+    def __init__(self, session: Session):
+        super().__init__()
+        self.session = session
+
+    def _insert(self, entities: list[T]) -> None:
+        db_entities = [self._to_database_entity(entity) for entity in entities]
+        self.session.add_all(db_entities)
         self.session.commit()
 
-    def _make(self, **kwargs: Any) -> T:
-        raise NotImplementedError
 
-
-class UserFactory(BaseFactory[OrmUser]):
-    def __init__(self, session: Session):
-        super().__init__(session)
-
-    def _make(self, **kwargs: Any) -> OrmUser:
-        return OrmUser(
+class UserFactory(SqlBaseFactory[User, OrmUser]):
+    def _build_entity(self, **kwargs: Any) -> User:
+        return User(
+            id=uuid.uuid4(),
             username=kwargs.get("username", self.faker.user_name()),
             email=kwargs.get("email", self.faker.unique.email()),
+            posts=[],
+        )
+
+    def _to_database_entity(self, entity: User) -> OrmUser:
+        return OrmUser(
+            id=entity.id,
+            username=entity.username,
+            email=entity.email,
         )
 
 
-class PostFactory(BaseFactory[OrmPost]):
+class PostFactory(SqlBaseFactory[Post, OrmPost]):
     def __init__(self, session: Session, user_factory: UserFactory):
         super().__init__(session)
         self.user_factory = user_factory
 
-    def _make(self, **kwargs: Any) -> OrmPost:
+    def _build_entity(self, **kwargs: Any) -> Post:
         if not (author_id := kwargs.get("author_id")):
             author_id = self.user_factory.create_one().id
 
         if not (tags := kwargs.get("tags")):
             num_tags = self.faker.random_int(min=1, max=3)
             tags = [
-                OrmTag(name=f"{self.faker.unique.lexify(text='?????')}{i}")
+                TagName(f"{self.faker.unique.lexify(text='?????')}{i}")
                 for i in range(num_tags)
             ]
 
-        return OrmPost(
+        return Post(
+            id=uuid.uuid4(),
             title=kwargs.get("title", self.faker.sentence()),
             content=kwargs.get("content", self.faker.text()),
             author_id=author_id,
             tags=tags,
+        )
+
+    def _to_database_entity(self, entity: Post) -> OrmPost:
+        return OrmPost(
+            id=entity.id,
+            title=entity.title,
+            content=entity.content,
+            author_id=entity.author_id,
+            tags=[OrmTag(name=tag) for tag in entity.tags],
         )
 
 

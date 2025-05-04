@@ -37,7 +37,7 @@ def test_get_post(post_factory: PostFactory, client: TestClient):
     assert result["title"] == post.title
     assert result["content"] == post.content
     assert result["author_id"] == str(post.author_id)
-    assert result["tags"] == [tag.name for tag in post.tags]
+    assert result["tags"] == post.tags
 
 
 def test_get_post_not_found(client: TestClient):
@@ -102,7 +102,7 @@ def test_update_post(post_factory: PostFactory, client: TestClient):
     assert result["title"] == data["title"]
     assert result["content"] == post.content
     assert result["author_id"] == str(post.author_id)
-    assert result["tags"] == [tag.name for tag in post.tags]
+    assert result["tags"] == post.tags
 
 
 def test_update_post_not_found(client: TestClient):
