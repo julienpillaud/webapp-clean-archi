@@ -18,8 +18,7 @@ def create_post_command(context: ContextProtocol, data: PostCreate) -> Post:
         author_id=author.id,
         tags=data.tags,
     )
-    context.post_repository.create(post)
-    return post
+    return context.post_repository.create(post)
 
 
 def delete_post_command(context: ContextProtocol, post_id: uuid.UUID) -> None:
@@ -53,6 +52,4 @@ def update_post_command(
     for key, value in data.model_dump(exclude_none=True).items():
         setattr(post, key, value)
 
-    context.post_repository.update(post)
-
-    return post
+    return context.post_repository.update(post)

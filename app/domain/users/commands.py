@@ -17,8 +17,7 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
         email=data.email,
         posts=[],
     )
-    context.user_repository.create(user)
-    return user
+    return context.user_repository.create(user)
 
 
 def delete_user_command(context: ContextProtocol, user_id: uuid.UUID) -> None:
@@ -52,6 +51,4 @@ def update_user_command(
     for key, value in data.model_dump(exclude_none=True).items():
         setattr(user, key, value)
 
-    context.user_repository.update(user)
-
-    return user
+    return context.user_repository.update(user)

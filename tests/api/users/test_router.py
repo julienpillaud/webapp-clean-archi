@@ -4,7 +4,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.entities import DEFAULT_PAGINATION_LIMIT
-from tests.fixtures.factories import UserFactory
+from tests.fixtures.factories import PostFactory, UserFactory
 
 
 def test_get_users(user_factory: UserFactory, client: TestClient):
@@ -76,9 +76,14 @@ def test_create_user_already_exists(client: TestClient, user_factory: UserFactor
     assert result == {"detail": f"User '{user.email}' already exists."}
 
 
-def test_update_user(user_factory: UserFactory, client: TestClient):
+def test_update_user(
+    user_factory: UserFactory,
+    post_factory: PostFactory,
+    client: TestClient,
+):
     # Arrange
     user = user_factory.create_one()
+    posts = post_factory.create_many(3, author_id=user.id)
 
     # Act
     data = {"username": "User Updated"}
@@ -90,6 +95,7 @@ def test_update_user(user_factory: UserFactory, client: TestClient):
     assert result["id"] == str(user.id)
     assert result["username"] == data["username"]
     assert result["email"] == user.email
+    assert [post["id"] for post in result["posts"]] == [str(post.id) for post in posts]
 
 
 def test_update_user_not_found(client: TestClient):

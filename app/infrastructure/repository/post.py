@@ -13,16 +13,19 @@ class PostSqlRepository(
     domain_model = Post
     orm_model = OrmPost
 
-    def update(self, entity: Post, /) -> None:
+    def update(self, entity: Post, /) -> Post:
         orm_entity = self._get_entity_by_id(entity_id=entity.id)
         if not orm_entity:
             raise NotFoundError(f"Post '{entity.id}' not found.")
 
-        for key, value in entity.model_dump(exclude={"tags"}).items():
+        for key, value in entity.model_dump(exclude={"id", "tags"}).items():
             if hasattr(orm_entity, key):
                 setattr(orm_entity, key, value)
 
         self._update_tags(entity=entity)
+
+        self.session.flush()
+        return self.orm_to_domain_entity(orm_entity=orm_entity)
 
     def _update_tags(self, entity: Post) -> None:
         pass
