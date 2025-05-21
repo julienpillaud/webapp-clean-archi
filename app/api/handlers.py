@@ -1,4 +1,3 @@
-# pyright: reportUnusedFunction=false
 import logging
 
 from fastapi import FastAPI, status

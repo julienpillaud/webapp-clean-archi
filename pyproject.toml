@@ -13,13 +13,13 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage>=7.7",
-    "faker>=37.1",
-    "httpx>=0.28.1",
+    "faker>=37.3",
+    "httpx>=0.28",
     "mypy>=1.15",
     "pre-commit>=4.1",
-    "pyright==1.1.400",
     "pytest>=8.3",
-    "ruff==0.11.8",
+    "ruff==0.11.10",
+    "ty>=0.0",
     "watchfiles>=1.0",
 ]
 
@@ -38,22 +38,9 @@ select = [
     "RUF",
 ]
 
-[tool.pyright]
-venvPath = "."
-venv = ".venv"
-typeCheckingMode = "strict"
-
 [tool.mypy]
 strict = true
-disable_error_code = [
-    "prop-decorator",
-]
-
-[[tool.mypy.overrides]]
-module = ["tests.*", "app.api.routes.*"]
-disable_error_code = [
-    "no-untyped-def",
-]
+plugins = ['pydantic.mypy']
 
 [tool.pytest.ini_options]
 testpaths = [

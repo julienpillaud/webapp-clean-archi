@@ -1,5 +1,5 @@
 import uuid
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query, status
 
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 def get_posts(
     domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[PaginationDTO, Query()],
-):
+) -> Any:
     return domain.get_posts(pagination=pagination.to_domain())
 
 
@@ -23,7 +23,7 @@ def get_posts(
 def get_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
-):
+) -> Any:
     return domain.get_post(post_id=post_id)
 
 
@@ -31,7 +31,7 @@ def get_post(
 def create_post(
     domain: Annotated[Domain, Depends(get_domain)],
     data: PostCreateDTO,
-):
+) -> Any:
     return domain.create_post(data=data.to_domain())
 
 
@@ -40,7 +40,7 @@ def update_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
     data: PostUpdateDTO,
-):
+) -> Any:
     return domain.update_post(post_id=post_id, data=data.to_domain())
 
 
@@ -48,5 +48,5 @@ def update_post(
 def delete_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: uuid.UUID,
-):
+) -> None:
     domain.delete_post(post_id=post_id)

@@ -26,4 +26,4 @@ coverage:
 lint:
 	uv run ruff format
 	uv run ruff check --fix || true
-	uv run pyright
+	uv run mypy .

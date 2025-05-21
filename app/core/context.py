@@ -14,7 +14,7 @@ from app.infrastructure.repository.user import UserSqlRepository
 
 class Context(TransactionalContextProtocol):
     def __init__(self, settings: Settings):
-        engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+        engine = create_engine(str(settings.sqlalchemy_database_uri))
         self.session_factory = sessionmaker(bind=engine)
         self._session: Session | None = None
 

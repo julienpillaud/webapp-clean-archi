@@ -5,20 +5,20 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore")
 
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_HOST: str
-    POSTGRES_PORT: int
-    POSTGRES_DB: str
+    postgres_user: str
+    postgres_password: str
+    postgres_host: str
+    postgres_port: int
+    postgres_db: str
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+    def sqlalchemy_database_uri(self) -> PostgresDsn:
         return PostgresDsn.build(
             scheme="postgresql+psycopg",
-            username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
-            host=self.POSTGRES_HOST,
-            port=self.POSTGRES_PORT,
-            path=self.POSTGRES_DB,
+            username=self.postgres_user,
+            password=self.postgres_password,
+            host=self.postgres_host,
+            port=self.postgres_port,
+            path=self.postgres_db,
         )

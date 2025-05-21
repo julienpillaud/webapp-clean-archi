@@ -15,7 +15,7 @@ P = TypeVar("P")
 
 
 class BaseFactory(Generic[T, P]):
-    def __init__(self):
+    def __init__(self) -> None:
         self.faker = Faker()
 
     def create_one(self, **kwargs: Any) -> T:
@@ -30,15 +30,15 @@ class BaseFactory(Generic[T, P]):
 
     def _build_entity(self, **kwargs: Any) -> T:
         """Build a domain entity with the given kwargs."""
-        ...
+        raise NotImplementedError()
 
     def _insert(self, entities: list[T]) -> None:
         """Insert the entities into the database."""
-        ...
+        raise NotImplementedError()
 
     def _to_database_entity(self, entity: T) -> P:
         """Convert the domain entity to a database-compatible format."""
-        ...
+        raise NotImplementedError()
 
 
 class SqlBaseFactory(BaseFactory[T, P]):

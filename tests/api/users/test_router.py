@@ -7,7 +7,7 @@ from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.fixtures.factories import PostFactory, UserFactory
 
 
-def test_get_users(user_factory: UserFactory, client: TestClient):
+def test_get_users(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     number_of_user = 5
     user_factory.create_many(number_of_user)
@@ -23,7 +23,7 @@ def test_get_users(user_factory: UserFactory, client: TestClient):
     assert len(result["items"]) == number_of_user
 
 
-def test_get_user(user_factory: UserFactory, client: TestClient):
+def test_get_user(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     user = user_factory.create_one()
 
@@ -39,7 +39,7 @@ def test_get_user(user_factory: UserFactory, client: TestClient):
     assert result["posts"] == []
 
 
-def test_get_user_not_found(client: TestClient):
+def test_get_user_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     response = client.get(f"/users/{fake_id}")
@@ -50,7 +50,7 @@ def test_get_user_not_found(client: TestClient):
     assert result == {"detail": f"User '{fake_id}' not found."}
 
 
-def test_create_user(client: TestClient):
+def test_create_user(client: TestClient) -> None:
     # Act
     data = {"username": "User", "email": "user@mail.com"}
     response = client.post("/users", json=data)
@@ -62,7 +62,9 @@ def test_create_user(client: TestClient):
     assert result["email"] == data["email"]
 
 
-def test_create_user_already_exists(client: TestClient, user_factory: UserFactory):
+def test_create_user_already_exists(
+    client: TestClient, user_factory: UserFactory
+) -> None:
     # Arrange
     user = user_factory.create_one()
 
@@ -80,7 +82,7 @@ def test_update_user(
     user_factory: UserFactory,
     post_factory: PostFactory,
     client: TestClient,
-):
+) -> None:
     # Arrange
     user = user_factory.create_one()
     posts = post_factory.create_many(3, author_id=user.id)
@@ -98,7 +100,7 @@ def test_update_user(
     assert [post["id"] for post in result["posts"]] == [str(post.id) for post in posts]
 
 
-def test_update_user_not_found(client: TestClient):
+def test_update_user_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     data = {"username": "User Updated"}
@@ -109,7 +111,7 @@ def test_update_user_not_found(client: TestClient):
     assert response.json() == {"detail": f"User '{fake_id}' not found"}
 
 
-def test_delete_user(user_factory: UserFactory, client: TestClient):
+def test_delete_user(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     user = user_factory.create_one()
 
@@ -121,7 +123,7 @@ def test_delete_user(user_factory: UserFactory, client: TestClient):
     assert response.content == b""
 
 
-def test_delete_user_not_found(client: TestClient):
+def test_delete_user_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     response = client.delete(f"/users/{fake_id}")

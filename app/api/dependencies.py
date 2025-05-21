@@ -10,7 +10,7 @@ from app.domain.domain import Domain, TransactionalContextProtocol
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings(_env_file=".env")  # type: ignore
+    return Settings(_env_file=".env")
 
 
 def get_context(

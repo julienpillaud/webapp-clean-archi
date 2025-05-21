@@ -1,5 +1,5 @@
 import uuid
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query, status
 
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 def get_users(
     domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[PaginationDTO, Query()],
-):
+) -> Any:
     return domain.get_users(pagination=pagination.to_domain())
 
 
@@ -23,7 +23,7 @@ def get_users(
 def get_user(
     domain: Annotated[Domain, Depends(get_domain)],
     user_id: uuid.UUID,
-):
+) -> Any:
     return domain.get_user(user_id=user_id)
 
 
@@ -31,7 +31,7 @@ def get_user(
 def create_user(
     domain: Annotated[Domain, Depends(get_domain)],
     data: UserCreateDTO,
-):
+) -> Any:
     return domain.create_user(data=data.to_domain())
 
 
@@ -40,7 +40,7 @@ def update_user(
     domain: Annotated[Domain, Depends(get_domain)],
     user_id: uuid.UUID,
     data: UserUpdateDTO,
-):
+) -> Any:
     return domain.update_user(user_id=user_id, data=data.to_domain())
 
 
@@ -48,5 +48,5 @@ def update_user(
 def delete_user(
     domain: Annotated[Domain, Depends(get_domain)],
     user_id: uuid.UUID,
-):
+) -> None:
     domain.delete_user(user_id=user_id)

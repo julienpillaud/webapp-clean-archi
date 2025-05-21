@@ -7,7 +7,7 @@ from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.fixtures.factories import PostFactory, UserFactory
 
 
-def test_get_posts(post_factory: PostFactory, client: TestClient):
+def test_get_posts(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     number_of_post = 5
     post_factory.create_many(number_of_post)
@@ -23,7 +23,7 @@ def test_get_posts(post_factory: PostFactory, client: TestClient):
     assert len(result["items"]) == number_of_post
 
 
-def test_get_post(post_factory: PostFactory, client: TestClient):
+def test_get_post(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     post = post_factory.create_one()
 
@@ -40,7 +40,7 @@ def test_get_post(post_factory: PostFactory, client: TestClient):
     assert result["tags"] == post.tags
 
 
-def test_get_post_not_found(client: TestClient):
+def test_get_post_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     response = client.get(f"/posts/{fake_id}")
@@ -50,7 +50,7 @@ def test_get_post_not_found(client: TestClient):
     assert response.json() == {"detail": f"Post '{fake_id}' not found"}
 
 
-def test_create_post(user_factory: UserFactory, client: TestClient):
+def test_create_post(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     user = user_factory.create_one()
 
@@ -72,7 +72,7 @@ def test_create_post(user_factory: UserFactory, client: TestClient):
     assert result["tags"] == data["tags"]
 
 
-def test_create_post_user_not_found(client: TestClient):
+def test_create_post_user_not_found(client: TestClient) -> None:
     # Act
     data = {
         "title": "Post",
@@ -87,7 +87,7 @@ def test_create_post_user_not_found(client: TestClient):
     assert response.json() == {"detail": f"User '{data['author_id']}' not found."}
 
 
-def test_update_post(post_factory: PostFactory, client: TestClient):
+def test_update_post(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     post = post_factory.create_one()
 
@@ -105,7 +105,7 @@ def test_update_post(post_factory: PostFactory, client: TestClient):
     assert result["tags"] == post.tags
 
 
-def test_update_post_not_found(client: TestClient):
+def test_update_post_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     data = {"title": "Post Updated"}
@@ -116,7 +116,7 @@ def test_update_post_not_found(client: TestClient):
     assert response.json() == {"detail": f"Post '{fake_id}' not found"}
 
 
-def test_delete_post(post_factory: PostFactory, client: TestClient):
+def test_delete_post(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     post = post_factory.create_one()
 
@@ -128,7 +128,7 @@ def test_delete_post(post_factory: PostFactory, client: TestClient):
     assert response.content == b""
 
 
-def test_delete_post_not_found(client: TestClient):
+def test_delete_post_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()
     response = client.delete(f"/posts/{fake_id}")
