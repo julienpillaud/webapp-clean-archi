@@ -20,11 +20,11 @@ load_dotenv()
 @pytest.fixture(scope="session")
 def settings() -> Settings:
     return Settings(
-        POSTGRES_USER=os.getenv("POSTGRES_USER", "user"),
-        POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD", "password"),
-        POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost"),
-        POSTGRES_PORT=int(os.getenv("POSTGRES_PORT_TEST", "5432")),
-        POSTGRES_DB=os.getenv("POSTGRES_DB_TEST", "database"),
+        postgres_user=os.getenv("POSTGRES_USER", "user"),
+        postgres_password=os.getenv("POSTGRES_PASSWORD", "password"),
+        postgres_host=os.getenv("POSTGRES_HOST", "localhost"),
+        postgres_port=int(os.getenv("POSTGRES_PORT_TEST", "5432")),
+        postgres_db=os.getenv("POSTGRES_DB_TEST", "database"),
     )
 
 
