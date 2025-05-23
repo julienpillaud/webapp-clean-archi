@@ -18,7 +18,7 @@ dev = [
     "mypy>=1.15",
     "pre-commit>=4.1",
     "pytest>=8.3",
-    "ruff==0.11.10",
+    "ruff==0.11.11",
     "ty>=0.0",
     "watchfiles>=1.0",
 ]
@@ -36,6 +36,9 @@ select = [
     "I",  # isort
     "PL",  # Pylint
     "RUF",
+]
+ignore = [
+    "PLR0913",  # Too many arguments in function definition (6 > 5)
 ]
 
 [tool.mypy]

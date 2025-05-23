@@ -1,12 +1,11 @@
-import os
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
-from dotenv import load_dotenv
 from starlette.testclient import TestClient
 
+from app.api.app import create_app
 from app.api.dependencies import get_settings
-from app.core.app import app
 from app.core.config import Settings
 
 pytest_plugins = [
@@ -14,24 +13,20 @@ pytest_plugins = [
     "tests.fixtures.factories",
 ]
 
-load_dotenv()
+project_dir = Path(__file__).parents[1]
 
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
-    return Settings(
-        postgres_user=os.getenv("POSTGRES_USER", "user"),
-        postgres_password=os.getenv("POSTGRES_PASSWORD", "password"),
-        postgres_host=os.getenv("POSTGRES_HOST", "localhost"),
-        postgres_port=int(os.getenv("POSTGRES_PORT_TEST", "5432")),
-        postgres_db=os.getenv("POSTGRES_DB_TEST", "database"),
-    )
+    return Settings(_env_file=project_dir / ".env.test")
 
 
 @pytest.fixture(scope="session")
 def client(settings: Settings) -> Iterator[TestClient]:
     def get_settings_override() -> Settings:
         return settings
+
+    app = create_app(settings=settings)
 
     app.dependency_overrides[get_settings] = get_settings_override
     yield TestClient(app)

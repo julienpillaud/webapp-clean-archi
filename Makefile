@@ -1,4 +1,4 @@
-.PHONY: help init pre-commit tests coverage lint
+.PHONY: help init db-dev db-test pre-commit tests coverage lint
 
 help:
 	@echo "Available commands:"
@@ -11,6 +11,24 @@ help:
 init:
 	uv sync
 	uv run pre-commit install
+
+db-dev:
+	set -a && source .env && set +a && \
+	docker run -d \
+	--name $$POSTGRES_CONTAINER_NAME \
+	-p $$POSTGRES_PORT:5432 \
+	--env-file .env \
+	--restart unless-stopped \
+	postgres:17
+
+db-test:
+	set -a && source .env.test && set +a && \
+	docker run -d \
+	--name $$POSTGRES_CONTAINER_NAME \
+	-p $$POSTGRES_PORT:5432 \
+	--env-file .env.test \
+	--restart unless-stopped \
+	postgres:17
 
 pre-commit:
 	uv run pre-commit run --all-files
