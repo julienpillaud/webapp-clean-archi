@@ -25,7 +25,7 @@ def delete_user_command(context: ContextProtocol, user_id: uuid.UUID) -> None:
     if not user:
         raise NotFoundError(f"User '{user_id}' not found")
 
-    context.user_repository.delete(user_id)
+    context.user_repository.delete(user)
 
 
 def get_user_command(context: ContextProtocol, user_id: uuid.UUID) -> User:

@@ -122,6 +122,9 @@ def test_delete_user(user_factory: UserFactory, client: TestClient) -> None:
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.content == b""
 
+    response = client.get(f"/users/{user.id}")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
 
 def test_delete_user_not_found(client: TestClient) -> None:
     # Act

@@ -187,6 +187,9 @@ def test_delete_post(post_factory: PostFactory, client: TestClient) -> None:
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.content == b""
 
+    response = client.get(f"/posts/{post.id}")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
 
 def test_delete_post_not_found(client: TestClient) -> None:
     # Act

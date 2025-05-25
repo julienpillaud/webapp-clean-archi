@@ -1,7 +1,7 @@
 import uuid
 from typing import Generic, TypeVar
 
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, delete, func, select
 from sqlalchemy.orm import Session
 
 from app.domain.entities import DomainModel, PaginatedResponse, Pagination
@@ -45,7 +45,6 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
     def create(self, entity: Domain_T, /) -> Domain_T:
         orm_entity = self.domain_to_orm_entity(entity=entity)
         self.session.add(orm_entity)
-        self.session.flush()
         return self.orm_to_domain_entity(orm_entity=orm_entity)
 
     def update(self, entity: Domain_T, /) -> Domain_T:
@@ -57,12 +56,11 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
             if hasattr(orm_entity, key):
                 setattr(orm_entity, key, value)
 
-        self.session.flush()
         return self.orm_to_domain_entity(orm_entity=orm_entity)
 
-    def delete(self, entity_id: uuid.UUID) -> None:
-        orm_entity = self._get_entity_by_id(entity_id=entity_id)
-        self.session.delete(orm_entity)
+    def delete(self, entity: Domain_T) -> None:
+        stmt = delete(self.orm_model).where(self.orm_model.id == entity.id)
+        self.session.execute(stmt)
 
     def _get_entity_by_id(self, entity_id: uuid.UUID) -> Orm_T | None:
         stmt = select(self.orm_model).where(self.orm_model.id == entity_id)

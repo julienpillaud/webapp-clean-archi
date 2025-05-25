@@ -26,7 +26,7 @@ def delete_post_command(context: ContextProtocol, post_id: uuid.UUID) -> None:
     if not post:
         raise NotFoundError(f"Post '{post_id}' not found.")
 
-    context.post_repository.delete(post_id)
+    context.post_repository.delete(post)
 
 
 def get_post_command(context: ContextProtocol, post_id: uuid.UUID) -> Post:

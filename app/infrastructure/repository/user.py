@@ -30,7 +30,6 @@ class UserSqlRepository(
             if hasattr(orm_entity, key):
                 setattr(orm_entity, key, value)
 
-        self.session.flush()
         return self.orm_to_domain_entity(orm_entity=orm_entity)
 
     def orm_to_domain_entity(self, orm_entity: OrmUser) -> User:
