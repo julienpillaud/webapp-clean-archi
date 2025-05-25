@@ -1,21 +1,23 @@
-import uuid
+from typing import NewType
 
 from pydantic import BaseModel, field_validator
 
-from app.domain.entities import DomainModel, TagName
+from app.domain.entities import DomainModel, EntityId
+
+TagName = NewType("TagName", str)
 
 
 class Post(DomainModel):
     title: str
     content: str
-    author_id: uuid.UUID
+    author_id: EntityId
     tags: list[TagName]
 
 
 class PostCreate(BaseModel):
     title: str
     content: str
-    author_id: uuid.UUID
+    author_id: EntityId
     tags: list[TagName] = []
 
     @field_validator("tags", mode="after")

@@ -1,19 +1,21 @@
-import uuid
 from typing import Generic, TypeVar
 
 from sqlalchemy import Select, delete, func, select
 from sqlalchemy.orm import Session
 
-from app.domain.entities import DomainModel, PaginatedResponse, Pagination
+from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
 from app.domain.exceptions import NotFoundError
 from app.domain.interfaces.repository import BaseRepositoryProtocol
-from app.infrastructure.repository.models import OrmBase
+from app.infrastructure.sql.models import OrmBase
 
 Domain_T = TypeVar("Domain_T", bound=DomainModel)
 Orm_T = TypeVar("Orm_T", bound=OrmBase)
 
 
-class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_T]):
+class BaseSqlRepository(
+    BaseRepositoryProtocol[Domain_T],
+    Generic[Domain_T, Orm_T],
+):
     domain_model: type[Domain_T]
     orm_model: type[Orm_T]
 
@@ -38,7 +40,7 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
 
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
 
-    def get_by_id(self, entity_id: uuid.UUID) -> Domain_T | None:
+    def get_by_id(self, entity_id: EntityId) -> Domain_T | None:
         orm_entity = self._get_entity_by_id(entity_id=entity_id)
         return self.orm_to_domain_entity(orm_entity=orm_entity) if orm_entity else None
 
@@ -62,7 +64,7 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
         stmt = delete(self.orm_model).where(self.orm_model.id == entity.id)
         self.session.execute(stmt)
 
-    def _get_entity_by_id(self, entity_id: uuid.UUID) -> Orm_T | None:
+    def _get_entity_by_id(self, entity_id: EntityId) -> Orm_T | None:
         stmt = select(self.orm_model).where(self.orm_model.id == entity_id)
         return self.session.execute(stmt).scalar_one_or_none()
 

@@ -5,10 +5,10 @@ import pytest
 from faker import Faker
 from sqlalchemy.orm import Session
 
-from app.domain.entities import DomainModel, TagName
-from app.domain.posts.entities import Post
+from app.domain.entities import DomainModel
+from app.domain.posts.entities import Post, TagName
 from app.domain.users.entities import User
-from app.infrastructure.repository.models import OrmPost, OrmTag, OrmUser
+from app.infrastructure.sql.models import OrmPost, OrmTag, OrmUser
 
 T = TypeVar("T", bound=DomainModel)
 P = TypeVar("P")

@@ -1,11 +1,12 @@
 import uuid
-from typing import Generic, NewType, TypeVar
+from typing import Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict, NonNegativeInt, PositiveInt
+from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PositiveInt
 
 T = TypeVar("T", bound="DomainModel")
 
-TagName = NewType("TagName", str)
+type EntityId = uuid.UUID | str
+
 
 DEFAULT_PAGINATION_LIMIT = 10
 
@@ -13,7 +14,7 @@ DEFAULT_PAGINATION_LIMIT = 10
 class DomainModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: uuid.UUID
+    id: EntityId = Field(default_factory=uuid.uuid4)
 
 
 class Pagination(BaseModel):

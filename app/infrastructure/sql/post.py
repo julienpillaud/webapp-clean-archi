@@ -1,11 +1,10 @@
 from sqlalchemy import select
 
-from app.domain.entities import TagName
 from app.domain.exceptions import NotFoundError
-from app.domain.posts.entities import Post
+from app.domain.posts.entities import Post, TagName
 from app.domain.posts.repository import PostRepositoryProtocol
-from app.infrastructure.repository.base import BaseSqlRepository
-from app.infrastructure.repository.models import OrmPost, OrmTag
+from app.infrastructure.sql.base import BaseSqlRepository
+from app.infrastructure.sql.models import OrmPost, OrmTag
 
 
 class PostSqlRepository(

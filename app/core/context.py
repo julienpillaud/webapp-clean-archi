@@ -8,8 +8,8 @@ from app.core.config import Settings
 from app.domain.domain import TransactionalContextProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.repository.post import PostSqlRepository
-from app.infrastructure.repository.user import UserSqlRepository
+from app.infrastructure.sql.post import PostSqlRepository
+from app.infrastructure.sql.user import UserSqlRepository
 
 
 class Context(TransactionalContextProtocol):

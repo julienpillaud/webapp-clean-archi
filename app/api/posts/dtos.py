@@ -2,8 +2,7 @@ import uuid
 
 from pydantic import BaseModel
 
-from app.domain.entities import TagName
-from app.domain.posts.entities import PostCreate, PostUpdate
+from app.domain.posts.entities import PostCreate, PostUpdate, TagName
 
 
 class PostDTO(BaseModel):

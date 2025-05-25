@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.infrastructure.repository.models import OrmUser
+from app.infrastructure.sql.models import OrmUser
 from app.utils.sqlalchemy_instrument import SQLAlchemyInstrument
 
 

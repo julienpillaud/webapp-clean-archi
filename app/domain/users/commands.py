@@ -1,7 +1,5 @@
-import uuid
-
 from app.domain.context import ContextProtocol
-from app.domain.entities import PaginatedResponse, Pagination
+from app.domain.entities import EntityId, PaginatedResponse, Pagination
 from app.domain.exceptions import AlreadyExistsError, NotFoundError
 from app.domain.users.entities import User, UserCreate, UserUpdate
 
@@ -12,7 +10,6 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
         raise AlreadyExistsError(f"User '{data.email}' already exists.")
 
     user = User(
-        id=uuid.uuid4(),
         username=data.username,
         email=data.email,
         posts=[],
@@ -20,7 +17,7 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
     return context.user_repository.create(user)
 
 
-def delete_user_command(context: ContextProtocol, user_id: uuid.UUID) -> None:
+def delete_user_command(context: ContextProtocol, user_id: EntityId) -> None:
     user = context.user_repository.get_by_id(user_id)
     if not user:
         raise NotFoundError(f"User '{user_id}' not found")
@@ -28,7 +25,7 @@ def delete_user_command(context: ContextProtocol, user_id: uuid.UUID) -> None:
     context.user_repository.delete(user)
 
 
-def get_user_command(context: ContextProtocol, user_id: uuid.UUID) -> User:
+def get_user_command(context: ContextProtocol, user_id: EntityId) -> User:
     user = context.user_repository.get_by_id(user_id)
     if not user:
         raise NotFoundError(f"User '{user_id}' not found.")
@@ -42,7 +39,7 @@ def get_users_command(
 
 
 def update_user_command(
-    context: ContextProtocol, user_id: uuid.UUID, data: UserUpdate
+    context: ContextProtocol, user_id: EntityId, data: UserUpdate
 ) -> User:
     user = context.user_repository.get_by_id(user_id)
     if not user:
