@@ -105,6 +105,66 @@ def test_update_post(post_factory: PostFactory, client: TestClient) -> None:
     assert result["tags"] == post.tags
 
 
+def test_update_post_add_tag(post_factory: PostFactory, client: TestClient) -> None:
+    # Arrange
+    post = post_factory.create_one()
+
+    # Act
+    data = {"tags": [*post.tags, "new_tag"]}
+    response = client.patch(f"/posts/{post.id}", json=data)
+
+    # Assert
+    assert response.status_code == status.HTTP_200_OK
+    result = response.json()
+    assert result["tags"] == data["tags"]
+
+
+def test_update_post_replace_tags(
+    post_factory: PostFactory, client: TestClient
+) -> None:
+    # Arrange
+    post = post_factory.create_one()
+
+    # Act
+    data = {"tags": ["new_tag1", "new_tag2"]}
+    response = client.patch(f"/posts/{post.id}", json=data)
+
+    # Assert
+    assert response.status_code == status.HTTP_200_OK
+    result = response.json()
+    assert result["tags"] == data["tags"]
+
+
+def test_update_post_remove_tag(post_factory: PostFactory, client: TestClient) -> None:
+    # Arrange
+    post = post_factory.create_one()
+
+    # Act
+    data = {"tags": post.tags[:-1]}  # Remove last tag
+    response = client.patch(f"/posts/{post.id}", json=data)
+
+    # Assert
+    assert response.status_code == status.HTTP_200_OK
+    result = response.json()
+    assert result["tags"] == data["tags"]
+
+
+def test_update_post_remove_all_tags(
+    post_factory: PostFactory, client: TestClient
+) -> None:
+    # Arrange
+    post = post_factory.create_one()
+
+    # Act
+    data: dict[str, list[str]] = {"tags": []}  # Remove all tags
+    response = client.patch(f"/posts/{post.id}", json=data)
+
+    # Assert
+    assert response.status_code == status.HTTP_200_OK
+    result = response.json()
+    assert result["tags"] == data["tags"]
+
+
 def test_update_post_not_found(client: TestClient) -> None:
     # Act
     fake_id = uuid.uuid4()

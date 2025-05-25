@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from app.domain.entities import TagName
 from app.domain.exceptions import NotFoundError
 from app.domain.posts.entities import Post
@@ -22,13 +24,20 @@ class PostSqlRepository(
             if hasattr(orm_entity, key):
                 setattr(orm_entity, key, value)
 
-        self._update_tags(entity=entity)
-
-        self.session.flush()
+        self._update_tags(entity=entity, orm_entity=orm_entity)
         return self.orm_to_domain_entity(orm_entity=orm_entity)
 
-    def _update_tags(self, entity: Post) -> None:
-        pass
+    def _update_tags(self, entity: Post, orm_entity: OrmPost) -> None:
+        orm_entity.tags.clear()
+
+        for tag_name in entity.tags:
+            stmt = select(OrmTag).where(OrmTag.name == tag_name)
+            orm_tag = self.session.scalar(stmt)
+            if not orm_tag:
+                orm_tag = OrmTag(name=tag_name)
+                self.session.add(orm_tag)
+
+            orm_entity.tags.append(orm_tag)
 
     def domain_to_orm_entity(self, entity: Post) -> OrmPost:
         return OrmPost(
