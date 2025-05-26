@@ -10,6 +10,7 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
         raise AlreadyExistsError(f"User '{data.email}' already exists.")
 
     user = User(
+        id=None,
         username=data.username,
         email=data.email,
         posts=[],

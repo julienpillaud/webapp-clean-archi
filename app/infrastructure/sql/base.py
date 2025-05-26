@@ -47,6 +47,7 @@ class BaseSqlRepository(
     def create(self, entity: Domain_T, /) -> Domain_T:
         orm_entity = self.domain_to_orm_entity(entity=entity)
         self.session.add(orm_entity)
+        self.session.flush()
         return self.orm_to_domain_entity(orm_entity=orm_entity)
 
     def update(self, entity: Domain_T, /) -> Domain_T:

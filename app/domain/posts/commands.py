@@ -10,6 +10,7 @@ def create_post_command(context: ContextProtocol, data: PostCreate) -> Post:
         raise NotFoundError(f"User '{data.author_id}' not found.")
 
     post = Post(
+        id=None,
         title=data.title,
         content=data.content,
         author_id=author.id,
