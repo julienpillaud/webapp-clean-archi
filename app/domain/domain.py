@@ -3,7 +3,7 @@ import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from functools import wraps
-from typing import Concatenate, ParamSpec, Protocol, TypeVar
+from typing import Concatenate, Generic, ParamSpec, Protocol, TypeVar
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
@@ -41,7 +41,35 @@ class UnitOfWorkProtocol(Protocol):
 class TransactionalContextProtocol(UnitOfWorkProtocol, ContextProtocol): ...
 
 
+class CommandHandler(Generic[P, R]):
+    def __init__(
+        self, func: Callable[Concatenate[TransactionalContextProtocol, P], R]
+    ) -> None:
+        self.func = func
+
+    def __get__(self, instance: "Domain", owner: type["Domain"]) -> Callable[P, R]:
+        return instance.command_handler(self.func)
+
+
 class Domain:
+    get_posts = CommandHandler(get_posts_command)
+    get_post = CommandHandler(get_post_command)
+    create_post = CommandHandler(create_post_command)
+    update_post = CommandHandler(update_post_command)
+    delete_post = CommandHandler(delete_post_command)
+
+    get_users = CommandHandler(get_users_command)
+    get_user = CommandHandler(get_user_command)
+    create_user = CommandHandler(create_user_command)
+    update_user = CommandHandler(update_user_command)
+    delete_user = CommandHandler(delete_user_command)
+
+    unexpected_error = CommandHandler(unexpected_error_command)
+    unexpected_domain_error = CommandHandler(unexpected_domain_error_command)
+
+    def __init__(self, context: TransactionalContextProtocol):
+        self.context = context
+
     def command_handler(
         self, func: Callable[Concatenate[TransactionalContextProtocol, P], R]
     ) -> Callable[P, R]:
@@ -68,23 +96,3 @@ class Domain:
                 return result
 
         return wrapper
-
-    def __init__(self, context: TransactionalContextProtocol):
-        self.context = context
-
-        self.create_post = self.command_handler(create_post_command)
-        self.delete_post = self.command_handler(delete_post_command)
-        self.get_post = self.command_handler(get_post_command)
-        self.get_posts = self.command_handler(get_posts_command)
-        self.update_post = self.command_handler(update_post_command)
-
-        self.create_user = self.command_handler(create_user_command)
-        self.delete_user = self.command_handler(delete_user_command)
-        self.get_user = self.command_handler(get_user_command)
-        self.get_users = self.command_handler(get_users_command)
-        self.update_user = self.command_handler(update_user_command)
-
-        self.unexpected_error = self.command_handler(unexpected_error_command)
-        self.unexpected_domain_error = self.command_handler(
-            unexpected_domain_error_command
-        )

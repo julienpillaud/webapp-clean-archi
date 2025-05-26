@@ -4,10 +4,14 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115",
-    "psycopg[binary]>=3.2",
     "pydantic-settings>=2.8",
-    "sqlalchemy>=2.0",
     "uvicorn>=0.34",
+]
+
+[project.optional-dependencies]
+sql = [
+    "psycopg[binary]>=3.2",
+    "sqlalchemy>=2.0",
 ]
 
 [dependency-groups]
@@ -17,8 +21,10 @@ dev = [
     "httpx>=0.28",
     "mypy>=1.15",
     "pre-commit>=4.1",
+    "psycopg[binary]>=3.2.9",
     "pytest>=8.3",
     "ruff==0.11.11",
+    "sqlalchemy>=2.0.41",
     "ty>=0.0",
     "watchfiles>=1.0",
 ]
