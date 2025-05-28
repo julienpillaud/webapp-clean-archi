@@ -1,6 +1,5 @@
 from sqlalchemy import select
 
-from app.domain.exceptions import NotFoundError
 from app.domain.posts.entities import Post, TagName
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
@@ -18,20 +17,23 @@ class UserSqlRepository(
     def get_by_email(self, email: str) -> User | None:
         stmt = select(OrmUser).where(OrmUser.email == email)
         orm_entity = self.session.execute(stmt).scalar_one_or_none()
-        return self.orm_to_domain_entity(orm_entity=orm_entity) if orm_entity else None
+
+        return self._to_domain_entity(orm_entity=orm_entity) if orm_entity else None
 
     def update(self, entity: User, /) -> User:
-        orm_entity = self._get_entity_by_id(entity_id=entity.id)
-        if not orm_entity:
-            raise NotFoundError("Entity not found")
+        assert entity.id is not None
+
+        db_entity = self._get_db_entity(entity_id=entity.id)
+        if not db_entity:
+            raise RuntimeError()
 
         for key, value in entity.model_dump(exclude={"id", "posts"}).items():
-            if hasattr(orm_entity, key):
-                setattr(orm_entity, key, value)
+            if hasattr(db_entity, key):
+                setattr(db_entity, key, value)
 
-        return self.orm_to_domain_entity(orm_entity=orm_entity)
+        return self._to_domain_entity(orm_entity=db_entity)
 
-    def orm_to_domain_entity(self, orm_entity: OrmUser) -> User:
+    def _to_domain_entity(self, orm_entity: OrmUser) -> User:
         return User(
             username=orm_entity.username,
             id=orm_entity.id,

@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, NonNegativeInt, PositiveInt
 
 T = TypeVar("T", bound="DomainModel")
 
-type EntityId = uuid.UUID | str | None
+type EntityId = uuid.UUID | str
 
 
 DEFAULT_PAGINATION_LIMIT = 10
@@ -14,7 +14,7 @@ DEFAULT_PAGINATION_LIMIT = 10
 class DomainModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: EntityId
+    id: EntityId | None
 
 
 class Pagination(BaseModel):

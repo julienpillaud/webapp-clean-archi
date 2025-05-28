@@ -4,7 +4,6 @@ from sqlalchemy import Select, delete, func, select
 from sqlalchemy.orm import Session
 
 from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
-from app.domain.exceptions import NotFoundError
 from app.domain.interfaces.repository import BaseRepositoryProtocol
 from app.infrastructure.sql.models import OrmBase
 
@@ -33,46 +32,48 @@ class BaseSqlRepository(
         stmt = self._apply_pagination(stmt=stmt, pagination=pagination)
 
         orm_entities = self.session.scalars(stmt)
-        items = [
-            self.orm_to_domain_entity(orm_entity=orm_entity)
-            for orm_entity in orm_entities
-        ]
+        items = [self._to_domain_entity(orm_entity) for orm_entity in orm_entities]
 
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
 
     def get_by_id(self, entity_id: EntityId) -> Domain_T | None:
-        orm_entity = self._get_entity_by_id(entity_id=entity_id)
-        return self.orm_to_domain_entity(orm_entity=orm_entity) if orm_entity else None
+        db_result = self._get_db_entity(entity_id=entity_id)
+
+        return self._to_domain_entity(db_result) if db_result else None
 
     def create(self, entity: Domain_T, /) -> Domain_T:
-        orm_entity = self.domain_to_orm_entity(entity=entity)
+        orm_entity = self._to_database_entity(entity)
+
         self.session.add(orm_entity)
         self.session.flush()
-        return self.orm_to_domain_entity(orm_entity=orm_entity)
+
+        return self._to_domain_entity(orm_entity)
 
     def update(self, entity: Domain_T, /) -> Domain_T:
-        orm_entity = self._get_entity_by_id(entity_id=entity.id)
-        if not orm_entity:
-            raise NotFoundError("Entity not found")
+        assert entity.id is not None
+
+        db_entity = self._get_db_entity(entity_id=entity.id)
+        if not db_entity:
+            raise RuntimeError()
 
         for key, value in entity.model_dump(exclude={"id"}).items():
-            if hasattr(orm_entity, key):
-                setattr(orm_entity, key, value)
+            if hasattr(db_entity, key):
+                setattr(db_entity, key, value)
 
-        return self.orm_to_domain_entity(orm_entity=orm_entity)
+        return self._to_domain_entity(db_entity)
 
     def delete(self, entity: Domain_T) -> None:
         stmt = delete(self.orm_model).where(self.orm_model.id == entity.id)
         self.session.execute(stmt)
 
-    def _get_entity_by_id(self, entity_id: EntityId) -> Orm_T | None:
+    def _get_db_entity(self, entity_id: EntityId) -> Orm_T | None:
         stmt = select(self.orm_model).where(self.orm_model.id == entity_id)
         return self.session.execute(stmt).scalar_one_or_none()
 
-    def orm_to_domain_entity(self, orm_entity: Orm_T) -> Domain_T:
+    def _to_domain_entity(self, orm_entity: Orm_T, /) -> Domain_T:
         return self.domain_model.model_validate(orm_entity)
 
-    def domain_to_orm_entity(self, entity: Domain_T) -> Orm_T:
+    def _to_database_entity(self, entity: Domain_T, /) -> Orm_T:
         return self.orm_model(**entity.model_dump())
 
     @staticmethod

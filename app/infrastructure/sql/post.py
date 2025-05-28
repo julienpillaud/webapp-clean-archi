@@ -1,6 +1,5 @@
 from sqlalchemy import select
 
-from app.domain.exceptions import NotFoundError
 from app.domain.posts.entities import Post, TagName
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.infrastructure.sql.base import BaseSqlRepository
@@ -15,16 +14,18 @@ class PostSqlRepository(
     orm_model = OrmPost
 
     def update(self, entity: Post, /) -> Post:
-        orm_entity = self._get_entity_by_id(entity_id=entity.id)
-        if not orm_entity:
-            raise NotFoundError(f"Post '{entity.id}' not found.")
+        assert entity.id is not None
+
+        db_entity = self._get_db_entity(entity_id=entity.id)
+        if not db_entity:
+            raise RuntimeError()
 
         for key, value in entity.model_dump(exclude={"id", "tags"}).items():
-            if hasattr(orm_entity, key):
-                setattr(orm_entity, key, value)
+            if hasattr(db_entity, key):
+                setattr(db_entity, key, value)
+        self._update_tags(entity=entity, orm_entity=db_entity)
 
-        self._update_tags(entity=entity, orm_entity=orm_entity)
-        return self.orm_to_domain_entity(orm_entity=orm_entity)
+        return self._to_domain_entity(db_entity)
 
     def _update_tags(self, entity: Post, orm_entity: OrmPost) -> None:
         orm_entity.tags.clear()
@@ -38,7 +39,7 @@ class PostSqlRepository(
 
             orm_entity.tags.append(orm_tag)
 
-    def domain_to_orm_entity(self, entity: Post) -> OrmPost:
+    def _to_database_entity(self, entity: Post, /) -> OrmPost:
         return OrmPost(
             id=entity.id,
             title=entity.title,
@@ -47,7 +48,7 @@ class PostSqlRepository(
             tags=[OrmTag(name=tag) for tag in entity.tags],
         )
 
-    def orm_to_domain_entity(self, orm_entity: OrmPost) -> Post:
+    def _to_domain_entity(self, orm_entity: OrmPost, /) -> Post:
         return Post(
             id=orm_entity.id,
             title=orm_entity.title,
