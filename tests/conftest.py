@@ -7,6 +7,7 @@ from starlette.testclient import TestClient
 from app.api.app import create_app
 from app.api.dependencies import get_settings
 from app.core.config import Settings
+from app.core.context.sql import Context
 
 pytest_plugins = [
     "tests.fixtures.database",
@@ -18,7 +19,9 @@ project_dir = Path(__file__).parents[1]
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
-    return Settings(_env_file=project_dir / ".env.test")
+    settings_ = Settings(_env_file=project_dir / ".env.test")
+    Context.initialize(settings=settings_)
+    return settings_
 
 
 @pytest.fixture(scope="session")

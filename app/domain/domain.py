@@ -3,7 +3,7 @@ import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from functools import wraps
-from typing import Concatenate, Generic, ParamSpec, Protocol, TypeVar
+from typing import Concatenate, Generic, ParamSpec, Protocol, TypeVar, cast
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
@@ -47,8 +47,16 @@ class CommandHandler(Generic[P, R]):
     ) -> None:
         self.func = func
 
+    def __set_name__(self, owner: type["Domain"], name: str) -> None:
+        self.name = f"_{name}"
+
     def __get__(self, instance: "Domain", owner: type["Domain"]) -> Callable[P, R]:
-        return instance.command_handler(self.func)
+        if not hasattr(instance, self.name):
+            logger.debug(f"Setting command handler for {self.name}")
+            value = instance.command_handler(self.func)
+            setattr(instance, self.name, value)
+
+        return cast(Callable[P, R], getattr(instance, self.name))
 
 
 class Domain:

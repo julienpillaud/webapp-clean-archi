@@ -13,14 +13,20 @@ from app.infrastructure.sql.user import UserSqlRepository
 
 
 class Context(TransactionalContextProtocol):
-    def __init__(self, settings: Settings):
+    _session_factory: sessionmaker[Session] | None = None
+    _session: Session | None = None
+
+    @classmethod
+    def initialize(cls, settings: Settings) -> None:
         engine = create_engine(str(settings.sqlalchemy_uri))
-        self.session_factory = sessionmaker(bind=engine)
-        self._session: Session | None = None
+        cls._session_factory = sessionmaker(bind=engine)
 
     @contextmanager
     def transaction(self) -> Iterator[None]:
-        self._session = self.session_factory()
+        if not self._session_factory:
+            raise RuntimeError("Session factory not initialized.")
+
+        self._session = self._session_factory()
         try:
             yield
         finally:
@@ -36,7 +42,7 @@ class Context(TransactionalContextProtocol):
     @property
     def session(self) -> Session:
         if self._session is None:
-            raise RuntimeError("No active session")
+            raise RuntimeError("No active session.")
         return self._session
 
     @property
