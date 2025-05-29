@@ -1,7 +1,8 @@
-from collections.abc import Iterator
+from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 
 import pytest
+from httpx import ASGITransport, AsyncClient
 from starlette.testclient import TestClient
 
 from app.api.app import create_app
@@ -33,4 +34,27 @@ def client(settings: Settings) -> Iterator[TestClient]:
 
     app.dependency_overrides[get_settings] = get_settings_override
     yield TestClient(app)
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def anyio_backend() -> str:
+    return "asyncio"
+
+
+@pytest.fixture
+async def client_async(settings: Settings) -> AsyncIterator[AsyncClient]:
+    def get_settings_override() -> Settings:
+        return settings
+
+    app = create_app(settings=settings)
+
+    app.dependency_overrides[get_settings] = get_settings_override
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as client:
+        yield client
+
     app.dependency_overrides.clear()
