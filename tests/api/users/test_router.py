@@ -4,13 +4,14 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.entities import DEFAULT_PAGINATION_LIMIT
-from tests.fixtures.factories import PostFactory, UserFactory
+from tests.fixtures.factories.posts import PostSqlFactory
+from tests.fixtures.factories.users import UserSqlFactory
 
 
-def test_get_users(user_factory: UserFactory, client: TestClient) -> None:
+def test_get_users(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
     # Arrange
     number_of_user = 5
-    user_factory.create_many(number_of_user)
+    user_sql_factory.create_many(number_of_user)
 
     # Act
     response = client.get("/users")
@@ -23,9 +24,9 @@ def test_get_users(user_factory: UserFactory, client: TestClient) -> None:
     assert len(result["items"]) == number_of_user
 
 
-def test_get_user(user_factory: UserFactory, client: TestClient) -> None:
+def test_get_user(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
     # Arrange
-    user = user_factory.create_one()
+    user = user_sql_factory.create_one()
 
     # Act
     response = client.get(f"/users/{user.id}")
@@ -63,10 +64,10 @@ def test_create_user(client: TestClient) -> None:
 
 
 def test_create_user_already_exists(
-    client: TestClient, user_factory: UserFactory
+    client: TestClient, user_sql_factory: UserSqlFactory
 ) -> None:
     # Arrange
-    user = user_factory.create_one()
+    user = user_sql_factory.create_one()
 
     # Act
     data = {"username": user.username, "email": user.email}
@@ -79,13 +80,13 @@ def test_create_user_already_exists(
 
 
 def test_update_user(
-    user_factory: UserFactory,
-    post_factory: PostFactory,
+    user_sql_factory: UserSqlFactory,
+    post_sql_factory: PostSqlFactory,
     client: TestClient,
 ) -> None:
     # Arrange
-    user = user_factory.create_one()
-    posts = post_factory.create_many(3, author_id=user.id)
+    user = user_sql_factory.create_one()
+    posts = post_sql_factory.create_many(3, author_id=user.id)
 
     # Act
     data = {"username": "User Updated"}
@@ -111,9 +112,9 @@ def test_update_user_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"User '{fake_id}' not found"}
 
 
-def test_delete_user(user_factory: UserFactory, client: TestClient) -> None:
+def test_delete_user(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
     # Arrange
-    user = user_factory.create_one()
+    user = user_sql_factory.create_one()
 
     # Act
     response = client.delete(f"/users/{user.id}")

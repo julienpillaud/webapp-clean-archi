@@ -11,8 +11,10 @@ from app.core.config import Settings
 from app.core.context.sql import Context
 
 pytest_plugins = [
-    "tests.fixtures.database",
-    "tests.fixtures.factories",
+    "tests.fixtures.database.sql",
+    "tests.fixtures.database.mongo",
+    "tests.fixtures.repositories",
+    "tests.fixtures.factories.fixtures",
 ]
 
 project_dir = Path(__file__).parents[1]
