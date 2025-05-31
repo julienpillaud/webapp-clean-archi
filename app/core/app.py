@@ -1,7 +1,7 @@
 from app.api.app import create_app
-from app.api.dependencies import get_settings
-from app.core.context.sql import Context
+from app.core.config import Settings
+from app.core.context.utils import initialize_context
 
-settings = get_settings()
-Context.initialize(settings=settings)
+settings = Settings(_env_file=".env")
+initialize_context(settings=settings)
 app = create_app(settings=settings)

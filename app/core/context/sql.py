@@ -4,15 +4,17 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.config import Settings
+from app.core.config import DatabaseType, Settings
+from app.core.context.utils import register_context
 from app.domain.domain import TransactionalContextProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.sql.post import PostSqlRepository
-from app.infrastructure.sql.user import UserSqlRepository
+from app.infrastructure.sql.posts import PostSqlRepository
+from app.infrastructure.sql.users import UserSqlRepository
 
 
-class Context(TransactionalContextProtocol):
+@register_context(DatabaseType.SQL)
+class SqlContext(TransactionalContextProtocol):
     _session_factory: sessionmaker[Session] | None = None
     _session: Session | None = None
 

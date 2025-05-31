@@ -10,9 +10,15 @@ class ColoredFormatter(logging.Formatter):
         "ERROR": "\033[31m",  # red
         "CRITICAL": "\033[35m",  # magenta
     }
+    app_colors: ClassVar[dict[str, str]] = {
+        "INFO": "\033[32m",  # green
+    }
     reset = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:
         color = self.colors.get(record.levelname, self.reset)
+        if record.name.startswith("app.") and record.levelname in self.app_colors:
+            color = self.app_colors[record.levelname]
+
         message = super().format(record)
         return f"{color}{message}{self.reset}"
