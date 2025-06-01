@@ -11,10 +11,7 @@ Domain_T = TypeVar("Domain_T", bound=DomainModel)
 Orm_T = TypeVar("Orm_T", bound=OrmBase)
 
 
-class BaseSqlRepository(
-    BaseRepositoryProtocol[Domain_T],
-    Generic[Domain_T, Orm_T],
-):
+class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_T]):
     domain_model: type[Domain_T]
     orm_model: type[Orm_T]
 

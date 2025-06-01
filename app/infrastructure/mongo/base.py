@@ -76,7 +76,11 @@ class BaseMongoRepository(
         self.collection.delete_one({"_id": entity_id})
 
     def _get_db_entity(self, entity_id: ObjectId, /) -> MongoDocument | None:
-        return self.collection.find_one({"_id": entity_id})
+        pipeline = [
+            {"$match": {"_id": ObjectId(str(entity_id))}},
+            *self._aggregation_pipeline(),
+        ]
+        return next(self.collection.aggregate(pipeline), None)
 
     def _to_domain_entity(self, document: MongoDocument, /) -> Domain_T:
         document["id"] = str(document.pop("_id"))

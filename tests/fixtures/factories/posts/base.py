@@ -1,16 +1,17 @@
-from typing import Any
+from typing import Any, TypeVar
 
-from sqlalchemy.orm import Session
+from faker import Faker
 
 from app.domain.posts.entities import Post, TagName
-from app.infrastructure.sql.models import OrmPost, OrmTag
-from tests.fixtures.factories.sql import SqlBaseFactory
-from tests.fixtures.factories.users import UserSqlFactory
+from tests.fixtures.factories.base import BaseFactory
+from tests.fixtures.factories.users.base import UserBaseFactory
+
+P = TypeVar("P")
 
 
-class PostSqlFactory(SqlBaseFactory[Post, OrmPost]):
-    def __init__(self, session: Session, user_factory: UserSqlFactory):
-        super().__init__(session)
+class PostBaseFactory(BaseFactory[Post]):
+    def __init__(self, user_factory: UserBaseFactory) -> None:
+        self.faker = Faker()
         self.user_factory = user_factory
 
     def _build_entity(self, **kwargs: Any) -> Post:
@@ -30,13 +31,4 @@ class PostSqlFactory(SqlBaseFactory[Post, OrmPost]):
             content=kwargs.get("content", self.faker.text()),
             author_id=author_id,
             tags=tags,
-        )
-
-    def _to_database_entity(self, entity: Post) -> OrmPost:
-        return OrmPost(
-            id=entity.id,
-            title=entity.title,
-            content=entity.content,
-            author_id=entity.author_id,
-            tags=[OrmTag(name=tag) for tag in entity.tags],
         )

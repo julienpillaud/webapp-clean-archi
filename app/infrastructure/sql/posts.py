@@ -6,10 +6,7 @@ from app.infrastructure.sql.base import BaseSqlRepository
 from app.infrastructure.sql.models import OrmPost, OrmTag
 
 
-class PostSqlRepository(
-    BaseSqlRepository[Post, OrmPost],
-    PostRepositoryProtocol,
-):
+class PostSqlRepository(BaseSqlRepository[Post, OrmPost], PostRepositoryProtocol):
     domain_model = Post
     orm_model = OrmPost
 

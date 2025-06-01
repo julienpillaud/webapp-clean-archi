@@ -7,10 +7,7 @@ from app.infrastructure.sql.base import BaseSqlRepository
 from app.infrastructure.sql.models import OrmUser
 
 
-class UserSqlRepository(
-    BaseSqlRepository[User, OrmUser],
-    UserRepositoryProtocol,
-):
+class UserSqlRepository(BaseSqlRepository[User, OrmUser], UserRepositoryProtocol):
     domain_model = User
     orm_model = OrmUser
 

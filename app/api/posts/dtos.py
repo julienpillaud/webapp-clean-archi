@@ -1,15 +1,14 @@
-import uuid
-
 from pydantic import BaseModel
 
+from app.domain.entities import EntityId
 from app.domain.posts.entities import PostCreate, PostUpdate, TagName
 
 
 class PostDTO(BaseModel):
-    id: uuid.UUID
+    id: EntityId
     title: str
     content: str
-    author_id: uuid.UUID
+    author_id: EntityId
     tags: list[TagName]
 
 

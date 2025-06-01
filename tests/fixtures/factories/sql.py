@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import Generic, TypeVar
 
 from sqlalchemy.orm import Session
 
@@ -10,9 +10,8 @@ T = TypeVar("T", bound=DomainModel)
 P = TypeVar("P", bound=OrmBase)
 
 
-class SqlBaseFactory(BaseFactory[T, P]):
+class SqlBaseFactory(BaseFactory[T], Generic[T, P]):
     def __init__(self, session: Session):
-        super().__init__()
         self.session = session
 
     def _insert(self, entities: list[T]) -> None:
@@ -21,3 +20,6 @@ class SqlBaseFactory(BaseFactory[T, P]):
             self.session.add(db_entity)
             self.session.commit()
             entity.id = db_entity.id
+
+    def _to_database_entity(self, entity: T) -> P:
+        raise NotImplementedError()

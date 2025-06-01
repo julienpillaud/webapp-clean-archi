@@ -1,18 +1,20 @@
+import uuid
 from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 
 import pytest
+from bson import ObjectId
 from httpx import ASGITransport, AsyncClient
 from starlette.testclient import TestClient
 
 from app.api.app import create_app
-from app.core.config import Settings
+from app.core.config import DatabaseType, Settings
 from app.core.context.utils import initialize_context
+from app.domain.entities import EntityId
 
 pytest_plugins = [
     "tests.fixtures.database.sql",
     "tests.fixtures.database.mongo",
-    "tests.fixtures.repositories",
     "tests.fixtures.factories.fixtures",
 ]
 
@@ -24,6 +26,15 @@ def settings() -> Settings:
     settings_ = Settings(_env_file=project_dir / ".env.test")
     initialize_context(settings=settings_)
     return settings_
+
+
+@pytest.fixture
+def fake_entity_id(settings: Settings) -> EntityId:
+    match settings.database_type:
+        case DatabaseType.SQL:
+            return str(uuid.uuid4())
+        case DatabaseType.MONGO:
+            return str(ObjectId())
 
 
 @pytest.fixture(scope="session")

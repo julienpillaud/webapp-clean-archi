@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import Generic, TypeVar
 
 from pymongo.collection import Collection
 
@@ -9,9 +9,8 @@ from tests.fixtures.factories.base import BaseFactory
 T = TypeVar("T", bound=DomainModel)
 
 
-class MongoBaseFactory(BaseFactory[T, MongoDocument]):
+class MongoBaseFactory(BaseFactory[T], Generic[T]):
     def __init__(self, collection: Collection[MongoDocument]):
-        super().__init__()
         self.collection = collection
 
     def _insert(self, entities: list[T]) -> None:

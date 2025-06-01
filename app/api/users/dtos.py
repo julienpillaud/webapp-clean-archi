@@ -1,13 +1,12 @@
-import uuid
-
 from pydantic import BaseModel
 
 from app.api.posts.dtos import PostDTO
+from app.domain.entities import EntityId
 from app.domain.users.entities import UserCreate, UserUpdate
 
 
 class UserDTO(BaseModel):
-    id: uuid.UUID
+    id: EntityId
     username: str
     email: str
     posts: list[PostDTO]

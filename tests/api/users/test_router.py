@@ -1,17 +1,15 @@
-import uuid
-
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT
-from tests.fixtures.factories.posts import PostSqlFactory
-from tests.fixtures.factories.users import UserSqlFactory
+from app.domain.entities import DEFAULT_PAGINATION_LIMIT, EntityId
+from tests.fixtures.factories.posts.base import PostBaseFactory
+from tests.fixtures.factories.users.base import UserBaseFactory
 
 
-def test_get_users(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
+def test_get_users(user_factory: UserBaseFactory, client: TestClient) -> None:
     # Arrange
     number_of_user = 5
-    user_sql_factory.create_many(number_of_user)
+    user_factory.create_many(number_of_user)
 
     # Act
     response = client.get("/users")
@@ -24,9 +22,14 @@ def test_get_users(user_sql_factory: UserSqlFactory, client: TestClient) -> None
     assert len(result["items"]) == number_of_user
 
 
-def test_get_user(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
+def test_get_user(
+    user_factory: UserBaseFactory,
+    post_factory: PostBaseFactory,
+    client: TestClient,
+) -> None:
     # Arrange
-    user = user_sql_factory.create_one()
+    user = user_factory.create_one()
+    posts = post_factory.create_many(3, author_id=user.id)
 
     # Act
     response = client.get(f"/users/{user.id}")
@@ -37,18 +40,17 @@ def test_get_user(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
     assert result["id"] == str(user.id)
     assert result["username"] == user.username
     assert result["email"] == user.email
-    assert result["posts"] == []
+    assert [post["id"] for post in result["posts"]] == [str(post.id) for post in posts]
 
 
-def test_get_user_not_found(client: TestClient) -> None:
+def test_get_user_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
     # Act
-    fake_id = uuid.uuid4()
-    response = client.get(f"/users/{fake_id}")
+    response = client.get(f"/users/{fake_entity_id}")
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
     result = response.json()
-    assert result == {"detail": f"User '{fake_id}' not found."}
+    assert result == {"detail": f"User '{fake_entity_id}' not found."}
 
 
 def test_create_user(client: TestClient) -> None:
@@ -64,10 +66,10 @@ def test_create_user(client: TestClient) -> None:
 
 
 def test_create_user_already_exists(
-    client: TestClient, user_sql_factory: UserSqlFactory
+    client: TestClient, user_factory: UserBaseFactory
 ) -> None:
     # Arrange
-    user = user_sql_factory.create_one()
+    user = user_factory.create_one()
 
     # Act
     data = {"username": user.username, "email": user.email}
@@ -80,13 +82,13 @@ def test_create_user_already_exists(
 
 
 def test_update_user(
-    user_sql_factory: UserSqlFactory,
-    post_sql_factory: PostSqlFactory,
+    user_factory: UserBaseFactory,
+    post_factory: PostBaseFactory,
     client: TestClient,
 ) -> None:
     # Arrange
-    user = user_sql_factory.create_one()
-    posts = post_sql_factory.create_many(3, author_id=user.id)
+    user = user_factory.create_one()
+    posts = post_factory.create_many(3, author_id=user.id)
 
     # Act
     data = {"username": "User Updated"}
@@ -101,20 +103,19 @@ def test_update_user(
     assert [post["id"] for post in result["posts"]] == [str(post.id) for post in posts]
 
 
-def test_update_user_not_found(client: TestClient) -> None:
+def test_update_user_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
     # Act
-    fake_id = uuid.uuid4()
     data = {"username": "User Updated"}
-    response = client.patch(f"/users/{fake_id}", json=data)
+    response = client.patch(f"/users/{fake_entity_id}", json=data)
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert response.json() == {"detail": f"User '{fake_id}' not found"}
+    assert response.json() == {"detail": f"User '{fake_entity_id}' not found"}
 
 
-def test_delete_user(user_sql_factory: UserSqlFactory, client: TestClient) -> None:
+def test_delete_user(user_factory: UserBaseFactory, client: TestClient) -> None:
     # Arrange
-    user = user_sql_factory.create_one()
+    user = user_factory.create_one()
 
     # Act
     response = client.delete(f"/users/{user.id}")
@@ -127,11 +128,10 @@ def test_delete_user(user_sql_factory: UserSqlFactory, client: TestClient) -> No
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_delete_user_not_found(client: TestClient) -> None:
+def test_delete_user_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
     # Act
-    fake_id = uuid.uuid4()
-    response = client.delete(f"/users/{fake_id}")
+    response = client.delete(f"/users/{fake_entity_id}")
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert response.json() == {"detail": f"User '{fake_id}' not found"}
+    assert response.json() == {"detail": f"User '{fake_entity_id}' not found"}
