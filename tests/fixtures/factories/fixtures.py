@@ -1,3 +1,5 @@
+from typing import cast
+
 import pytest
 from pymongo.database import Database
 from sqlalchemy.orm import Session
@@ -24,15 +26,16 @@ def user_mongo_factory(mongo_db: Database[MongoDocument]) -> UserMongoFactory:
 
 @pytest.fixture
 def user_factory(
+    request: pytest.FixtureRequest,
     settings: Settings,
-    user_sql_factory: UserSqlFactory,
-    user_mongo_factory: UserMongoFactory,
 ) -> UserBaseFactory:
     match settings.database_type:
         case DatabaseType.SQL:
-            return user_sql_factory
+            user_sql_factory = request.getfixturevalue("user_sql_factory")
+            return cast(UserBaseFactory, user_sql_factory)
         case DatabaseType.MONGO:
-            return user_mongo_factory
+            user_mongo_factory = request.getfixturevalue("user_mongo_factory")
+            return cast(UserBaseFactory, user_mongo_factory)
 
 
 @pytest.fixture
@@ -55,19 +58,13 @@ def post_mongo_factory(
 
 @pytest.fixture
 def post_factory(
+    request: pytest.FixtureRequest,
     settings: Settings,
-    post_sql_factory: PostSqlFactory,
-    post_mongo_factory: PostMongoFactory,
 ) -> PostBaseFactory:
     match settings.database_type:
         case DatabaseType.SQL:
-            return post_sql_factory
+            post_sql_factory = request.getfixturevalue("post_sql_factory")
+            return cast(PostBaseFactory, post_sql_factory)
         case DatabaseType.MONGO:
-            return post_mongo_factory
-
-
-# @pytest.fixture
-# def generic_entity_mongo_factory(
-#     mongo_db: Database[MongoDocument],
-# ) -> GenericEntityMongoFactory:
-#     return GenericEntityMongoFactory(collection=mongo_db["generics"])
+            post_mongo_factory = request.getfixturevalue("post_mongo_factory")
+            return cast(PostBaseFactory, post_mongo_factory)

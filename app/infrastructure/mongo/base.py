@@ -18,6 +18,7 @@ class BaseMongoRepository(
 ):
     domain_model: type[Domain_T]
     collection_name: str
+    searchable_fields: tuple[str, ...]
 
     def __init__(self, database: Database[MongoDocument]):
         self.database = database
@@ -31,7 +32,7 @@ class BaseMongoRepository(
         pagination = pagination or Pagination()
         skip = (pagination.page - 1) * pagination.limit
 
-        pipeline = self._aggregation_pipeline()
+        pipeline = self._search_pipeline(search) + self._aggregation_pipeline()
 
         count_pipeline = [*pipeline, {"$count": "total"}]
         count_result = list(self.collection.aggregate(count_pipeline))
@@ -91,6 +92,16 @@ class BaseMongoRepository(
     @staticmethod
     def _to_database_entity(entity: Domain_T, /) -> MongoDocument:
         return entity.model_dump(exclude={"id"})
+
+    def _search_pipeline(self, search: str | None) -> list[MongoDocument]:
+        if not search:
+            return []
+
+        conditions = [
+            {field: {"$regex": search, "$options": "i"}}
+            for field in self.searchable_fields
+        ]
+        return [{"$match": {"$or": conditions}}]
 
     @staticmethod
     def _aggregation_pipeline() -> list[MongoDocument]:
