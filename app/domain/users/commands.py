@@ -34,9 +34,9 @@ def get_user_command(context: ContextProtocol, user_id: EntityId) -> User:
 
 
 def get_users_command(
-    context: ContextProtocol, pagination: Pagination
+    context: ContextProtocol, pagination: Pagination, search: str | None = None
 ) -> PaginatedResponse[User]:
-    return context.user_repository.get_all(pagination=pagination)
+    return context.user_repository.get_all(pagination=pagination, search=search)
 
 
 def update_user_command(

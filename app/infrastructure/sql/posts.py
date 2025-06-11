@@ -9,6 +9,7 @@ from app.infrastructure.sql.models import OrmPost, OrmTag
 class PostSqlRepository(BaseSqlRepository[Post, OrmPost], PostRepositoryProtocol):
     domain_model = Post
     orm_model = OrmPost
+    searchable_fields = (OrmPost.title, OrmPost.content)
 
     def update(self, entity: Post, /) -> Post:
         assert entity.id is not None

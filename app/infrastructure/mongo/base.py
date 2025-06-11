@@ -24,7 +24,9 @@ class BaseMongoRepository(
         self.collection = self.database[self.collection_name]
 
     def get_all(
-        self, pagination: Pagination | None = None
+        self,
+        pagination: Pagination | None = None,
+        search: str | None = None,
     ) -> PaginatedResponse[Domain_T]:
         pagination = pagination or Pagination()
         skip = (pagination.page - 1) * pagination.limit

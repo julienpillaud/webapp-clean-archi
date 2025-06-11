@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar
 
-from sqlalchemy import Select, delete, func, select
-from sqlalchemy.orm import Session
+from sqlalchemy import Select, delete, func, or_, select
+from sqlalchemy.orm import InstrumentedAttribute, Session
 
 from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
@@ -14,18 +14,21 @@ Orm_T = TypeVar("Orm_T", bound=OrmBase)
 class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_T]):
     domain_model: type[Domain_T]
     orm_model: type[Orm_T]
+    searchable_fields: tuple[InstrumentedAttribute[str], ...]
 
     def __init__(self, session: Session):
         self.session = session
 
     def get_all(
-        self, pagination: Pagination | None = None
+        self,
+        pagination: Pagination | None = None,
+        search: str | None = None,
     ) -> PaginatedResponse[Domain_T]:
-        count_stmt = select(func.count()).select_from(self.orm_model)
-        total = self.session.scalar(count_stmt) or 0
-
         pagination = pagination or Pagination()
+
         stmt = select(self.orm_model)
+        stmt = self._apply_search(stmt=stmt, search=search)
+        total = self._total_count(stmt=stmt)
         stmt = self._apply_pagination(stmt=stmt, pagination=pagination)
 
         orm_entities = self.session.scalars(stmt)
@@ -72,6 +75,19 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
 
     def _to_database_entity(self, entity: Domain_T, /) -> Orm_T:
         return self.orm_model(**entity.model_dump())
+
+    def _apply_search(
+        self, stmt: Select[tuple[Orm_T]], search: str | None
+    ) -> Select[tuple[Orm_T]]:
+        if not search:
+            return stmt
+
+        conditions = [field.ilike(f"%{search}%") for field in self.searchable_fields]
+        return stmt.where(or_(*conditions))
+
+    def _total_count(self, stmt: Select[tuple[Orm_T]]) -> int:
+        count_stmt = stmt.with_only_columns(func.count()).select_from(self.orm_model)
+        return self.session.scalar(count_stmt) or 0
 
     @staticmethod
     def _apply_pagination(
