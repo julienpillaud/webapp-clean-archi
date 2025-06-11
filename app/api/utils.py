@@ -7,10 +7,11 @@ from app.domain.entities import Pagination
 T = TypeVar("T", bound=BaseModel)
 
 
-class FilterParams(Pagination):
+class BaseQuery(Pagination):
     search: str | None = None
 
-    def to_pagination(self) -> Pagination:
+    @property
+    def pagination(self) -> Pagination:
         return Pagination(page=self.page, limit=self.limit)
 
 

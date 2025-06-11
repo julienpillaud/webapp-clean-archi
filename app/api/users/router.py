@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from app.api.dependencies import get_domain
 from app.api.users.dtos import UserCreateDTO, UserDTO, UserUpdateDTO
-from app.api.utils import FilterParams, PaginatedResponseDTO
+from app.api.utils import BaseQuery, PaginatedResponseDTO
 from app.domain.domain import Domain
 from app.domain.entities import EntityId
 
@@ -14,9 +14,9 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("", response_model=PaginatedResponseDTO[UserDTO])
 def get_users(
     domain: Annotated[Domain, Depends(get_domain)],
-    filters: Annotated[FilterParams, Query()],
+    query: Annotated[BaseQuery, Query()],
 ) -> Any:
-    return domain.get_users(pagination=filters.to_pagination(), search=filters.search)
+    return domain.get_users(pagination=query.pagination, search=query.search)
 
 
 @router.get("/{user_id}", response_model=UserDTO)
