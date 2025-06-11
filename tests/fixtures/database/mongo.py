@@ -18,3 +18,8 @@ def mongo_db(settings: Settings) -> Iterator[Database[MongoDocument]]:
     for collection in database.list_collection_names():
         database[collection].delete_many({})
     client.close()
+
+
+@pytest.fixture(autouse=True)
+def mongo_teext_indexes(mongo_db: Database[MongoDocument]) -> None:
+    mongo_db["posts"].create_index([("title", "text"), ("content", "text")])

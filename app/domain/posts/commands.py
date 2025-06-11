@@ -35,9 +35,9 @@ def get_post_command(context: ContextProtocol, post_id: EntityId) -> Post:
 
 
 def get_posts_command(
-    context: ContextProtocol, pagination: Pagination
+    context: ContextProtocol, pagination: Pagination, search: str | None = None
 ) -> PaginatedResponse[Post]:
-    return context.post_repository.get_all(pagination=pagination)
+    return context.post_repository.get_all(pagination=pagination, search=search)
 
 
 def update_post_command(

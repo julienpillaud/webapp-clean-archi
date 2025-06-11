@@ -9,6 +9,7 @@ class PostMongoRepository(
 ):
     domain_model = Post
     collection_name = "posts"
+    searchable_fields = ("title", "content")
 
     def _to_domain_entity(self, document: MongoDocument, /) -> Post:
         # Override to convert ObjectId 'author_id' to string

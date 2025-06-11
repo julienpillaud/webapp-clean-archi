@@ -7,9 +7,12 @@ from app.domain.entities import Pagination
 T = TypeVar("T", bound=BaseModel)
 
 
-class PaginationDTO(Pagination):
-    def to_domain(self) -> Pagination:
-        return Pagination.model_validate(self)
+class BaseQuery(Pagination):
+    search: str | None = None
+
+    @property
+    def pagination(self) -> Pagination:
+        return Pagination(page=self.page, limit=self.limit)
 
 
 class PaginatedResponseDTO(BaseModel, Generic[T]):
