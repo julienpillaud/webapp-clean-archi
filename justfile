@@ -37,3 +37,6 @@ coverage source="app":
 
 run:
     uv run uvicorn app.core.app:app --reload --log-config app/core/logging/config.json
+
+cli *options="":
+    uv run python -m app.cli.main {{options}}

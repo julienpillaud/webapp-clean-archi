@@ -1,3 +1,4 @@
+import logging
 from typing import Generic, TypeVar
 
 from sqlalchemy import Select, delete, func, or_, select
@@ -6,6 +7,8 @@ from sqlalchemy.orm import InstrumentedAttribute, Session
 from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
 from app.infrastructure.sql.models import OrmBase
+
+logger = logging.getLogger(__name__)
 
 Domain_T = TypeVar("Domain_T", bound=DomainModel)
 Orm_T = TypeVar("Orm_T", bound=OrmBase)
@@ -17,6 +20,7 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
     searchable_fields: tuple[InstrumentedAttribute[str], ...]
 
     def __init__(self, session: Session):
+        logger.debug(f"Instantiate '{self.__class__.__name__}'")
         self.session = session
 
     def get_all(
