@@ -5,6 +5,7 @@ import typer
 from pydantic import ValidationError
 from rich import print
 
+from app.cli.utils import print_result
 from app.domain.entities import EntityId, Pagination
 from app.domain.users.entities import UserCreate
 
@@ -29,7 +30,8 @@ def parse_entity_id(value: str) -> EntityId:
 @app.command()
 def get_all(ctx: typer.Context) -> None:
     domain = ctx.obj["domain"]
-    domain.get_users(Pagination())
+    users = domain.get_users(Pagination())
+    print_result(result=users, title="Users")
 
 
 @app.command()
@@ -39,10 +41,7 @@ def get(
 ) -> None:
     domain = ctx.obj["domain"]
     user = domain.get_user(user_id)
-    if user:
-        print(f"[green]{user}[/green]")
-    else:
-        print("[red]User not found[/red]")
+    print_result(result=user, title="User")
 
 
 @app.command()
@@ -52,4 +51,4 @@ def create(
 ) -> None:
     domain = ctx.obj["domain"]
     user = domain.create_user(data)
-    print(f"[green]User created: {user}[/green]")
+    print_result(result=user, title="User created", border_style="green")
