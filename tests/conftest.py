@@ -9,7 +9,7 @@ from starlette.testclient import TestClient
 
 from app.api.app import create_app
 from app.core.config import DatabaseType, Settings
-from app.core.context.utils import initialize_context
+from app.core.context.sql import SqlContext
 from app.domain.entities import EntityId
 
 pytest_plugins = [
@@ -24,7 +24,7 @@ project_dir = Path(__file__).parents[1]
 @pytest.fixture(scope="session")
 def settings() -> Settings:
     settings_ = Settings(_env_file=project_dir / ".env.test")
-    initialize_context(settings=settings_)
+    SqlContext.initialize(settings=settings_)
     return settings_
 
 

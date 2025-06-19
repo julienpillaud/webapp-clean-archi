@@ -1,7 +1,7 @@
 from app.api.app import create_app
 from app.core.config import Settings
-from app.core.context.utils import initialize_context
+from app.core.context.sql import SqlContext
 
 settings = Settings(_env_file=".env")
-initialize_context(settings=settings)
+SqlContext.initialize(settings=settings)
 app = create_app(settings=settings)

@@ -4,8 +4,7 @@ from contextlib import contextmanager
 from pymongo import MongoClient
 from pymongo.database import Database
 
-from app.core.config import DatabaseType, Settings
-from app.core.context.utils import register_context
+from app.core.config import Settings
 from app.domain.domain import TransactionalContextProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
@@ -14,7 +13,6 @@ from app.infrastructure.mongo.posts import PostMongoRepository
 from app.infrastructure.mongo.users import UserMongoRepository
 
 
-@register_context(DatabaseType.MONGO)
 class MongoContext(TransactionalContextProtocol):
     client: MongoClient[MongoDocument] | None = None
     _database: Database[MongoDocument] | None = None
