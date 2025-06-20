@@ -3,13 +3,17 @@ from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 
 import pytest
+import typer
 from bson import ObjectId
 from httpx import ASGITransport, AsyncClient
 from starlette.testclient import TestClient
+from typer.testing import CliRunner
 
 from app.api.app import create_app
+from app.cli.app import create_cli_app
 from app.core.config import DatabaseType, Settings
 from app.core.context.sql import SqlContext
+from app.domain.domain import Domain
 from app.domain.entities import EntityId
 
 pytest_plugins = [
@@ -57,3 +61,15 @@ async def client_async(settings: Settings) -> AsyncIterator[AsyncClient]:
         base_url="http://test",
     ) as client:
         yield client
+
+
+@pytest.fixture
+def cli_runner() -> CliRunner:
+    return CliRunner()
+
+
+@pytest.fixture
+def cli_app(settings: Settings) -> typer.Typer:
+    context = SqlContext()
+    domain = Domain(context=context)
+    return create_cli_app(domain=domain)

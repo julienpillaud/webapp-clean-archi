@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115",
     "pydantic-settings>=2.8",
+    "typer>=0.16",
     "uvicorn>=0.34",
 ]
 
@@ -51,6 +52,7 @@ ignore = [
     "PLR0913",  # Too many arguments in function definition (6 > 5)
     "PLC0414",  # Import alias does not rename original package
     "UP046",  # non-pep695-generic-class
+    "UP047",  # non-pep695-generic-function
 ]
 
 [tool.mypy]
