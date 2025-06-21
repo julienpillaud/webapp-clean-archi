@@ -11,6 +11,7 @@ dependencies = [
 
 [project.optional-dependencies]
 sql = [
+    "alembic>=1.16",
     "psycopg[binary]>=3.2",
     "sqlalchemy>=2.0",
 ]
@@ -25,12 +26,8 @@ dev = [
     "httpx>=0.28",
     "mypy>=1.15",
     "pre-commit>=4.1",
-    "psycopg[binary]>=3.2",
-    "pymongo>=4.13",
     "pytest>=8.4",
     "ruff==0.12.0",
-    "sqlalchemy>=2.0",
-    "ty>=0.0",
     "watchfiles>=1.0",
 ]
 

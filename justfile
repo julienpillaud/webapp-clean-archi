@@ -2,7 +2,7 @@ default:
     just --list
 
 init:
-    uv sync
+    uv sync --all-extras
     uv run pre-commit install
 
 db-postgres container_name port env_file:
