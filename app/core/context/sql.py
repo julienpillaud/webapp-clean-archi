@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+import logfire
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -20,6 +21,7 @@ class SqlContext(TransactionalContextProtocol):
     def initialize(cls, settings: Settings) -> None:
         engine = create_engine(str(settings.sqlalchemy_uri))
         cls._session_factory = sessionmaker(bind=engine)
+        logfire.instrument_sqlalchemy(engine=engine)
 
     @contextmanager
     def transaction(self) -> Iterator[None]:

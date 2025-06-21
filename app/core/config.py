@@ -31,7 +31,9 @@ class Settings(BaseSettings):
 
     project_name: str
     api_version: str
+    environment: str = "development"
     database_type: DatabaseType
+    logfire_token: str = ""
 
     postgres_user: str = ""
     postgres_password: str = ""

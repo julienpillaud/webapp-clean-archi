@@ -4,7 +4,8 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115",
-    "pydantic-settings>=2.8",
+    "logfire[fastapi,sqlalchemy]>=3.21.1",
+    "pydantic-settings>=2.10",
     "typer>=0.16",
     "uvicorn>=0.34",
 ]
