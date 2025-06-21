@@ -33,6 +33,9 @@ dev = [
 
 [tool.ruff]
 output-format = "concise"
+extend-exclude = [
+    "app/alembic",
+]
 
 [tool.ruff.lint]
 select = [
@@ -55,6 +58,9 @@ ignore = [
 [tool.mypy]
 strict = true
 plugins = ['pydantic.mypy']
+exclude = [
+    "app/alembic",
+]
 
 [tool.pytest.ini_options]
 testpaths = [
