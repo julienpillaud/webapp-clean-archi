@@ -1,6 +1,7 @@
 default:
     just --list
 
+# Run the application
 init:
     uv sync --all-extras
     uv run pre-commit install
@@ -19,6 +20,16 @@ postgres-dev port="5433" env_file=".env":
 postgres-test port="5432" env_file=".env.test":
     just db-postgres webapp-clean-archi-test {{port}} {{env_file}}
 
+migrate:
+    uv run alembic upgrade head
+
+run port="8000":
+    uv run uvicorn app.core.app:app \
+    --port {{port}} \
+    --reload \
+    --log-config app/core/logging/config.json
+
+# Development tools
 pre-commit:
 	uv run pre-commit run --all-files
 
@@ -35,8 +46,6 @@ coverage source="app":
 	uv run coverage report --show-missing
 	uv run coverage html
 
-run:
-    uv run uvicorn app.core.app:app --reload --log-config app/core/logging/config.json
-
+# Command line interface
 cli *options="":
     uv run python -m app.cli.main {{options}}

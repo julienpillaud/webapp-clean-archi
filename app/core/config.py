@@ -29,10 +29,10 @@ required_fields = {
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore")
 
-    project_name: str
-    api_version: str
+    project_name: str = "webapp-clean-archi"
+    api_version: str = "0.0.1"
     environment: str = "development"
-    database_type: DatabaseType
+    database_type: DatabaseType = DatabaseType.SQL
     logfire_token: str = ""
 
     postgres_user: str = ""

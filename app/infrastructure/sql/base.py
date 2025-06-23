@@ -3,6 +3,7 @@ from typing import Generic, TypeVar
 
 from sqlalchemy import Select, delete, func, or_, select
 from sqlalchemy.orm import InstrumentedAttribute, Session
+from sqlalchemy.orm.interfaces import ORMOption
 
 from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
@@ -18,6 +19,7 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
     domain_model: type[Domain_T]
     orm_model: type[Orm_T]
     searchable_fields: tuple[InstrumentedAttribute[str], ...]
+    select_options: tuple[ORMOption, ...] = ()
 
     def __init__(self, session: Session):
         logger.debug(f"Instantiate '{self.__class__.__name__}'")
@@ -31,6 +33,9 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
         pagination = pagination or Pagination()
 
         stmt = select(self.orm_model)
+        if self.select_options:
+            stmt = stmt.options(*self.select_options)
+
         stmt = self._apply_search(stmt=stmt, search=search)
         total = self._total_count(stmt=stmt)
         stmt = self._apply_pagination(stmt=stmt, pagination=pagination)

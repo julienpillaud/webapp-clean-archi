@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.domain.posts.entities import Post, TagName
 from app.domain.posts.repository import PostRepositoryProtocol
@@ -10,6 +11,7 @@ class PostSqlRepository(BaseSqlRepository[Post, OrmPost], PostRepositoryProtocol
     domain_model = Post
     orm_model = OrmPost
     searchable_fields = (OrmPost.title, OrmPost.content)
+    select_options = (selectinload(OrmPost.tags),)
 
     def update(self, entity: Post, /) -> Post:
         assert entity.id is not None
