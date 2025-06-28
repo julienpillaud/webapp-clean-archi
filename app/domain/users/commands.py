@@ -1,8 +1,22 @@
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from app.domain.context import ContextProtocol
 from app.domain.entities import EntityId, PaginatedResponse, Pagination
 from app.domain.exceptions import AlreadyExistsError, NotFoundError
 from app.domain.users.entities import User, UserCreate, UserUpdate
+
+
+def authenticate_user_command(
+    context: ContextProtocol, email: str, password: str
+) -> User | None:
+    existing_user = context.user_repository.get_by_email(email=email)
+    if not existing_user:
+        return None
+    if not verify_password(
+        plain_password=password,
+        hashed_password=existing_user.hashed_password,
+    ):
+        return None
+    return existing_user
 
 
 def create_user_command(context: ContextProtocol, data: UserCreate) -> User:

@@ -17,6 +17,11 @@ class DomainModel(BaseModel):
     id: EntityId | None
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class Pagination(BaseModel):
     page: PositiveInt = 1
     limit: PositiveInt = DEFAULT_PAGINATION_LIMIT
