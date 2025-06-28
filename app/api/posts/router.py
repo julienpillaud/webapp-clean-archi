@@ -3,10 +3,11 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.dependencies import get_domain
-from app.api.posts.dtos import PostCreateDTO, PostDTO, PostUpdateDTO
+from app.api.posts.dtos import PostDTO
 from app.api.utils import BaseQuery, PaginatedResponseDTO
 from app.domain.domain import Domain
 from app.domain.entities import EntityId
+from app.domain.posts.entities import PostCreate, PostUpdate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -30,18 +31,18 @@ def get_post(
 @router.post("", response_model=PostDTO, status_code=status.HTTP_201_CREATED)
 def create_post(
     domain: Annotated[Domain, Depends(get_domain)],
-    data: PostCreateDTO,
+    data: PostCreate,
 ) -> Any:
-    return domain.create_post(data=data.to_domain())
+    return domain.create_post(data=data)
 
 
 @router.patch("/{post_id}", response_model=PostDTO)
 def update_post(
     domain: Annotated[Domain, Depends(get_domain)],
     post_id: EntityId,
-    data: PostUpdateDTO,
+    data: PostUpdate,
 ) -> Any:
-    return domain.update_post(post_id=post_id, data=data.to_domain())
+    return domain.update_post(post_id=post_id, data=data)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
