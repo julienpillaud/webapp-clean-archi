@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     api_version: str = "0.0.1"
     environment: str = "development"
     database_type: DatabaseType = DatabaseType.SQL
+
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    secret_key: str
     logfire_token: str = ""
 
     postgres_user: str = ""
