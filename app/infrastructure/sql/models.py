@@ -23,8 +23,9 @@ post_tag = Table(
 class OrmUser(OrmBase):
     __tablename__ = "user"
 
-    username: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
+    username: Mapped[str]
+    hashed_password: Mapped[str]
 
     posts: Mapped[list["OrmPost"]] = relationship(cascade="all, delete-orphan")
 

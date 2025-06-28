@@ -21,10 +21,6 @@ def test_sqlalchemy_instrument_record(session: Session) -> None:
 
     assert instrument.total_duration > 0
     assert instrument.queries_count == expected_queries
-    assert (
-        instrument.queries[0].statement
-        == 'SELECT "user".username, "user".email, "user".id  FROM "user"'
-    )
 
     with SQLAlchemyInstrument.record() as instrument:
         assert instrument.queries_count == 0

@@ -13,7 +13,8 @@ class UserBaseFactory(BaseFactory[User]):
     def _build_entity(self, **kwargs: Any) -> User:
         return User(
             id=None,
-            username=kwargs.get("username", self.faker.user_name()),
             email=kwargs.get("email", self.faker.unique.email()),
+            username=kwargs.get("username", self.faker.user_name()),
+            hashed_password=kwargs.get("hashed_password", self.faker.password()),
             posts=[],
         )

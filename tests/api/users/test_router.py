@@ -55,7 +55,11 @@ def test_get_user_not_found(fake_entity_id: EntityId, client: TestClient) -> Non
 
 def test_create_user(client: TestClient) -> None:
     # Act
-    data = {"username": "User", "email": "user@mail.com"}
+    data = {
+        "email": "user@mail.com",
+        "password": "password",
+        "username": "User",
+    }
     response = client.post("/users", json=data)
 
     # Assert
@@ -72,7 +76,11 @@ def test_create_user_already_exists(
     user = user_factory.create_one()
 
     # Act
-    data = {"username": user.username, "email": user.email}
+    data = {
+        "username": user.username,
+        "password": "password",
+        "email": user.email,
+    }
     response = client.post("/users", json=data)
 
     # Assert

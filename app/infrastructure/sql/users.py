@@ -34,9 +34,10 @@ class UserSqlRepository(BaseSqlRepository[User, OrmUser], UserRepositoryProtocol
 
     def _to_domain_entity(self, orm_entity: OrmUser) -> User:
         return User(
-            username=orm_entity.username,
             id=orm_entity.id,
             email=orm_entity.email,
+            username=orm_entity.username,
+            hashed_password=orm_entity.hashed_password,
             posts=[
                 Post(
                     id=post.id,

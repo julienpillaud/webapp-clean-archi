@@ -52,7 +52,9 @@ def test_get_user_invalid_user_id(cli_app: typer.Typer, cli_runner: CliRunner) -
 
 def test_create_user(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
-    user_data = '{"username": "Test User", "email": "user@mail.com"}'
+    user_data = (
+        '{"email": "user@mail.com", "password": "password", "username": "Test User"}'
+    )
     result = cli_runner.invoke(cli_app, ["users", "create", user_data])
 
     # Assert
@@ -67,7 +69,11 @@ def test_create_user_already_exists(
     user = user_factory.create_one()
 
     # Act
-    data = f'{{"username": "{user.username}", "email": "{user.email}"}}'
+    data = (
+        f'{{"email": "{user.email}", '
+        f'"password": "password", '
+        f'"username": "{user.username}"}}'
+    )
     result = cli_runner.invoke(cli_app, ["users", "create", data])
 
     # Assert

@@ -14,6 +14,7 @@ class UserSqlFactory(SqlBaseFactory[User, OrmUser], UserBaseFactory):
     def _to_database_entity(self, entity: User) -> OrmUser:
         return OrmUser(
             id=entity.id,
-            username=entity.username,
             email=entity.email,
+            username=entity.username,
+            hashed_password=entity.hashed_password,
         )

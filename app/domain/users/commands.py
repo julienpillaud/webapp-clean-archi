@@ -1,3 +1,4 @@
+from app.core.security import get_password_hash
 from app.domain.context import ContextProtocol
 from app.domain.entities import EntityId, PaginatedResponse, Pagination
 from app.domain.exceptions import AlreadyExistsError, NotFoundError
@@ -11,8 +12,9 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
 
     user = User(
         id=None,
-        username=data.username,
         email=data.email,
+        username=data.username,
+        hashed_password=get_password_hash(data.password),
         posts=[],
     )
     return context.user_repository.create(user)

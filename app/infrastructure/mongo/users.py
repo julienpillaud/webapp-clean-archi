@@ -15,8 +15,9 @@ class UserMongoRepository(BaseMongoRepository[User], UserRepositoryProtocol):
     def _to_domain_entity(self, document: MongoDocument, /) -> User:
         return User(
             id=str(document["_id"]),
-            username=document["username"],
             email=document["email"],
+            username=document["username"],
+            hashed_password=document["hashed_password"],
             posts=[
                 Post(
                     id=str(post["_id"]),
