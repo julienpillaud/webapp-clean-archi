@@ -5,11 +5,12 @@ from pathlib import Path
 import pytest
 import typer
 from bson import ObjectId
+from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
-from starlette.testclient import TestClient
 from typer.testing import CliRunner
 
 from app.api.app import create_app
+from app.api.dependencies import get_settings
 from app.cli.app import create_cli_app
 from app.core.config import DatabaseType, Settings
 from app.core.context.sql import SqlContext
@@ -43,7 +44,11 @@ def fake_entity_id(settings: Settings) -> EntityId:
 
 @pytest.fixture(scope="session")
 def client(settings: Settings) -> Iterator[TestClient]:
+    def get_settings_override() -> Settings:
+        return Settings(_env_file=project_dir / ".env.test")
+
     app = create_app(settings=settings)
+    app.dependency_overrides[get_settings] = get_settings_override
     yield TestClient(app)
 
 
