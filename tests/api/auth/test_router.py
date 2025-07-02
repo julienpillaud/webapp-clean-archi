@@ -7,7 +7,7 @@ from tests.fixtures.factories.users.base import UserBaseFactory
 def test_get_access_token(user_factory: UserBaseFactory, client: TestClient) -> None:
     # Arrange
     password = "password"
-    user = user_factory.create_one(password=password)
+    user = user_factory.create_one(password=password, hash_password=True)
 
     # Act
     data = {"username": user.email, "password": password}
@@ -34,7 +34,7 @@ def test_get_access_token_invalid_username(
     # Assert
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     result = response.json()
-    assert result["detail"] == "Incorrect username or password"
+    assert result["detail"] == "Incorrect username or password."
 
 
 def test_get_access_token_invalid_password(
@@ -42,7 +42,7 @@ def test_get_access_token_invalid_password(
 ) -> None:
     # Arrange
     password = "password"
-    user = user_factory.create_one(password=password)
+    user = user_factory.create_one(password=password, hash_password=True)
 
     # Act
     data = {"username": user.email, "password": "invalid"}
@@ -51,4 +51,4 @@ def test_get_access_token_invalid_password(
     # Assert
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     result = response.json()
-    assert result["detail"] == "Incorrect username or password"
+    assert result["detail"] == "Incorrect username or password."

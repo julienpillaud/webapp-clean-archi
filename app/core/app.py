@@ -1,10 +1,15 @@
+import logging
+
 import logfire
 
 from app.api.app import create_app
-from app.api.dependencies import get_settings
+from app.core.config import Settings
 from app.core.context.sql import SqlContext
 
-settings = get_settings(env_file=".env")
+logger = logging.getLogger(__name__)
+
+settings = Settings()
+logger.info(f"Loading settings for {settings.environment} environment")
 logfire.configure(
     send_to_logfire="if-token-present",
     token=settings.logfire_token,

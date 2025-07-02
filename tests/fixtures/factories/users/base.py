@@ -11,9 +11,11 @@ class UserBaseFactory(BaseFactory[User]):
     def __init__(self) -> None:
         self.faker = Faker()
 
-    def _build_entity(self, **kwargs: Any) -> User:
+    def _build_entity(self, hash_password: bool = False, **kwargs: Any) -> User:
         plain_password = kwargs.get("password", self.faker.password())
-        hashed_password = get_password_hash(plain_password)
+        hashed_password = (
+            get_password_hash(plain_password) if hash_password else "fake-hash"
+        )
 
         return User(
             id=None,

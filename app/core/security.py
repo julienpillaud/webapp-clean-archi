@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 import jwt
 from passlib.context import CryptContext
@@ -17,12 +18,12 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(settings: Settings, subject: str) -> Token:
+def create_access_token(settings: Settings, subject: Any) -> Token:
     expire = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
         minutes=settings.access_token_expire_minutes,
     )
     encoded_jwt = jwt.encode(
-        payload={"exp": expire, "sub": subject},
+        payload={"exp": expire, "sub": str(subject)},
         key=settings.secret_key,
         algorithm=settings.jwt_algorithm,
     )
