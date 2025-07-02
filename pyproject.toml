@@ -9,6 +9,7 @@ dependencies = [
     "pydantic-settings>=2.10",
     "pydantic[email]>=2.11",
     "pyjwt>=2.10",
+    "python-multipart>=0.0",
     "typer>=0.16",
     "uvicorn>=0.34",
 ]
