@@ -19,7 +19,7 @@ class MongoContext(TransactionalContextProtocol):
 
     @classmethod
     def initialize(cls, settings: Settings) -> None:
-        cls.client = MongoClient(settings.mongo_uri)
+        cls.client = MongoClient(settings.mongo_uri, uuidRepresentation="standard")
         cls._database = cls.client[settings.mongo_database]
 
     @contextmanager

@@ -1,4 +1,3 @@
-from bson import ObjectId
 from pymongo.collection import Collection
 
 from app.domain.posts.entities import Post
@@ -16,8 +15,3 @@ class PostMongoFactory(MongoBaseFactory[Post], PostBaseFactory):
     ) -> None:
         MongoBaseFactory.__init__(self, collection=collection)
         PostBaseFactory.__init__(self, user_factory=user_factory)
-
-    def _to_database_entity(self, entity: Post, /) -> MongoDocument:
-        db_entity = entity.model_dump(exclude={"id"})
-        db_entity["author_id"] = ObjectId(str(entity.author_id))
-        return db_entity

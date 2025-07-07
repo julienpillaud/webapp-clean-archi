@@ -1,3 +1,5 @@
+import uuid
+
 from app.domain.context import ContextProtocol
 from app.domain.entities import EntityId, PaginatedResponse, Pagination
 from app.domain.exceptions import NotFoundError
@@ -10,7 +12,7 @@ def create_post_command(context: ContextProtocol, data: PostCreate) -> Post:
         raise NotFoundError(f"User '{data.author_id}' not found.")
 
     post = Post(
-        id=None,
+        id=uuid.uuid4(),
         title=data.title,
         content=data.content,
         author_id=author.id,
@@ -31,6 +33,7 @@ def get_post_command(context: ContextProtocol, post_id: EntityId) -> Post:
     post = context.post_repository.get_by_id(post_id)
     if not post:
         raise NotFoundError(f"Post '{post_id}' not found")
+
     return post
 
 

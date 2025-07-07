@@ -12,11 +12,10 @@ class PostMongoRepository(
     searchable_fields = ("title", "content")
 
     def _to_domain_entity(self, document: MongoDocument, /) -> Post:
-        # Override to convert ObjectId 'author_id' to string
         return Post(
-            id=str(document["_id"]),
+            id=document["_id"],
             title=document["title"],
             content=document["content"],
-            author_id=str(document["author_id"]),
+            author_id=document["author_id"],
             tags=document.get("tags", []),
         )

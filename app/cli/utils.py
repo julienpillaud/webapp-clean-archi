@@ -51,12 +51,9 @@ def make_model_parser(model: type[BaseModel]) -> Callable[[str], BaseModel]:
 
 def parse_entity_id(value: str) -> EntityId:
     try:
-        uuid.UUID(value)
-        return value
-    except ValueError:
-        if object_id_pattern.match(value):
-            return value
-    raise typer.BadParameter("Must be UUID or ObjectId.")
+        return uuid.UUID(value)
+    except ValueError as error:
+        raise typer.BadParameter("Must be UUID or ObjectId.") from error
 
 
 def print_result(result: Any, title: str, border_style: str = "none") -> None:

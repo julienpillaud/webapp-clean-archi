@@ -1,7 +1,8 @@
+import uuid
+
 import typer
 from typer.testing import CliRunner
 
-from app.domain.entities import EntityId
 from tests.fixtures.factories.users.base import UserBaseFactory
 
 
@@ -29,11 +30,9 @@ def test_get_user(
     assert f"id=UUID('{user.id}')" in result.output
 
 
-def test_get_user_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_get_user_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
-    result = cli_runner.invoke(cli_app, ["users", "get", str(fake_entity_id)])
+    result = cli_runner.invoke(cli_app, ["users", "get", str(uuid.uuid4())])
 
     # Assert
     assert result.exit_code == 1
@@ -107,12 +106,10 @@ def test_update_user(
     assert "User updated" in result.output
 
 
-def test_update_user_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_update_user_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
     data = '{"username": "User Updated"}'
-    result = cli_runner.invoke(cli_app, ["users", "update", str(fake_entity_id), data])
+    result = cli_runner.invoke(cli_app, ["users", "update", str(uuid.uuid4()), data])
 
     # Assert
     assert result.exit_code == 1
@@ -149,11 +146,9 @@ def test_delete_user(
     assert "User deleted" in result.output
 
 
-def test_delete_user_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_delete_user_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
-    result = cli_runner.invoke(cli_app, ["users", "delete", str(fake_entity_id)])
+    result = cli_runner.invoke(cli_app, ["users", "delete", str(uuid.uuid4())])
 
     # Assert
     assert result.exit_code == 1

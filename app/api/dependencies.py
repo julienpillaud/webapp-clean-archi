@@ -1,3 +1,4 @@
+import uuid
 from functools import lru_cache
 from typing import Annotated
 
@@ -48,7 +49,7 @@ async def get_current_user(
     if user_id is None:
         raise credential_exception
 
-    user = domain.get_user(user_id=user_id)
+    user = domain.get_user(user_id=uuid.UUID(user_id))
     if user is None:
         raise credential_exception
 

@@ -1,3 +1,4 @@
+import uuid
 from typing import Any, TypeVar
 
 from faker import Faker
@@ -26,7 +27,7 @@ class PostBaseFactory(BaseFactory[Post]):
             ]
 
         return Post(
-            id=None,
+            id=uuid.uuid4(),
             title=kwargs.get("title", self.faker.sentence()),
             content=kwargs.get("content", self.faker.text()),
             author_id=author_id,

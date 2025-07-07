@@ -20,8 +20,6 @@ class UserSqlRepository(BaseSqlRepository[User, OrmUser], UserRepositoryProtocol
         return self._to_domain_entity(orm_entity=orm_entity) if orm_entity else None
 
     def update(self, entity: User, /) -> User:
-        assert entity.id is not None
-
         db_entity = self._get_db_entity(entity_id=entity.id)
         if not db_entity:
             raise RuntimeError()
