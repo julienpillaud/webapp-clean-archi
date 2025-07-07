@@ -18,6 +18,7 @@ from app.domain.posts.commands import (
     update_post_command,
 )
 from app.domain.users.commands import (
+    authenticate_user_command,
     create_user_command,
     delete_user_command,
     get_user_command,
@@ -59,6 +60,7 @@ class Domain:
     update_post = CommandHandler(update_post_command)
     delete_post = CommandHandler(delete_post_command)
 
+    authenticate_user = CommandHandler(authenticate_user_command)
     get_users = CommandHandler(get_users_command)
     get_user = CommandHandler(get_user_command)
     create_user = CommandHandler(create_user_command)

@@ -27,12 +27,16 @@ required_fields = {
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     project_name: str = "webapp-clean-archi"
     api_version: str = "0.0.1"
-    environment: str = "development"
+    environment: str
     database_type: DatabaseType = DatabaseType.SQL
+
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    secret_key: str
     logfire_token: str = ""
 
     postgres_user: str = ""
