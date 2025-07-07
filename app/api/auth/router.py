@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -12,12 +12,12 @@ from app.domain.entities import Token
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/access-token")
+@router.post("/access-token", response_model=Token)
 async def get_access_token(
     settings: Annotated[Settings, Depends(get_settings)],
     domain: Annotated[Domain, Depends(get_domain)],
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> Token:
+) -> Any:
     user = domain.authenticate_user(
         email=form_data.username,
         password=form_data.password,
