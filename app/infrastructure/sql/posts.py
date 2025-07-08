@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -34,7 +36,7 @@ class PostSqlRepository(BaseSqlRepository[Post, OrmPost], PostRepositoryProtocol
             stmt = select(OrmTag).where(OrmTag.name == tag_name)
             orm_tag = self.session.scalar(stmt)
             if not orm_tag:
-                orm_tag = OrmTag(name=tag_name)
+                orm_tag = OrmTag(id=uuid.uuid4(), name=tag_name)
                 self.session.add(orm_tag)
 
             orm_entity.tags.append(orm_tag)
@@ -45,7 +47,7 @@ class PostSqlRepository(BaseSqlRepository[Post, OrmPost], PostRepositoryProtocol
             title=entity.title,
             content=entity.content,
             author_id=entity.author_id,
-            tags=[OrmTag(name=tag) for tag in entity.tags],
+            tags=[OrmTag(id=uuid.uuid4(), name=tag) for tag in entity.tags],
         )
 
     def _to_domain_entity(self, orm_entity: OrmPost, /) -> Post:

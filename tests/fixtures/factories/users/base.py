@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from faker import Faker
@@ -18,7 +19,7 @@ class UserBaseFactory(BaseFactory[User]):
         )
 
         return User(
-            id=None,
+            id=uuid.uuid4(),
             email=kwargs.get("email", self.faker.unique.email()),
             username=kwargs.get("username", self.faker.user_name()),
             hashed_password=kwargs.get("hashed_password", hashed_password),

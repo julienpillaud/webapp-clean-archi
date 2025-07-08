@@ -1,7 +1,9 @@
+import uuid
+
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT, EntityId
+from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.fixtures.factories.posts.base import PostBaseFactory
 from tests.fixtures.factories.users.base import UserBaseFactory
 
@@ -39,13 +41,14 @@ def test_get_post(post_factory: PostBaseFactory, client: TestClient) -> None:
     assert result["tags"] == post.tags
 
 
-def test_get_post_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
+def test_get_post_not_found(client: TestClient) -> None:
     # Act
-    response = client.get(f"/posts/{fake_entity_id}")
+    entity_id = uuid.uuid4()
+    response = client.get(f"/posts/{entity_id}")
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert response.json() == {"detail": f"Post '{fake_entity_id}' not found"}
+    assert response.json() == {"detail": f"Post '{entity_id}' not found"}
 
 
 def test_create_post(user_factory: UserBaseFactory, client: TestClient) -> None:
@@ -70,14 +73,12 @@ def test_create_post(user_factory: UserBaseFactory, client: TestClient) -> None:
     assert result["tags"] == data["tags"]
 
 
-def test_create_post_user_not_found(
-    fake_entity_id: EntityId, client: TestClient
-) -> None:
+def test_create_post_user_not_found(client: TestClient) -> None:
     # Act
     data = {
         "title": "Post",
         "content": "Post content",
-        "author_id": fake_entity_id,
+        "author_id": str(uuid.uuid4()),
         "tags": ["python", "fastapi"],
     }
     response = client.post("/posts", json=data)
@@ -167,14 +168,15 @@ def test_update_post_remove_all_tags(
     assert result["tags"] == data["tags"]
 
 
-def test_update_post_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
+def test_update_post_not_found(client: TestClient) -> None:
     # Act
+    entity_id = uuid.uuid4()
     data = {"title": "Post Updated"}
-    response = client.patch(f"/posts/{fake_entity_id}", json=data)
+    response = client.patch(f"/posts/{entity_id}", json=data)
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert response.json() == {"detail": f"Post '{fake_entity_id}' not found"}
+    assert response.json() == {"detail": f"Post '{entity_id}' not found"}
 
 
 def test_delete_post(post_factory: PostBaseFactory, client: TestClient) -> None:
@@ -192,11 +194,12 @@ def test_delete_post(post_factory: PostBaseFactory, client: TestClient) -> None:
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_delete_post_not_found(fake_entity_id: EntityId, client: TestClient) -> None:
+def test_delete_post_not_found(client: TestClient) -> None:
     # Act
-    response = client.delete(f"/posts/{fake_entity_id}")
+    entity_id = uuid.uuid4()
+    response = client.delete(f"/posts/{entity_id}")
 
     # Assert
     assert response.status_code == status.HTTP_404_NOT_FOUND
     result = response.json()
-    assert result == {"detail": f"Post '{fake_entity_id}' not found."}
+    assert result == {"detail": f"Post '{entity_id}' not found."}

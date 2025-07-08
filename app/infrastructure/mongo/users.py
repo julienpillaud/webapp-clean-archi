@@ -14,16 +14,16 @@ class UserMongoRepository(BaseMongoRepository[User], UserRepositoryProtocol):
 
     def _to_domain_entity(self, document: MongoDocument, /) -> User:
         return User(
-            id=str(document["_id"]),
+            id=document["_id"],
             email=document["email"],
             username=document["username"],
             hashed_password=document["hashed_password"],
             posts=[
                 Post(
-                    id=str(post["_id"]),
+                    id=post["_id"],
                     title=post["title"],
                     content=post["content"],
-                    author_id=str(post["author_id"]),
+                    author_id=post["author_id"],
                     tags=post.get("tags", []),
                 )
                 for post in document.get("posts", [])
@@ -32,7 +32,9 @@ class UserMongoRepository(BaseMongoRepository[User], UserRepositoryProtocol):
 
     @staticmethod
     def _to_database_entity(entity: User, /) -> MongoDocument:
-        return entity.model_dump(exclude={"id", "posts"})
+        document = entity.model_dump(exclude={"id", "posts"})
+        document["_id"] = entity.id
+        return document
 
     @staticmethod
     def _aggregation_pipeline() -> list[MongoDocument]:

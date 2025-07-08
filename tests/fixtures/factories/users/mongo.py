@@ -12,4 +12,6 @@ class UserMongoFactory(MongoBaseFactory[User], UserBaseFactory):
         UserBaseFactory.__init__(self)
 
     def _to_database_entity(self, entity: User, /) -> MongoDocument:
-        return entity.model_dump(exclude={"id", "posts"})
+        document = entity.model_dump(exclude={"id", "posts"})
+        document["_id"] = entity.id
+        return document

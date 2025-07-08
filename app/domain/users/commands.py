@@ -1,3 +1,5 @@
+import uuid
+
 from app.core.security import get_password_hash, verify_password
 from app.domain.context import ContextProtocol
 from app.domain.entities import EntityId, PaginatedResponse, Pagination
@@ -25,7 +27,7 @@ def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
         raise AlreadyExistsError(f"User '{data.email}' already exists.")
 
     user = User(
-        id=None,
+        id=uuid.uuid4(),
         email=data.email,
         username=data.username,
         hashed_password=get_password_hash(data.password),
@@ -46,6 +48,7 @@ def get_user_command(context: ContextProtocol, user_id: EntityId) -> User:
     user = context.user_repository.get_by_id(user_id)
     if not user:
         raise NotFoundError(f"User '{user_id}' not found.")
+
     return user
 
 

@@ -59,8 +59,6 @@ class BaseSqlRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T, Orm_
         return self._to_domain_entity(orm_entity)
 
     def update(self, entity: Domain_T, /) -> Domain_T:
-        assert entity.id is not None
-
         db_entity = self._get_db_entity(entity_id=entity.id)
         if not db_entity:
             raise RuntimeError()

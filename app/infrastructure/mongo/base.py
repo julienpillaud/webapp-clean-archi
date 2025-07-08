@@ -1,10 +1,12 @@
+import logging
 from typing import Any, Generic, TypeVar
 
-from bson import ObjectId
 from pymongo.database import Database
 
 from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
+
+logger = logging.getLogger(__name__)
 
 Domain_T = TypeVar("Domain_T", bound=DomainModel)
 
@@ -12,15 +14,13 @@ Domain_T = TypeVar("Domain_T", bound=DomainModel)
 type MongoDocument = dict[str, Any]
 
 
-class BaseMongoRepository(
-    BaseRepositoryProtocol[Domain_T],
-    Generic[Domain_T],
-):
+class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
     domain_model: type[Domain_T]
     collection_name: str
     searchable_fields: tuple[str, ...]
 
     def __init__(self, database: Database[MongoDocument]):
+        logger.debug(f"Instantiate '{self.__class__.__name__}'")
         self.database = database
         self.collection = self.database[self.collection_name]
 
@@ -45,7 +45,7 @@ class BaseMongoRepository(
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
 
     def get_by_id(self, entity_id: EntityId, /) -> Domain_T | None:
-        db_result = self._get_db_entity(ObjectId(str(entity_id)))
+        db_result = self._get_db_entity(entity_id)
 
         return self._to_domain_entity(db_result) if db_result else None
 
@@ -53,6 +53,7 @@ class BaseMongoRepository(
         db_entity = self._to_database_entity(entity)
 
         result = self.collection.insert_one(db_entity)
+
         db_result = self._get_db_entity(result.inserted_id)
         if not db_result:
             raise RuntimeError()
@@ -60,38 +61,35 @@ class BaseMongoRepository(
         return self._to_domain_entity(db_result)
 
     def update(self, entity: Domain_T, /) -> Domain_T:
-        assert entity.id is not None
-        entity_id = ObjectId(str(entity.id))
-
         db_entity = self._to_database_entity(entity)
 
-        self.collection.replace_one({"_id": entity_id}, db_entity)
-        db_result = self._get_db_entity(entity_id)
+        self.collection.replace_one({"_id": entity.id}, db_entity)
+
+        db_result = self._get_db_entity(entity.id)
         if not db_result:
             raise RuntimeError()
 
         return self._to_domain_entity(db_result)
 
     def delete(self, entity: Domain_T, /) -> None:
-        assert entity.id is not None
-        entity_id = ObjectId(str(entity.id))
+        self.collection.delete_one({"_id": entity.id})
 
-        self.collection.delete_one({"_id": entity_id})
-
-    def _get_db_entity(self, entity_id: ObjectId, /) -> MongoDocument | None:
+    def _get_db_entity(self, entity_id: EntityId, /) -> MongoDocument | None:
         pipeline = [
-            {"$match": {"_id": ObjectId(str(entity_id))}},
+            {"$match": {"_id": entity_id}},
             *self._aggregation_pipeline(),
         ]
         return next(self.collection.aggregate(pipeline), None)
 
     def _to_domain_entity(self, document: MongoDocument, /) -> Domain_T:
-        document["id"] = str(document.pop("_id"))
+        document["id"] = document.pop("_id")
         return self.domain_model.model_validate(document)
 
     @staticmethod
     def _to_database_entity(entity: Domain_T, /) -> MongoDocument:
-        return entity.model_dump(exclude={"id"})
+        document = entity.model_dump(exclude={"id"})
+        document["_id"] = entity.id
+        return document
 
     def _search_pipeline(self, search: str | None) -> list[MongoDocument]:
         if not search:

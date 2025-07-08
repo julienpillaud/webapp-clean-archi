@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy.orm import Session
 
 from app.domain.posts.entities import Post
@@ -18,5 +20,5 @@ class PostSqlFactory(SqlBaseFactory[Post, OrmPost], PostBaseFactory):
             title=entity.title,
             content=entity.content,
             author_id=entity.author_id,
-            tags=[OrmTag(name=tag) for tag in entity.tags],
+            tags=[OrmTag(id=uuid.uuid4(), name=tag) for tag in entity.tags],
         )

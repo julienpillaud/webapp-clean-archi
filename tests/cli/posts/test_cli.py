@@ -1,7 +1,8 @@
+import uuid
+
 import typer
 from typer.testing import CliRunner
 
-from app.domain.entities import EntityId
 from tests.fixtures.factories.posts.base import PostBaseFactory
 from tests.fixtures.factories.users.base import UserBaseFactory
 
@@ -30,11 +31,9 @@ def test_get_post(
     assert f"id=UUID('{post.id}')" in result.output
 
 
-def test_get_post_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_get_post_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
-    result = cli_runner.invoke(cli_app, ["posts", "get", str(fake_entity_id)])
+    result = cli_runner.invoke(cli_app, ["posts", "get", str(uuid.uuid4())])
 
     # Assert
     assert result.exit_code == 1
@@ -94,12 +93,10 @@ def test_update_post(
     assert "Post updated" in result.output
 
 
-def test_update_post_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_update_post_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
     data = '{"title": "Update"}'
-    result = cli_runner.invoke(cli_app, ["posts", "update", str(fake_entity_id), data])
+    result = cli_runner.invoke(cli_app, ["posts", "update", str(uuid.uuid4()), data])
 
     # Assert
     assert result.exit_code == 1
@@ -136,11 +133,9 @@ def test_delete_post(
     assert "Post deleted" in result.output
 
 
-def test_delete_post_not_found(
-    fake_entity_id: EntityId, cli_app: typer.Typer, cli_runner: CliRunner
-) -> None:
+def test_delete_post_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
     # Act
-    result = cli_runner.invoke(cli_app, ["posts", "delete", str(fake_entity_id)])
+    result = cli_runner.invoke(cli_app, ["posts", "delete", str(uuid.uuid4())])
 
     # Assert
     assert result.exit_code == 1

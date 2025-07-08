@@ -10,7 +10,9 @@ from app.infrastructure.mongo.base import MongoDocument
 
 @pytest.fixture
 def mongo_db(settings: Settings) -> Iterator[Database[MongoDocument]]:
-    client: MongoClient[MongoDocument] = MongoClient(settings.mongo_uri)
+    client: MongoClient[MongoDocument] = MongoClient(
+        settings.mongo_uri, uuidRepresentation="standard"
+    )
     database: Database[MongoDocument] = client[settings.mongo_database]
 
     yield database
