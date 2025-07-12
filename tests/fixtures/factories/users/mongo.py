@@ -9,7 +9,6 @@ from tests.fixtures.factories.users.base import UserBaseFactory
 class UserMongoFactory(MongoBaseFactory[User], UserBaseFactory):
     def __init__(self, collection: Collection[MongoDocument]) -> None:
         MongoBaseFactory.__init__(self, collection=collection)
-        UserBaseFactory.__init__(self)
 
     def _to_database_entity(self, entity: User, /) -> MongoDocument:
         document = entity.model_dump(exclude={"id", "posts"})

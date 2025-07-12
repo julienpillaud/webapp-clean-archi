@@ -1,14 +1,18 @@
 from typing import Any, Generic, TypeVar
 
+from faker import Faker
+
 from app.domain.entities import DomainModel
 
 T = TypeVar("T", bound=DomainModel)
+
+faker = Faker()
 
 
 class BaseFactory(Generic[T]):
     def create_one(self, **kwargs: Any) -> T:
         entity = self._build_entity(**kwargs)
-        self._insert_many([entity])
+        self._insert_one(entity)
         return entity
 
     def create_many(self, count: int, /, **kwargs: Any) -> list[T]:
