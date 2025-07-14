@@ -1,8 +1,8 @@
+import logging
 from collections.abc import Iterator
 from contextlib import contextmanager
 
 from pymongo import MongoClient
-from pymongo.database import Database
 
 from app.core.config import Settings
 from app.domain.domain import TransactionalContextProtocol
@@ -12,15 +12,17 @@ from app.infrastructure.mongo.base import MongoDocument
 from app.infrastructure.mongo.posts import PostMongoRepository
 from app.infrastructure.mongo.users import UserMongoRepository
 
+logger = logging.getLogger(__name__)
+
 
 class MongoContext(TransactionalContextProtocol):
-    client: MongoClient[MongoDocument] | None = None
-    _database: Database[MongoDocument] | None = None
-
-    @classmethod
-    def initialize(cls, settings: Settings) -> None:
-        cls.client = MongoClient(settings.mongo_uri, uuidRepresentation="standard")
-        cls._database = cls.client[settings.mongo_database]
+    def __init__(self, settings: Settings) -> None:
+        logger.info("Creating Mongo context")
+        self.client: MongoClient[MongoDocument] = MongoClient(
+            settings.mongo_uri,
+            uuidRepresentation="standard",
+        )
+        self.database = self.client[settings.mongo_database]
 
     @contextmanager
     def transaction(self) -> Iterator[None]:
@@ -31,12 +33,6 @@ class MongoContext(TransactionalContextProtocol):
 
     def rollback(self) -> None:
         pass
-
-    @property
-    def database(self) -> Database[MongoDocument]:
-        if self._database is None:
-            raise RuntimeError("Database not initialized.")
-        return self._database
 
     @property
     def post_repository(self) -> PostRepositoryProtocol:

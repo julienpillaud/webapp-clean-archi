@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import Self, assert_never
 
-from pydantic import PostgresDsn, computed_field, model_validator
+from pydantic import PostgresDsn, SecretStr, computed_field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -27,7 +27,7 @@ required_fields = {
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(extra="ignore", frozen=True, env_file=".env")
 
     project_name: str = "webapp-clean-archi"
     api_version: str = "0.0.1"
@@ -39,25 +39,25 @@ class Settings(BaseSettings):
     secret_key: str
     logfire_token: str = ""
 
-    postgres_user: str = ""
-    postgres_password: str = ""
-    postgres_host: str = ""
-    postgres_port: int = 5432
-    postgres_db: str = ""
+    postgres_user: str
+    postgres_password: SecretStr
+    postgres_host: str
+    postgres_port: int
+    postgres_db: str
 
-    mongo_user: str = ""
-    mongo_password: str = ""
-    mongo_host: str = ""
-    mongo_port: int = 27017
-    mongo_database: str = ""
+    mongo_user: str
+    mongo_password: SecretStr
+    mongo_host: str
+    mongo_port: int
+    mongo_database: str
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def sqlalchemy_uri(self) -> PostgresDsn:
+    def postgres_dsn(self) -> PostgresDsn:
         return PostgresDsn.build(
             scheme="postgresql+psycopg",
             username=self.postgres_user,
-            password=self.postgres_password,
+            password=self.postgres_password.get_secret_value(),
             host=self.postgres_host,
             port=self.postgres_port,
             path=self.postgres_db,
@@ -68,12 +68,14 @@ class Settings(BaseSettings):
     def mongo_uri(self) -> str:
         if self.mongo_host == "localhost":
             return (
-                f"mongodb://{self.mongo_user}:{self.mongo_password}"
+                f"mongodb://"
+                f"{self.mongo_user}:{self.mongo_password.get_secret_value()}"
                 f"@{self.mongo_host}:{self.mongo_port}"
             )
         else:
             return (
-                f"mongodb+srv://{self.mongo_user}:{self.mongo_password}"
+                f"mongodb+srv://"
+                f"{self.mongo_user}:{self.mongo_password.get_secret_value()}"
                 f"@{self.mongo_host}/?retryWrites=true&w=majority"
             )
 

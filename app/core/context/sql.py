@@ -1,8 +1,10 @@
+import logging
 from collections.abc import Iterator
 from contextlib import contextmanager
+from functools import lru_cache
 
 import logfire
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
@@ -12,16 +14,23 @@ from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.sql.posts import PostSqlRepository
 from app.infrastructure.sql.users import UserSqlRepository
 
+logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=1)
+def get_engine(settings: Settings) -> Engine:
+    logger.info(f"Creating engine {settings.postgres_dsn}")
+    engine = create_engine(str(settings.postgres_dsn))
+    logfire.instrument_sqlalchemy(engine=engine)
+    return engine
+
 
 class SqlContext(TransactionalContextProtocol):
-    _session_factory: sessionmaker[Session] | None = None
-    _session: Session | None = None
-
-    @classmethod
-    def initialize(cls, settings: Settings) -> None:
-        engine = create_engine(str(settings.sqlalchemy_uri))
-        cls._session_factory = sessionmaker(bind=engine)
-        logfire.instrument_sqlalchemy(engine=engine)
+    def __init__(self, settings: Settings) -> None:
+        logger.info("Creating Sql context")
+        engine = get_engine(settings=settings)
+        self._session_factory = sessionmaker(engine)
+        self._session: Session | None = None
 
     @contextmanager
     def transaction(self) -> Iterator[None]:

@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 
 from app.core.config import Settings
-from app.core.context.utils import get_context
+from app.core.context.sql import SqlContext
 from app.domain.domain import Domain, TransactionalContextProtocol
 from app.domain.users.entities import User
 
@@ -23,6 +23,13 @@ credential_exception = HTTPException(
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
+
+
+@lru_cache(maxsize=1)
+def get_context(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> TransactionalContextProtocol:
+    return SqlContext(settings=settings)
 
 
 def get_domain(
