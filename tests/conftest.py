@@ -10,12 +10,11 @@ from httpx import ASGITransport, AsyncClient
 from typer.testing import CliRunner
 
 from app.api.app import create_app
-from app.api.dependencies import get_settings
+from app.api.dependencies import get_context, get_settings
 from app.cli.app import create_cli_app
 from app.core.config import DatabaseType, Settings
 from app.core.context.mongo import MongoContext
 from app.core.context.sql import SqlContext
-from app.core.context.utils import get_context
 from app.core.security import create_access_token
 from app.domain.domain import Domain, TransactionalContextProtocol
 from tests.fixtures.factories.users.base import UserBaseFactory
@@ -33,33 +32,23 @@ project_dir = Path(__file__).parents[1]
 
 @lru_cache(maxsize=1)
 def get_test_settings() -> Settings:
-    return Settings(_env_file=project_dir / ".env.test")
+    settings_ = Settings(_env_file=project_dir / ".env.test")
+    logger.info(f"Loading settings for ENV {settings_.environment}")
+    return settings_
 
 
 def get_test_context() -> TransactionalContextProtocol:
     settings = get_test_settings()
     match settings.database_type:
         case DatabaseType.SQL:
-            return SqlContext()
+            return SqlContext(settings=settings)
         case DatabaseType.MONGO:
-            return MongoContext()
-
-
-def initialize_context() -> None:
-    settings = get_test_settings()
-    match settings.database_type:
-        case DatabaseType.SQL:
-            SqlContext.initialize(settings=settings)
-        case DatabaseType.MONGO:
-            MongoContext.initialize(settings=settings)
+            return MongoContext(settings=settings)
 
 
 @pytest.fixture(scope="session")
 def settings() -> Settings:
-    settings_ = get_test_settings()
-    logger.info(f"Loading settings for {settings_.environment} environment")
-    initialize_context()
-    return settings_
+    return get_test_settings()
 
 
 @pytest.fixture

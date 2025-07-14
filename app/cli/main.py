@@ -8,8 +8,7 @@ from app.core.context.sql import SqlContext
 from app.domain.domain import Domain
 
 settings = Settings(_env_file=".env")
-SqlContext.initialize(settings=settings)
-context = SqlContext()
+context = SqlContext(settings=settings)
 domain = Domain(context=context)
 
 

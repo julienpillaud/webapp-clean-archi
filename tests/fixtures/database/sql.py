@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="session")
 def engine(settings: Settings) -> Engine:
-    logger.info(f"Create engine {settings.sqlalchemy_uri}")
-    return create_engine(str(settings.sqlalchemy_uri))
+    logger.info(f"Create engine {settings.postgres_dsn}")
+    return create_engine(str(settings.postgres_dsn))
 
 
 @pytest.fixture(scope="session")

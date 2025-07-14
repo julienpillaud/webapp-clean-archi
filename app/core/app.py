@@ -4,12 +4,11 @@ import logfire
 
 from app.api.app import create_app
 from app.core.config import Settings
-from app.core.context.sql import SqlContext
 
 logger = logging.getLogger(__name__)
 
 settings = Settings()
-logger.info(f"Loading settings for {settings.environment} environment")
+logger.info(f"Loading settings for ENV {settings.environment}")
 logfire.configure(
     send_to_logfire="if-token-present",
     token=settings.logfire_token,
@@ -18,7 +17,5 @@ logfire.configure(
     environment=settings.environment,
     console=False,
 )
-SqlContext.initialize(settings=settings)
-
 app = create_app(settings=settings)
 logfire.instrument_fastapi(app)

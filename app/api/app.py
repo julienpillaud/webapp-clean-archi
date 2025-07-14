@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 
 from app.api.auth.router import router as auth_router
@@ -7,8 +9,11 @@ from app.api.posts.router import router as posts_router
 from app.api.users.router import router as users_router
 from app.core.config import Settings
 
+logger = logging.getLogger(__name__)
+
 
 def create_app(settings: Settings) -> FastAPI:
+    logger.info("Creating FastAPI app")
     app = FastAPI(
         title=settings.project_name,
         version=settings.api_version,

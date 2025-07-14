@@ -71,6 +71,7 @@ class Domain:
     unexpected_domain_error = CommandHandler(unexpected_domain_error_command)
 
     def __init__(self, context: TransactionalContextProtocol):
+        logger.info("Instantiate Domain")
         self.context = context
 
     def command_handler(
