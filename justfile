@@ -37,6 +37,15 @@ mongo-test port="27017" env_file=".env.test":
 migrate:
     uv run alembic upgrade head
 
+rabbitmq port="5672" env_file=".env":
+    docker run -d \
+    --name rabbitmq \
+    -p {{port}}:5672 \
+    -p 15672:15672 \
+    --env-file {{env_file}} \
+    --restart unless-stopped \
+    rabbitmq:4-management
+
 run port="8000":
     uv run uvicorn app.core.app:app \
     --port {{port}} \

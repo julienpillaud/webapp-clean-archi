@@ -20,7 +20,7 @@ if config.config_file_name is not None:
 target_metadata = models.OrmBase.metadata
 
 settings = Settings(_env_file=".env")
-config.set_main_option("sqlalchemy.url", str(settings.sqlalchemy_uri))
+config.set_main_option("sqlalchemy.url", str(settings.postgres_dsn))
 
 
 def run_migrations_offline() -> None:

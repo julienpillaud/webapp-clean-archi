@@ -3,6 +3,7 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "celery>=5.5",
     "fastapi>=0.115",
     "logfire[fastapi,sqlalchemy]>=3.21",
     "passlib[bcrypt]>=1.7",
@@ -26,10 +27,11 @@ mongo = [
 
 [dependency-groups]
 dev = [
+    "celery-types>=0.23",
     "coverage>=7.7",
-    "faker>=37.3",
+    "faker>=37.4",
     "httpx>=0.28",
-    "mypy>=1.15",
+    "mypy>=1.17",
     "pre-commit>=4.1",
     "pytest>=8.4",
     "ruff==0.12.3",

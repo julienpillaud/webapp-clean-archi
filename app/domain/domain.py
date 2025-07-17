@@ -7,6 +7,8 @@ from typing import Concatenate, Generic, ParamSpec, Protocol, TypeVar
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
+    run_task_command,
+    task_to_run_command,
     unexpected_domain_error_command,
     unexpected_error_command,
 )
@@ -69,6 +71,8 @@ class Domain:
 
     unexpected_error = CommandHandler(unexpected_error_command)
     unexpected_domain_error = CommandHandler(unexpected_domain_error_command)
+    run_task = CommandHandler(run_task_command)
+    task_to_run = CommandHandler(task_to_run_command)
 
     def __init__(self, context: TransactionalContextProtocol):
         logger.info("Instantiate Domain")
