@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Self, assert_never
+from typing import Self
 
 from pydantic import AmqpDsn, PostgresDsn, SecretStr, computed_field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -104,8 +104,6 @@ class Settings(BaseSettings):
                 required = required_fields[DatabaseType.SQL]
             case DatabaseType.MONGO:
                 required = required_fields[DatabaseType.MONGO]
-            case _:
-                assert_never(DatabaseType)
 
         if [field for field in required if not getattr(self, field)]:
             raise ValueError("Missing required fields")

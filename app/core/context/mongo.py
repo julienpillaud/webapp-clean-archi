@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class MongoContext(TransactionalContextProtocol):
     def __init__(self, settings: Settings) -> None:
+        self.settings = settings
         logger.info("Creating Mongo context")
         self.client: MongoClient[MongoDocument] = MongoClient(
             settings.mongo_uri,
@@ -46,4 +47,4 @@ class MongoContext(TransactionalContextProtocol):
 
     @property
     def task_queue(self) -> TaskQueueProtocol:
-        return CeleryTaskQueue()
+        return CeleryTaskQueue(settings=self.settings)

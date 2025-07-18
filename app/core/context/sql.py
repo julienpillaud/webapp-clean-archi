@@ -29,6 +29,7 @@ def get_engine(settings: Settings) -> Engine:
 
 class SqlContext(TransactionalContextProtocol):
     def __init__(self, settings: Settings) -> None:
+        self.settings = settings
         logger.info("Creating Sql context")
         engine = get_engine(settings=settings)
         self._session_factory = sessionmaker(engine)
@@ -68,4 +69,4 @@ class SqlContext(TransactionalContextProtocol):
 
     @property
     def task_queue(self) -> TaskQueueProtocol:
-        return CeleryTaskQueue()
+        return CeleryTaskQueue(settings=self.settings)

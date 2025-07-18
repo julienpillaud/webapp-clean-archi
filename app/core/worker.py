@@ -1,10 +1,6 @@
-from pathlib import Path
-
-from celery import Celery
-
 from app.core.config import Settings
+from app.infrastructure.celery_task_queue.app import create_celery_app
 
-project_dir = Path(__file__).parents[2]
-settings = Settings(_env_file=project_dir / ".env")
-celery_app = Celery("webapp_clean_archi", broker=str(settings.broker_dsn))
+settings = Settings()
+celery_app = create_celery_app(settings=settings)
 celery_app.autodiscover_tasks(["app.infrastructure.celery_task_queue.tasks"])
