@@ -1,5 +1,4 @@
 import uuid
-from functools import lru_cache
 from typing import Annotated
 
 import jwt
@@ -20,12 +19,10 @@ credential_exception = HTTPException(
 )
 
 
-@lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
 
 
-@lru_cache(maxsize=1)
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> TransactionalContextProtocol:

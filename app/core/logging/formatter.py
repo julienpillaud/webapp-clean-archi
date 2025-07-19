@@ -11,7 +11,8 @@ class ColoredFormatter(logging.Formatter):
         "CRITICAL": "\033[35m",  # magenta
     }
     app_colors: ClassVar[dict[str, str]] = {
-        "INFO": "\033[32m",  # green
+        "DEBUG": "\033[38;5;198m",  # unicorn pink
+        "INFO": "\033[38;5;48m",  # bright green
     }
     reset = "\033[0m"
 

@@ -12,12 +12,15 @@
     "console": {
       "class": "logging.StreamHandler",
       "formatter": "colored"
+    },
+    "logfire": {
+      "class": "logfire.LogfireLoggingHandler"
     }
   },
   "loggers": {
     "app": {
       "level": "DEBUG",
-      "handlers": ["console"],
+      "handlers": ["console", "logfire"],
       "propagate": false
     },
     "watchfiles": {
@@ -28,6 +31,6 @@
   },
   "root": {
     "level": "INFO",
-    "handlers": ["console"]
+    "handlers": ["console", "logfire"]
   }
 }

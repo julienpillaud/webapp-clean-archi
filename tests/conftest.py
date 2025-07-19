@@ -1,4 +1,6 @@
+import json
 import logging
+import logging.config
 from collections.abc import AsyncIterator, Iterator
 from functools import lru_cache
 from pathlib import Path
@@ -90,6 +92,8 @@ def cli_runner() -> CliRunner:
 
 @pytest.fixture
 def cli_app(settings: Settings) -> typer.Typer:
+    config = json.loads(Path("app/core/logging/config.json").read_text())
+    logging.config.dictConfig(config)
     context = get_test_context()
     domain = Domain(context=context)
     return create_cli_app(domain=domain)
