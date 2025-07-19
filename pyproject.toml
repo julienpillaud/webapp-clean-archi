@@ -5,7 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "celery>=5.5",
     "fastapi>=0.115",
-    "logfire[fastapi,sqlalchemy]>=3.21",
+    "logfire[celery,fastapi,sqlalchemy]>=3.25",
     "passlib[bcrypt]>=1.7",
     "pydantic-settings>=2.10",
     "pydantic[email]>=2.11",
@@ -71,10 +71,13 @@ exclude = [
     "app/alembic",
 ]
 
+[tool.logfire]
+ignore_no_config=true
+
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
 ]
 log_cli = true
-log_cli_level = "INFO"
+log_cli_level = "DEBUG"
 log_cli_format = "%(asctime)s [%(levelname)8s] %(name)30s - %(message)s"

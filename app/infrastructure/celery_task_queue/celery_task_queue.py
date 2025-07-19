@@ -26,6 +26,7 @@ class CeleryTaskQueue(TaskQueueProtocol):
             name="execute_domain_command",
             args=(task.func_name, *task.func_args),
             kwargs=task.func_kwargs,
+            time_limit=timeout * 2,
             soft_time_limit=timeout,
         )
         return result.id

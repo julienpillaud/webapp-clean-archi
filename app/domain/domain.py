@@ -75,7 +75,7 @@ class Domain:
     task_to_run = CommandHandler(task_to_run_command)
 
     def __init__(self, context: TransactionalContextProtocol):
-        logger.info("Instantiate Domain")
+        logger.debug("Instantiate 'Domain'")
         self.context = context
 
     def command_handler(
@@ -90,7 +90,7 @@ class Domain:
                 # Catch all exceptions to ensure rollback
                 except Exception as error:
                     self.context.rollback()
-                    logger.debug(
+                    logger.info(
                         f"Command '{func.__name__}' failed with "
                         f"{error.__class__.__name__}: {error}"
                     )
@@ -98,7 +98,7 @@ class Domain:
 
                 self.context.commit()
                 duration = time.perf_counter() - start_time
-                logger.debug(
+                logger.info(
                     f"Command '{func.__name__}' succeeded in {duration * 1000:.1f} ms",
                 )
                 return result

@@ -11,13 +11,13 @@ init:
 migrate:
     uv run alembic upgrade head
 
-run port="8000":
+run-app port="8000":
     uv run uvicorn app.core.app:app \
     --port {{port}} \
     --reload \
     --log-config app/core/logging/config.json
 
-run-celery:
+run-worker:
     uv run watchmedo auto-restart \
     --patterns="*.py" \
     --recursive \

@@ -482,7 +482,7 @@ wheels = [
 
 [[package]]
 name = "logfire"
-version = "3.24.2"
+version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "executing" },
@@ -493,12 +493,15 @@ dependencies = [
     { name = "rich" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bb/55/61c0146a413b1fdfa8ae2e9c97a4e62f799462f015ea49a697cf46281f0e/logfire-3.24.2.tar.gz", hash = "sha256:814533697890ac94b0669360e974e75f491bf5b2d9be7a1a5bbf5e1d66989d20", size = 504379, upload-time = "2025-07-14T16:04:32.89Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/a5/6543a1a035ca1bbec220911ccc3bb1720eb8fd2ca4ec9fcbc005489bb050/logfire-3.25.0.tar.gz", hash = "sha256:3d0b88c0c5a7f4fc27b7591341d4467af499c464c70e7a3784f1fa2751bf5151", size = 512029, upload-time = "2025-07-18T18:19:34.774Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/f8/5d702656e45ec4a8cb6ac7adc2410fd0953e582c03baaeb45401c5cf830a/logfire-3.24.2-py3-none-any.whl", hash = "sha256:c3a119769f8f5f1fabb6f23722125b26f987d7adeecfa9c6a90265161e6f5597", size = 206258, upload-time = "2025-07-14T16:04:27.973Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/e9/fc5eaf601cd50a5ec6412f0fa8a15f508f718086919aeef4e0be5ef1084d/logfire-3.25.0-py3-none-any.whl", hash = "sha256:d3cb8c078f3000923be347191466f47d836e9be7a47caedecd07527870ebc7ec", size = 211499, upload-time = "2025-07-18T18:19:31.054Z" },
 ]
 
 [package.optional-dependencies]
+celery = [
+    { name = "opentelemetry-instrumentation-celery" },
+]
 fastapi = [
     { name = "opentelemetry-instrumentation-fastapi" },
 ]
@@ -677,6 +680,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/2a/fa/1a1f6a98e8d5a4e9f4f5b7da1543fee4edcaa78eacf24850875823773a08/opentelemetry_instrumentation_asgi-0.56b0.tar.gz", hash = "sha256:e9142c7a5ad81c019070640ab8a1c217d2ca7cb7621e413cde78d0caece8cda8", size = 24654, upload-time = "2025-07-11T12:26:22.592Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/dd/655355453ee918455b5e7132f80366f594e0e7433dbcd03d2b0d6033088f/opentelemetry_instrumentation_asgi-0.56b0-py3-none-any.whl", hash = "sha256:7144793c1c601e47db6174d748ab437f7fa92f93a87d13882ad60a1f8147d2cf", size = 16602, upload-time = "2025-07-11T12:25:28.7Z" },
+]
+
+[[package]]
+name = "opentelemetry-instrumentation-celery"
+version = "0.56b0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-instrumentation" },
+    { name = "opentelemetry-semantic-conventions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a2/f8/ad485261f0c02b5b9d0b2a9b567d74a9c0696f08b4e9f85c8e912b31a6a2/opentelemetry_instrumentation_celery-0.56b0.tar.gz", hash = "sha256:6f1e891b5fb4b8b658a7daa08e112681a11e186cd5f7d33c2cf4755bce11e377", size = 14768, upload-time = "2025-07-11T12:26:30.526Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/c1/420e9628c888ce5392e33a71792124a3573bc34a1e453873d10a0ece0e23/opentelemetry_instrumentation_celery-0.56b0-py3-none-any.whl", hash = "sha256:94bfb2921403977c5ea44ffd697d11c1206dae5136382d3575e5400c8cb7c660", size = 13805, upload-time = "2025-07-11T12:25:36.95Z" },
 ]
 
 [[package]]
@@ -1361,7 +1378,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "celery" },
     { name = "fastapi" },
-    { name = "logfire", extra = ["fastapi", "sqlalchemy"] },
+    { name = "logfire", extra = ["celery", "fastapi", "sqlalchemy"] },
     { name = "passlib", extra = ["bcrypt"] },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
@@ -1401,7 +1418,7 @@ requires-dist = [
     { name = "alembic", marker = "extra == 'sql'", specifier = ">=1.16" },
     { name = "celery", specifier = ">=5.5" },
     { name = "fastapi", specifier = ">=0.115" },
-    { name = "logfire", extras = ["fastapi", "sqlalchemy"], specifier = ">=3.21" },
+    { name = "logfire", extras = ["celery", "fastapi", "sqlalchemy"], specifier = ">=3.25" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7" },
     { name = "psycopg", extras = ["binary"], marker = "extra == 'sql'", specifier = ">=3.2" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.11" },
@@ -1426,7 +1443,7 @@ dev = [
     { name = "pytest", specifier = ">=8.4" },
     { name = "ruff", specifier = "==0.12.4" },
     { name = "types-passlib", specifier = ">=1.7" },
-    { name = "watchdog", specifier = ">=6.0.0" },
+    { name = "watchdog", specifier = ">=6.0" },
     { name = "watchfiles", specifier = ">=1.0" },
 ]
 

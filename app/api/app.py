@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_app(settings: Settings) -> FastAPI:
-    logger.info("Creating FastAPI app")
+    logger.debug("Creating FastAPI app")
     app = FastAPI(
         title=settings.project_name,
         version=settings.api_version,

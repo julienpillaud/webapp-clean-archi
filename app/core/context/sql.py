@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=1)
 def get_engine(settings: Settings) -> Engine:
-    logger.info(f"Creating engine {settings.postgres_dsn}")
     engine = create_engine(str(settings.postgres_dsn))
+    logger.debug(f"Created engine {engine.url.render_as_string(hide_password=True)}")
     logfire.instrument_sqlalchemy(engine=engine)
     return engine
 
@@ -30,7 +30,7 @@ def get_engine(settings: Settings) -> Engine:
 class SqlContext(TransactionalContextProtocol):
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
-        logger.info("Creating Sql context")
+        logger.debug("Creating Sql context")
         engine = get_engine(settings=settings)
         self._session_factory = sessionmaker(engine)
         self._session: Session | None = None
