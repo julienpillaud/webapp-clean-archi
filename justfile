@@ -14,15 +14,14 @@ migrate:
 run-app port="8000":
     uv run uvicorn app.core.app:app \
     --port {{port}} \
-    --reload \
+    --reload --reload-dir app \
     --log-config app/core/logging/config.json
 
 run-worker:
-    uv run watchmedo auto-restart \
-    --patterns="*.py" \
-    --recursive \
-    --directory="." \
-    -- celery -A app.core.worker worker --pool=solo --loglevel=info
+    uv run watchfiles \
+    --filter python \
+    "celery -A app.core.worker worker --pool=solo --loglevel=info" \
+    app
 
 # Development tools
 pre-commit:

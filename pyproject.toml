@@ -36,7 +36,6 @@ dev = [
     "pytest>=8.4",
     "ruff==0.12.4",
     "types-passlib>=1.7",
-    "watchdog>=6.0",
     "watchfiles>=1.0",
 ]
 
