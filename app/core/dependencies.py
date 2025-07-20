@@ -67,3 +67,7 @@ class DependencyContainer:
             return resolve_dependency(override_func)
         else:
             return resolve_dependency(func)
+
+    @classmethod
+    def clean(cls) -> None:
+        cls._overrides.clear()
