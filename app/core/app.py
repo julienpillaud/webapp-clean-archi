@@ -8,14 +8,14 @@ from app.core.config import Settings
 logger = logging.getLogger(__name__)
 
 settings = Settings()
-logger.info(f"Loading settings for ENV {settings.environment}")
 logfire.configure(
     send_to_logfire="if-token-present",
     token=settings.logfire_token,
-    service_name=settings.project_name,
+    service_name="app",
     service_version=settings.api_version,
     environment=settings.environment,
     console=False,
 )
+logger.debug(f"Loading settings for ENV {settings.environment}")
 app = create_app(settings=settings)
-logfire.instrument_fastapi(app)
+logfire.instrument_fastapi(app, capture_headers=True, extra_spans=True)

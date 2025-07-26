@@ -34,5 +34,5 @@ Make sure you have `uv` and `just` installed
     ```
 6. Run the application
     ```shell
-    just run <port>
+    just run-app <port>
     ```

@@ -6,8 +6,10 @@ from pymongo import MongoClient
 
 from app.core.config import Settings
 from app.domain.domain import TransactionalContextProtocol
+from app.domain.interfaces.task_queue import TaskQueueProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
+from app.infrastructure.celery_task_queue.celery_task_queue import CeleryTaskQueue
 from app.infrastructure.mongo.base import MongoDocument
 from app.infrastructure.mongo.posts import PostMongoRepository
 from app.infrastructure.mongo.users import UserMongoRepository
@@ -17,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 class MongoContext(TransactionalContextProtocol):
     def __init__(self, settings: Settings) -> None:
+        self.settings = settings
         logger.info("Creating Mongo context")
         self.client: MongoClient[MongoDocument] = MongoClient(
             settings.mongo_uri,
@@ -41,3 +44,7 @@ class MongoContext(TransactionalContextProtocol):
     @property
     def user_repository(self) -> UserRepositoryProtocol:
         return UserMongoRepository(database=self.database)
+
+    @property
+    def task_queue(self) -> TaskQueueProtocol:
+        return CeleryTaskQueue(settings=self.settings)
