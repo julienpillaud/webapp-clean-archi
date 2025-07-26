@@ -4,7 +4,7 @@ from pymongo.collection import Collection
 
 from app.domain.entities import DomainModel
 from app.infrastructure.mongo.base import MongoDocument
-from tests.fixtures.factories.base import BaseFactory
+from factories.base import BaseFactory
 
 T = TypeVar("T", bound=DomainModel)
 

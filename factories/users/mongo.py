@@ -2,8 +2,8 @@ from pymongo.collection import Collection
 
 from app.domain.users.entities import User
 from app.infrastructure.mongo.base import MongoDocument
-from tests.fixtures.factories.mongo import MongoBaseFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.mongo import MongoBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 class UserMongoFactory(MongoBaseFactory[User], UserBaseFactory):

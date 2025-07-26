@@ -6,12 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.core.config import DatabaseType, Settings
 from app.infrastructure.mongo.base import MongoDocument
-from tests.fixtures.factories.posts.base import PostBaseFactory
-from tests.fixtures.factories.posts.mongo import PostMongoFactory
-from tests.fixtures.factories.posts.sql import PostSqlFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
-from tests.fixtures.factories.users.mongo import UserMongoFactory
-from tests.fixtures.factories.users.sql import UserSqlFactory
+from factories.posts.base import PostBaseFactory
+from factories.posts.mongo import PostMongoFactory
+from factories.posts.sql import PostSqlFactory
+from factories.users.base import UserBaseFactory
+from factories.users.mongo import UserMongoFactory
+from factories.users.sql import UserSqlFactory
 
 
 @pytest.fixture

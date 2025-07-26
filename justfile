@@ -32,7 +32,7 @@ lint:
 	uv run ruff check --fix || true
 	uv run mypy .
 
-tests *options="":
+tests *options="--log-cli-level=INFO":
     uv run pytest {{options}}
 
 coverage source="app":

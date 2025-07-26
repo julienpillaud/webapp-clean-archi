@@ -2,9 +2,9 @@ from pymongo.collection import Collection
 
 from app.domain.posts.entities import Post
 from app.infrastructure.mongo.base import MongoDocument
-from tests.fixtures.factories.mongo import MongoBaseFactory
-from tests.fixtures.factories.posts.base import PostBaseFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.mongo import MongoBaseFactory
+from factories.posts.base import PostBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 class PostMongoFactory(MongoBaseFactory[Post], PostBaseFactory):

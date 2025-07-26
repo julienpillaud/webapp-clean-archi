@@ -3,8 +3,8 @@ import uuid
 import typer
 from typer.testing import CliRunner
 
-from tests.fixtures.factories.posts.base import PostBaseFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.posts.base import PostBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 def test_get_posts(cli_app: typer.Typer, cli_runner: CliRunner) -> None:

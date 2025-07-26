@@ -3,4 +3,3 @@ rule_settings:
     - use-named-expression
     - reintroduce-else
     - swap-if-else-branches
-    - dont-import-test-modules

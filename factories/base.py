@@ -1,12 +1,8 @@
 from typing import Any, Generic, TypeVar
 
-from faker import Faker
-
 from app.domain.entities import DomainModel
 
 T = TypeVar("T", bound=DomainModel)
-
-faker = Faker()
 
 
 class BaseFactory(Generic[T]):

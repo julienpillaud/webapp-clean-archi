@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 
 from app.domain.users.entities import User
 from app.infrastructure.sql.models import OrmUser
-from tests.fixtures.factories.sql import SqlBaseFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.sql import SqlBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 class UserSqlFactory(SqlBaseFactory[User, OrmUser], UserBaseFactory):
