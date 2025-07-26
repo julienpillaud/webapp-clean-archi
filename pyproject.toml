@@ -5,7 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "celery>=5.5",
     "fastapi>=0.115",
-    "logfire[celery,fastapi,sqlalchemy]>=3.25",
+    "logfire[celery,fastapi,sqlalchemy]>=4.0",
     "passlib[bcrypt]>=1.7",
     "pydantic-settings>=2.10",
     "pydantic[email]>=2.11",
@@ -28,13 +28,13 @@ mongo = [
 [dependency-groups]
 dev = [
     "celery-types>=0.23",
-    "coverage>=7.7",
+    "coverage>=7.10",
     "faker>=37.4",
     "httpx>=0.28",
     "mypy>=1.17",
     "pre-commit>=4.1",
     "pytest>=8.4",
-    "ruff==0.12.4",
+    "ruff==0.12.5",
     "types-passlib>=1.7",
     "watchfiles>=1.0",
 ]

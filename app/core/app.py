@@ -18,4 +18,4 @@ logfire.configure(
 )
 logger.debug(f"Loading settings for ENV {settings.environment}")
 app = create_app(settings=settings)
-logfire.instrument_fastapi(app)
+logfire.instrument_fastapi(app, capture_headers=True, extra_spans=True)
