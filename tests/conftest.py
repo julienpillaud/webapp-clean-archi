@@ -19,14 +19,14 @@ from app.core.context.mongo import MongoContext
 from app.core.context.sql import SqlContext
 from app.core.security import create_access_token
 from app.domain.domain import Domain, TransactionalContextProtocol
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.users.base import UserBaseFactory
 
 logger = logging.getLogger(__name__)
 
 pytest_plugins = [
     "tests.fixtures.database.sql",
     "tests.fixtures.database.mongo",
-    "tests.fixtures.factories.fixtures",
+    "tests.fixtures.factories",
 ]
 
 project_dir = Path(__file__).parents[1]

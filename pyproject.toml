@@ -29,9 +29,9 @@ mongo = [
 dev = [
     "celery-types>=0.23",
     "coverage>=7.10",
-    "faker>=37.4",
     "httpx>=0.28",
     "mypy>=1.17",
+    "polyfactory>=2.22",
     "pre-commit>=4.1",
     "pytest>=8.4",
     "ruff==0.12.5",
@@ -74,9 +74,6 @@ exclude = [
 ignore_no_config=true
 
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 log_cli = true
-log_cli_level = "DEBUG"
 log_cli_format = "%(asctime)s [%(levelname)8s] %(name)30s - %(message)s"

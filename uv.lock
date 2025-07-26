@@ -849,6 +849,19 @@ wheels = [
 ]
 
 [[package]]
+name = "polyfactory"
+version = "2.22.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "faker" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ea/21/0b1a08bd4ab7d4685b4b83969a7b93a11c6557955765ada1b28d362d177c/polyfactory-2.22.1.tar.gz", hash = "sha256:6c91693088c81ab8fbe22dc66cae21fd3c17f91930fe1fae5b35b030eb020d3a", size = 253987, upload-time = "2025-07-14T19:37:29.032Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/12/8d/245e02e6ff1f046f70636dc62380ea73b03ab1d7f1fdcf61cbe26bc9c030/polyfactory-2.22.1-py3-none-any.whl", hash = "sha256:7500ee3678d9bc25347c0a73a35d3711cfcf9c7f45ad56d0bb085e9f75ecae7a", size = 63547, upload-time = "2025-07-14T19:37:27.353Z" },
+]
+
+[[package]]
 name = "pre-commit"
 version = "4.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1403,9 +1416,9 @@ sql = [
 dev = [
     { name = "celery-types" },
     { name = "coverage" },
-    { name = "faker" },
     { name = "httpx" },
     { name = "mypy" },
+    { name = "polyfactory" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "ruff" },
@@ -1436,9 +1449,9 @@ provides-extras = ["sql", "mongo"]
 dev = [
     { name = "celery-types", specifier = ">=0.23" },
     { name = "coverage", specifier = ">=7.10" },
-    { name = "faker", specifier = ">=37.4" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "mypy", specifier = ">=1.17" },
+    { name = "polyfactory", specifier = ">=2.22" },
     { name = "pre-commit", specifier = ">=4.1" },
     { name = "pytest", specifier = ">=8.4" },
     { name = "ruff", specifier = "==0.12.5" },

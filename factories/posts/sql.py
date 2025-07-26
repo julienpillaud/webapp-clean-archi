@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 
 from app.domain.posts.entities import Post
 from app.infrastructure.sql.models import OrmPost, OrmTag
-from tests.fixtures.factories.posts.base import PostBaseFactory
-from tests.fixtures.factories.sql import SqlBaseFactory
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.posts.base import PostBaseFactory
+from factories.sql import SqlBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 class PostSqlFactory(SqlBaseFactory[Post, OrmPost], PostBaseFactory):

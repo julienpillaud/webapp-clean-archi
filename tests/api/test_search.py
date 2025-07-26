@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from tests.fixtures.factories.posts.base import PostBaseFactory
+from factories.posts.base import PostBaseFactory
 
 
 def test_search(post_factory: PostBaseFactory, client: TestClient) -> None:

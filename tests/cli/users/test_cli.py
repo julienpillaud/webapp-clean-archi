@@ -3,7 +3,7 @@ import uuid
 import typer
 from typer.testing import CliRunner
 
-from tests.fixtures.factories.users.base import UserBaseFactory
+from factories.users.base import UserBaseFactory
 
 
 def test_get_users(cli_app: typer.Typer, cli_runner: CliRunner) -> None:

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.domain.entities import DomainModel
 from app.infrastructure.sql.models import OrmBase
-from tests.fixtures.factories.base import BaseFactory
+from factories.base import BaseFactory
 
 T = TypeVar("T", bound=DomainModel)
 P = TypeVar("P", bound=OrmBase)
