@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "celery>=5.5",
+    "cleanstack",
     "fastapi>=0.115",
     "logfire[celery,fastapi,sqlalchemy]>=4.0",
     "passlib[bcrypt]>=1.7",
@@ -24,6 +25,9 @@ sql = [
 mongo = [
     "pymongo>=4.13",
 ]
+
+[tool.uv.sources]
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.1.1" }
 
 [dependency-groups]
 dev = [

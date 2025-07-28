@@ -1,8 +1,8 @@
 from typing import Generic, TypeVar
 
+from cleanstack.entities import DomainModel
 from pymongo.collection import Collection
 
-from app.domain.entities import DomainModel
 from app.infrastructure.mongo.base import MongoDocument
 from factories.base import BaseFactory
 

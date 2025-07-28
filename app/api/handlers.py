@@ -1,10 +1,9 @@
 import logging
 
+from cleanstack.exceptions import AlreadyExistsError, DomainError, NotFoundError
 from fastapi import FastAPI, status
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse, PlainTextResponse, Response
-
-from app.domain.exceptions import AlreadyExistsError, DomainError, NotFoundError
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +14,12 @@ def add_exceptions_handler(app: FastAPI) -> None:
         if isinstance(error, NotFoundError):
             return JSONResponse(
                 status_code=status.HTTP_404_NOT_FOUND,
-                content={"detail": error.detail},
+                content={"detail": str(error)},
             )
         if isinstance(error, AlreadyExistsError):
             return JSONResponse(
                 status_code=status.HTTP_409_CONFLICT,
-                content={"detail": error.detail},
+                content={"detail": str(error)},
             )
 
         logger.error("Unhandled DomainError", exc_info=True)

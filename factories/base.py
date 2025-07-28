@@ -1,6 +1,6 @@
 from typing import Any, Generic, TypeVar
 
-from app.domain.entities import DomainModel
+from cleanstack.entities import DomainModel
 
 T = TypeVar("T", bound=DomainModel)
 

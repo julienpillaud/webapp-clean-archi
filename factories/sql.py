@@ -1,8 +1,8 @@
 from typing import Generic, TypeVar
 
+from cleanstack.entities import DomainModel
 from sqlalchemy.orm import Session
 
-from app.domain.entities import DomainModel
 from app.infrastructure.sql.models import OrmBase
 from factories.base import BaseFactory
 

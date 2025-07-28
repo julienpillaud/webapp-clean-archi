@@ -1,5 +1,6 @@
+from cleanstack.exceptions import DomainError
+
 from app.domain.context import ContextProtocol
-from app.domain.exceptions import DomainError
 
 
 class UnexpectedError(Exception):

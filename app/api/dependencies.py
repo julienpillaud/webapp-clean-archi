@@ -8,7 +8,8 @@ from jwt import InvalidTokenError
 
 from app.core.config import Settings
 from app.core.context.sql import SqlContext
-from app.domain.domain import Domain, TransactionalContextProtocol
+from app.domain.context import ContextProtocol
+from app.domain.domain import Domain
 from app.domain.users.entities import User
 
 oauth2_password_bearer = OAuth2PasswordBearer(tokenUrl="auth/access-token")
@@ -25,12 +26,12 @@ def get_settings() -> Settings:
 
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
-) -> TransactionalContextProtocol:
+) -> ContextProtocol:
     return SqlContext(settings=settings)
 
 
 def get_domain(
-    context: Annotated[TransactionalContextProtocol, Depends(get_context)],
+    context: Annotated[ContextProtocol, Depends(get_context)],
 ) -> Domain:
     return Domain(context=context)
 

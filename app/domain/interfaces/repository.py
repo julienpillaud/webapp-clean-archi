@@ -1,6 +1,8 @@
 from typing import Protocol, TypeVar
 
-from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
+from cleanstack.entities import DomainModel, EntityId
+
+from app.domain.entities import PaginatedResponse, Pagination
 
 T = TypeVar("T", bound=DomainModel)
 

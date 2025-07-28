@@ -1,20 +1,12 @@
-import uuid
 from typing import Generic, TypeVar
 
-from pydantic import BaseModel, ConfigDict, NonNegativeInt, PositiveInt
+from cleanstack.entities import DomainModel
+from pydantic import BaseModel, NonNegativeInt, PositiveInt
 
-T = TypeVar("T", bound="DomainModel")
-
-type EntityId = uuid.UUID
+T = TypeVar("T", bound=DomainModel)
 
 
 DEFAULT_PAGINATION_LIMIT = 10
-
-
-class DomainModel(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: EntityId
 
 
 class Token(BaseModel):
