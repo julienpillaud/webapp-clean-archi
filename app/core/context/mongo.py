@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from pymongo import MongoClient
 
 from app.core.config import Settings
-from app.domain.domain import TransactionalContextProtocol
+from app.domain.context import ContextProtocol
 from app.domain.interfaces.task_queue import TaskQueueProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
@@ -17,7 +17,7 @@ from app.infrastructure.mongo.users import UserMongoRepository
 logger = logging.getLogger(__name__)
 
 
-class MongoContext(TransactionalContextProtocol):
+class MongoContext(ContextProtocol):
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         logger.info("Creating Mongo context")

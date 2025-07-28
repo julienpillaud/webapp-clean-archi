@@ -1,9 +1,11 @@
 import uuid
 
+from cleanstack.entities import EntityId
+from cleanstack.exceptions import AlreadyExistsError, NotFoundError
+
 from app.core.security import get_password_hash, verify_password
 from app.domain.context import ContextProtocol
-from app.domain.entities import EntityId, PaginatedResponse, Pagination
-from app.domain.exceptions import AlreadyExistsError, NotFoundError
+from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.users.entities import User, UserCreate, UserUpdate
 
 

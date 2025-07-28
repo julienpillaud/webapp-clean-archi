@@ -1,8 +1,7 @@
 from typing import NewType
 
+from cleanstack.entities import DomainModel, EntityId
 from pydantic import BaseModel, field_validator
-
-from app.domain.entities import DomainModel, EntityId
 
 TagName = NewType("TagName", str)
 

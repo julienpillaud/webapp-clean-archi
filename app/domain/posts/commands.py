@@ -1,8 +1,10 @@
 import uuid
 
+from cleanstack.entities import EntityId
+from cleanstack.exceptions import NotFoundError
+
 from app.domain.context import ContextProtocol
-from app.domain.entities import EntityId, PaginatedResponse, Pagination
-from app.domain.exceptions import NotFoundError
+from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 

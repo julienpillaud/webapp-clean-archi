@@ -24,13 +24,8 @@ run-worker:
     app
 
 # Development tools
-pre-commit:
-	uv run pre-commit run --all-files
-
 lint:
-	uv run ruff format
-	uv run ruff check --fix || true
-	uv run mypy .
+    uv run pre-commit run --all-files
 
 tests *options="--log-cli-level=INFO":
     uv run pytest {{options}}

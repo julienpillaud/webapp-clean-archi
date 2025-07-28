@@ -18,7 +18,8 @@ from app.core.config import DatabaseType, Settings
 from app.core.context.mongo import MongoContext
 from app.core.context.sql import SqlContext
 from app.core.security import create_access_token
-from app.domain.domain import Domain, TransactionalContextProtocol
+from app.domain.context import ContextProtocol
+from app.domain.domain import Domain
 from factories.users.base import UserBaseFactory
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,7 @@ def get_test_settings() -> Settings:
     return settings_
 
 
-def get_test_context() -> TransactionalContextProtocol:
+def get_test_context() -> ContextProtocol:
     settings = get_test_settings()
     match settings.database_type:
         case DatabaseType.SQL:

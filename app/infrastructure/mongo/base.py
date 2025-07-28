@@ -1,9 +1,10 @@
 import logging
 from typing import Any, Generic, TypeVar
 
+from cleanstack.entities import DomainModel, EntityId
 from pymongo.database import Database
 
-from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
+from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
 
 logger = logging.getLogger(__name__)

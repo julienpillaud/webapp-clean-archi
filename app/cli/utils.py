@@ -4,13 +4,12 @@ from collections.abc import Callable
 from typing import Any, ParamSpec, TypeVar
 
 import typer
+from cleanstack.entities import EntityId
+from cleanstack.exceptions import AlreadyExistsError, NotFoundError
 from pydantic import BaseModel, ValidationError
 from rich import print
 from rich.panel import Panel
 from rich.pretty import Pretty
-
-from app.domain.entities import EntityId
-from app.domain.exceptions import AlreadyExistsError, NotFoundError
 
 P = ParamSpec("P")
 R = TypeVar("R")

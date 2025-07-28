@@ -1,11 +1,12 @@
 import logging
 from typing import Generic, TypeVar
 
+from cleanstack.entities import DomainModel, EntityId
 from sqlalchemy import Select, delete, func, or_, select
 from sqlalchemy.orm import InstrumentedAttribute, Session
 from sqlalchemy.orm.interfaces import ORMOption
 
-from app.domain.entities import DomainModel, EntityId, PaginatedResponse, Pagination
+from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
 from app.infrastructure.sql.models import OrmBase
 

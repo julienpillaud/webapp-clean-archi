@@ -8,7 +8,7 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
-from app.domain.domain import TransactionalContextProtocol
+from app.domain.context import ContextProtocol
 from app.domain.interfaces.task_queue import TaskQueueProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
@@ -27,7 +27,7 @@ def get_engine(settings: Settings) -> Engine:
     return engine
 
 
-class SqlContext(TransactionalContextProtocol):
+class SqlContext(ContextProtocol):
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         logger.debug("Creating Sql context")
