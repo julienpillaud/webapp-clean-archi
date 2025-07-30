@@ -27,13 +27,17 @@ def get_engine(settings: Settings) -> Engine:
     return engine
 
 
+@lru_cache(maxsize=1)
+def get_session_factory(settings: Settings) -> sessionmaker[Session]:
+    engine = get_engine(settings=settings)
+    return sessionmaker(bind=engine)
+
+
 class SqlContext(ContextProtocol):
     def __init__(self, settings: Settings) -> None:
-        self.settings = settings
-        logger.debug("Creating Sql context")
-        engine = get_engine(settings=settings)
-        self._session_factory = sessionmaker(engine)
         self._session: Session | None = None
+        self.settings = settings
+        self._session_factory = get_session_factory(settings=settings)
 
     @contextmanager
     def transaction(self) -> Iterator[None]:

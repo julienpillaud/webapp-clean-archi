@@ -191,10 +191,15 @@ wheels = [
 
 [[package]]
 name = "cleanstack"
-version = "0.1.1"
-source = { git = "https://github.com/julienpillaud/cleanstack?tag=0.1.1#e46ad760bb63297079406895f11b6884ac4edab4" }
+version = "0.2.0"
+source = { git = "https://github.com/julienpillaud/cleanstack?tag=0.2.0#39709634838e3c236fbc8be733adfc57411067d1" }
 dependencies = [
     { name = "pydantic" },
+]
+
+[package.optional-dependencies]
+fastapi = [
+    { name = "fastapi" },
 ]
 
 [[package]]
@@ -1399,7 +1404,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "celery" },
-    { name = "cleanstack" },
+    { name = "cleanstack", extra = ["fastapi"] },
     { name = "fastapi" },
     { name = "logfire", extra = ["celery", "fastapi", "sqlalchemy"] },
     { name = "passlib", extra = ["bcrypt"] },
@@ -1439,7 +1444,7 @@ dev = [
 requires-dist = [
     { name = "alembic", marker = "extra == 'sql'", specifier = ">=1.16" },
     { name = "celery", specifier = ">=5.5" },
-    { name = "cleanstack", git = "https://github.com/julienpillaud/cleanstack?tag=0.1.1" },
+    { name = "cleanstack", extras = ["fastapi"], git = "https://github.com/julienpillaud/cleanstack?tag=0.2.0" },
     { name = "fastapi", specifier = ">=0.115" },
     { name = "logfire", extras = ["celery", "fastapi", "sqlalchemy"], specifier = ">=4.0" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7" },
