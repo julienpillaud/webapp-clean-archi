@@ -3,7 +3,6 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "celery>=5.5",
     "cleanstack[fastapi]",
     "fastapi>=0.115",
     "logfire[celery,fastapi,sqlalchemy]>=4.0",
@@ -31,7 +30,6 @@ cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.3.0
 
 [dependency-groups]
 dev = [
-    "celery-types>=0.23",
     "coverage>=7.10",
     "httpx>=0.28",
     "mypy>=1.17",

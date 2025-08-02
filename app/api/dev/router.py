@@ -41,8 +41,3 @@ def simulate_unexpected_domain_error(
     domain: Annotated[Domain, Depends(get_domain)],
 ) -> None:
     domain.unexpected_domain_error()
-
-
-@router.get("/task")
-def simulate_run_task(domain: Annotated[Domain, Depends(get_domain)]) -> str:
-    return domain.run_task()
