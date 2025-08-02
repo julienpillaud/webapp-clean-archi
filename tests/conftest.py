@@ -15,8 +15,8 @@ from app.api.app import create_app
 from app.api.dependencies import get_context, get_settings
 from app.cli.app import create_cli_app
 from app.core.config import DatabaseType, Settings
+from app.core.context.context import Context
 from app.core.context.mongo import MongoContext
-from app.core.context.sql import SqlContext
 from app.core.security import create_access_token
 from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
@@ -44,7 +44,7 @@ def get_test_context() -> ContextProtocol:
     settings = get_test_settings()
     match settings.database_type:
         case DatabaseType.SQL:
-            return SqlContext(settings=settings)
+            return Context(settings=settings)
         case DatabaseType.MONGO:
             return MongoContext(settings=settings)
 

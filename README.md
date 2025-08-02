@@ -6,6 +6,37 @@
   to expose all business commands through a single interface.
 - API routes should call only one domain command to have only one unit of work per request.
 
+## Context
+
+```mermaid
+---
+config:
+  look: handDrawn
+---
+classDiagram
+    class UnitOfWorkProtocol["UnitOfWorkProtocol(Protocol)"] {
+	    +transaction() Iterator[None]
+	    +commit() None
+	    +rollback() None
+    }
+    class SqlContext {
+	    +transaction() Iterator[None]
+	    +commit() None
+	    +rollback() None
+    }
+    class ContextProtocol["ContextProtocol(Protocol)"] {
+	    +post_repository : PostRepositoryProtocol
+	    +user_repository : UserRepositoryProtocol
+    }
+    class Context {
+        +post_repository : PostSqlRepository
+	    +user_repository : UserSqlRepository
+    }
+    UnitOfWorkProtocol <|.. ContextProtocol
+    ContextProtocol <|.. SqlContext
+    SqlContext <|-- Context
+```
+
 ## Installation (*SQL Database*)
 
 ### Pre-requisites

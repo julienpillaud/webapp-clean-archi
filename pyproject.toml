@@ -27,7 +27,7 @@ mongo = [
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.2.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.3.0" }
 
 [dependency-groups]
 dev = [
@@ -38,7 +38,7 @@ dev = [
     "polyfactory>=2.22",
     "pre-commit>=4.1",
     "pytest>=8.4",
-    "ruff==0.12.5",
+    "ruff==0.12.7",
     "types-passlib>=1.7",
     "watchfiles>=1.0",
 ]
