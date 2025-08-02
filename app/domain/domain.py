@@ -4,8 +4,6 @@ from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
     benchmark_command,
     custom_error_command,
-    run_task_command,
-    task_to_run_command,
     unexpected_domain_error_command,
     unexpected_error_command,
 )
@@ -44,5 +42,3 @@ class Domain(BaseDomain[ContextProtocol]):
     custom_error = CommandHandler(custom_error_command)
     unexpected_error = CommandHandler(unexpected_error_command)
     unexpected_domain_error = CommandHandler(unexpected_domain_error_command)
-    run_task = CommandHandler(run_task_command)
-    task_to_run = CommandHandler(task_to_run_command)

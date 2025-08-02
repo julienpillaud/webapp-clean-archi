@@ -17,12 +17,6 @@ run-app port="8000":
     --reload --reload-dir app \
     --log-config app/core/logging/config.json
 
-run-worker:
-    uv run watchfiles \
-    --filter python \
-    "celery -A app.core.worker worker --pool=solo --loglevel=info" \
-    app
-
 # Development tools
 lint:
     uv run pre-commit run --all-files
