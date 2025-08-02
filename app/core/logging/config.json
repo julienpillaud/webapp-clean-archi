@@ -21,6 +21,11 @@
       "handlers": ["console", "logfire"],
       "propagate": false
     },
+    "cleanstack": {
+      "level": "DEBUG",
+      "handlers": ["console", "logfire"],
+      "propagate": false
+    },
     "watchfiles": {
       "level": "WARNING",
       "handlers": ["console"],

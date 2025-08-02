@@ -2,6 +2,8 @@ from cleanstack.domain import BaseDomain, CommandHandler
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
+    benchmark_command,
+    custom_error_command,
     run_task_command,
     task_to_run_command,
     unexpected_domain_error_command,
@@ -38,6 +40,8 @@ class Domain(BaseDomain[ContextProtocol]):
     update_user = CommandHandler(update_user_command)
     delete_user = CommandHandler(delete_user_command)
 
+    benchmark = CommandHandler(benchmark_command)
+    custom_error = CommandHandler(custom_error_command)
     unexpected_error = CommandHandler(unexpected_error_command)
     unexpected_domain_error = CommandHandler(unexpected_domain_error_command)
     run_task = CommandHandler(run_task_command)

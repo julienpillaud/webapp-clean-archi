@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from app.core.config import Settings
-from app.core.context.sql import SqlContext
+from app.core.context.context import Context
 from app.core.dependencies import Dependency
 from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
@@ -14,7 +14,7 @@ def get_settings() -> Settings:
 def get_context(
     settings: Annotated[Settings, Dependency(get_settings)],
 ) -> ContextProtocol:
-    return SqlContext(settings=settings)
+    return Context(settings=settings)
 
 
 def get_domain(

@@ -1,4 +1,5 @@
 import uuid
+from functools import lru_cache
 from typing import Annotated
 
 import jwt
@@ -7,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 
 from app.core.config import Settings
-from app.core.context.sql import SqlContext
+from app.core.context.context import Context
 from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
 from app.domain.users.entities import User
@@ -20,6 +21,7 @@ credential_exception = HTTPException(
 )
 
 
+@lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
 
@@ -27,7 +29,7 @@ def get_settings() -> Settings:
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
 ) -> ContextProtocol:
-    return SqlContext(settings=settings)
+    return Context(settings=settings)
 
 
 def get_domain(
