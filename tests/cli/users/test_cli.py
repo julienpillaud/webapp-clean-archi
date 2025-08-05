@@ -3,7 +3,7 @@ import uuid
 import typer
 from typer.testing import CliRunner
 
-from factories.users.base import UserBaseFactory
+from factories.users import UserFactory
 
 
 def test_get_users(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
@@ -17,7 +17,7 @@ def test_get_users(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
 
 
 def test_get_user(
-    user_factory: UserBaseFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -62,7 +62,7 @@ def test_create_user(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
 
 
 def test_create_user_already_exists(
-    user_factory: UserBaseFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -92,7 +92,7 @@ def test_create_user_invalid_data(cli_app: typer.Typer, cli_runner: CliRunner) -
 
 
 def test_update_user(
-    user_factory: UserBaseFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -117,7 +117,7 @@ def test_update_user_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> N
 
 
 def test_update_user_invalid_data(
-    user_factory: UserBaseFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -133,7 +133,7 @@ def test_update_user_invalid_data(
 
 
 def test_delete_user(
-    user_factory: UserBaseFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     user = user_factory.create_one()

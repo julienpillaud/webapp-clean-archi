@@ -1,12 +1,8 @@
 import uuid
 
+from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Column, ForeignKey, Table
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-
-class OrmBase(DeclarativeBase):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 post_tag = Table(
     "post_tag",

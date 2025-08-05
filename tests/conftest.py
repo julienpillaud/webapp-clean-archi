@@ -14,19 +14,17 @@ from typer.testing import CliRunner
 from app.api.app import create_app
 from app.api.dependencies import get_context, get_settings
 from app.cli.app import create_cli_app
-from app.core.config import DatabaseType, Settings
+from app.core.config import Settings
 from app.core.context.context import Context
-from app.core.context.mongo import MongoContext
 from app.core.security import create_access_token
 from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
-from factories.users.base import UserBaseFactory
+from factories.users import UserFactory
 
 logger = logging.getLogger(__name__)
 
 pytest_plugins = [
-    "tests.fixtures.database.sql",
-    "tests.fixtures.database.mongo",
+    "tests.fixtures.database",
     "tests.fixtures.factories",
 ]
 
@@ -42,11 +40,7 @@ def get_test_settings() -> Settings:
 
 def get_test_context() -> ContextProtocol:
     settings = get_test_settings()
-    match settings.database_type:
-        case DatabaseType.SQL:
-            return Context(settings=settings)
-        case DatabaseType.MONGO:
-            return MongoContext(settings=settings)
+    return Context(settings=settings)
 
 
 @pytest.fixture(scope="session")
@@ -55,7 +49,7 @@ def settings() -> Settings:
 
 
 @pytest.fixture
-def client(user_factory: UserBaseFactory, settings: Settings) -> Iterator[TestClient]:
+def client(user_factory: UserFactory, settings: Settings) -> Iterator[TestClient]:
     user = user_factory.create_one()
     token_data = create_access_token(settings=settings, subject=user.id)
 

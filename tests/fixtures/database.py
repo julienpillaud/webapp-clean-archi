@@ -2,11 +2,11 @@ import logging
 from collections.abc import Iterator
 
 import pytest
+from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
-from app.infrastructure.sql.models import OrmBase
 
 logger = logging.getLogger(__name__)
 
