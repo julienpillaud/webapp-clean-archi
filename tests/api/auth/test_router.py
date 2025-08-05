@@ -1,10 +1,10 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from factories.users.base import UserBaseFactory
+from factories.users import UserFactory
 
 
-def test_get_access_token(user_factory: UserBaseFactory, client: TestClient) -> None:
+def test_get_access_token(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     password = "password"
     user = user_factory.create_one(password=password, hash_password=True)
@@ -21,7 +21,7 @@ def test_get_access_token(user_factory: UserBaseFactory, client: TestClient) -> 
 
 
 def test_get_access_token_invalid_username(
-    user_factory: UserBaseFactory, client: TestClient
+    user_factory: UserFactory, client: TestClient
 ) -> None:
     # Arrange
     password = "password"
@@ -38,7 +38,7 @@ def test_get_access_token_invalid_username(
 
 
 def test_get_access_token_invalid_password(
-    user_factory: UserBaseFactory, client: TestClient
+    user_factory: UserFactory, client: TestClient
 ) -> None:
     # Arrange
     password = "password"

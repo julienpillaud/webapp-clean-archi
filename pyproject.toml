@@ -3,30 +3,24 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "cleanstack[fastapi]",
+    "alembic>=1.16",
+    "cleanstack[fastapi,sql]",
     "fastapi>=0.115",
-    "logfire[celery,fastapi,sqlalchemy]>=4.0",
+    "logfire[fastapi,sqlalchemy]>=4.0",
     "passlib[bcrypt]>=1.7",
+    "psycopg[binary]>=3.2",
     "pydantic-settings>=2.10",
     "pydantic[email]>=2.11",
     "pyjwt>=2.10",
+    "pymongo>=4.13.2",
     "python-multipart>=0.0",
+    "sqlalchemy>=2.0",
     "typer>=0.16",
     "uvicorn>=0.34",
 ]
 
-[project.optional-dependencies]
-sql = [
-    "alembic>=1.16",
-    "psycopg[binary]>=3.2",
-    "sqlalchemy>=2.0",
-]
-mongo = [
-    "pymongo>=4.13",
-]
-
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.3.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.4.0" }
 
 [dependency-groups]
 dev = [
