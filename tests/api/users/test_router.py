@@ -4,11 +4,11 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.entities import DEFAULT_PAGINATION_LIMIT
-from factories.posts.base import PostBaseFactory
-from factories.users.base import UserBaseFactory
+from factories.posts import PostFactory
+from factories.users import UserFactory
 
 
-def test_get_users(user_factory: UserBaseFactory, client: TestClient) -> None:
+def test_get_users(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     number_of_user = 5
     user_factory.create_many(number_of_user)
@@ -25,8 +25,8 @@ def test_get_users(user_factory: UserBaseFactory, client: TestClient) -> None:
 
 
 def test_get_user(
-    user_factory: UserBaseFactory,
-    post_factory: PostBaseFactory,
+    user_factory: UserFactory,
+    post_factory: PostFactory,
     client: TestClient,
 ) -> None:
     # Arrange
@@ -73,7 +73,7 @@ def test_create_user(client: TestClient) -> None:
 
 
 def test_create_user_already_exists(
-    client: TestClient, user_factory: UserBaseFactory
+    client: TestClient, user_factory: UserFactory
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -93,8 +93,8 @@ def test_create_user_already_exists(
 
 
 def test_update_user(
-    user_factory: UserBaseFactory,
-    post_factory: PostBaseFactory,
+    user_factory: UserFactory,
+    post_factory: PostFactory,
     client: TestClient,
 ) -> None:
     # Arrange
@@ -125,7 +125,7 @@ def test_update_user_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"User '{entity_id}' not found"}
 
 
-def test_delete_user(user_factory: UserBaseFactory, client: TestClient) -> None:
+def test_delete_user(user_factory: UserFactory, client: TestClient) -> None:
     # Arrange
     user = user_factory.create_one()
 

@@ -1,10 +1,10 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from factories.posts.base import PostBaseFactory
+from factories.posts import PostFactory
 
 
-def test_search(post_factory: PostBaseFactory, client: TestClient) -> None:
+def test_search(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     number_of_posts = 2
     post_factory.create_many(3)
@@ -27,9 +27,7 @@ def test_search(post_factory: PostBaseFactory, client: TestClient) -> None:
         )
 
 
-def test_search_multiple_fields(
-    post_factory: PostBaseFactory, client: TestClient
-) -> None:
+def test_search_multiple_fields(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     posts_with_title = 2
     title = "KeyWord In Title"
@@ -56,7 +54,7 @@ def test_search_multiple_fields(
         )
 
 
-def test_search_no_results(post_factory: PostBaseFactory, client: TestClient) -> None:
+def test_search_no_results(post_factory: PostFactory, client: TestClient) -> None:
     # Arrange
     post_factory.create_many(3)
     search_term = "nonexistent"

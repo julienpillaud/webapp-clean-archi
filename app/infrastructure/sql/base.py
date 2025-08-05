@@ -2,13 +2,13 @@ import logging
 from typing import Generic, TypeVar
 
 from cleanstack.entities import DomainModel, EntityId
+from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Select, delete, func, or_, select
 from sqlalchemy.orm import InstrumentedAttribute, Session
 from sqlalchemy.orm.interfaces import ORMOption
 
 from app.domain.entities import PaginatedResponse, Pagination
 from app.domain.interfaces.repository import BaseRepositoryProtocol
-from app.infrastructure.sql.models import OrmBase
 
 logger = logging.getLogger(__name__)
 

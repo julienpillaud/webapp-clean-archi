@@ -27,15 +27,15 @@ wheels = [
 
 [[package]]
 name = "anyio"
-version = "4.9.0"
+version = "4.10.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "idna" },
     { name = "sniffio" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/95/7d/4c1bd541d4dffa1b52bd83fb8527089e097a106fc90b467a7313b105f840/anyio-4.9.0.tar.gz", hash = "sha256:673c0c244e15788651a4ff38710fea9675823028a6f08a5eda409e0c9840a028", size = 190949, upload-time = "2025-03-17T00:02:54.77Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/b4/636b3b65173d3ce9a38ef5f0522789614e590dab6a8d505340a4efe4c567/anyio-4.10.0.tar.gz", hash = "sha256:3f3fae35c96039744587aa5b8371e7e8e603c0702999535961dd336026973ba6", size = 213252, upload-time = "2025-08-04T08:54:26.451Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a1/ee/48ca1a7c89ffec8b6a0c5d02b89c305671d5ffd8d3c94acf8b8c408575bb/anyio-4.9.0-py3-none-any.whl", hash = "sha256:9f76d541cad6e36af7beb62e978876f3b41e3e04f2c1fbf0884604c0a9c4d93c", size = 100916, upload-time = "2025-03-17T00:02:52.713Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/12/e5e0282d673bb9746bacfb6e2dba8719989d3660cdb2ea79aee9a9651afb/anyio-4.10.0-py3-none-any.whl", hash = "sha256:60e474ac86736bbfd6f210f7a61218939c318f43f9972497381f1c5e930ed3d1", size = 107213, upload-time = "2025-08-04T08:54:24.882Z" },
 ]
 
 [[package]]
@@ -99,11 +99,11 @@ wheels = [
 
 [[package]]
 name = "certifi"
-version = "2025.7.14"
+version = "2025.8.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b3/76/52c535bcebe74590f296d6c77c86dabf761c41980e1347a2422e4aa2ae41/certifi-2025.7.14.tar.gz", hash = "sha256:8ea99dbdfaaf2ba2f9bac77b9249ef62ec5218e7c2b2e903378ed5fccf765995", size = 163981, upload-time = "2025-07-14T03:29:28.449Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/67/960ebe6bf230a96cda2e0abcf73af550ec4f090005363542f0765df162e0/certifi-2025.8.3.tar.gz", hash = "sha256:e564105f78ded564e3ae7c923924435e1daa7463faeab5bb932bc53ffae63407", size = 162386, upload-time = "2025-08-03T03:07:47.08Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4f/52/34c6cf5bb9285074dc3531c437b3919e825d976fde097a7a73f79e726d03/certifi-2025.7.14-py3-none-any.whl", hash = "sha256:6b31f564a415d79ee77df69d757bb49a5bb53bd9f756cbbe24394ffd6fc1f4b2", size = 162722, upload-time = "2025-07-14T03:29:26.863Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/48/1549795ba7742c948d2ad169c1c8cdbae65bc450d6cd753d124b17c8cd32/certifi-2025.8.3-py3-none-any.whl", hash = "sha256:f6c12493cfb1b06ba2ff328595af9350c65d6644968e5d3a2ffd78699af217a5", size = 161216, upload-time = "2025-08-03T03:07:45.777Z" },
 ]
 
 [[package]]
@@ -139,8 +139,8 @@ wheels = [
 
 [[package]]
 name = "cleanstack"
-version = "0.3.0"
-source = { git = "https://github.com/julienpillaud/cleanstack?tag=0.3.0#3f3532fb939fcb57055af136c90f0b6e1904d12d" }
+version = "0.4.0"
+source = { git = "https://github.com/julienpillaud/cleanstack?tag=0.4.0#b957959ec45caf91c03895128a2fbf5cbe728e06" }
 dependencies = [
     { name = "pydantic" },
 ]
@@ -149,17 +149,20 @@ dependencies = [
 fastapi = [
     { name = "fastapi" },
 ]
+sql = [
+    { name = "sqlalchemy" },
+]
 
 [[package]]
 name = "click"
-version = "8.2.2"
+version = "8.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e9/87/105111999772ec9730e3d4d910c723ea9763ece2ec441533a5cea1e87e3c/click-8.2.2.tar.gz", hash = "sha256:068616e6ef9705a07b6db727cb9c248f4eb9dae437a30239f56fa94b18b852ef", size = 263977, upload-time = "2025-08-02T02:23:41.102Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/60/6c/8ca2efa64cf75a977a0d7fac081354553ebe483345c734fb6b6515d96bbc/click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202", size = 286342, upload-time = "2025-05-20T23:19:49.832Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/85/e7297e34133ae1cfde3bffd30c24e1ef055248251baa877834e048687a28/click-8.2.2-py3-none-any.whl", hash = "sha256:52e1e9f5d3db8c85aa76968c7c67ed41ddbacb167f43201511c8fd61eb5ba2ca", size = 103900, upload-time = "2025-08-02T02:23:39.299Z" },
+    { url = "https://files.pythonhosted.org/packages/85/32/10bb5764d90a8eee674e9dc6f4db6a0ab47c8c4d0d83c27f7c39ac415a4d/click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b", size = 102215, upload-time = "2025-05-20T23:19:47.796Z" },
 ]
 
 [[package]]
@@ -413,7 +416,7 @@ wheels = [
 
 [[package]]
 name = "logfire"
-version = "4.0.1"
+version = "4.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "executing" },
@@ -424,15 +427,12 @@ dependencies = [
     { name = "rich" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/b2/51b436ec87575aea6f5e73a2161067f4b05c1c3b1f16359d1db351a03e50/logfire-4.0.1.tar.gz", hash = "sha256:79b04bc8a48669373c892e011ad47f789d99af3d7178f0fa093053f20fdbd8c1", size = 512638, upload-time = "2025-07-31T16:05:24.189Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/41/92/9b34af3414f31d335751b7e634d5163d1ad97296136ef81db666c4616194/logfire-4.1.0.tar.gz", hash = "sha256:c0a30ed05740193a465b3cd3e0c162a72c9baa53b297dd6757c3f833c7feaa7b", size = 513660, upload-time = "2025-08-04T11:51:19.714Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/8b/2a5f3fbcd1dedf4db6cefba2fdc1ead8a40f823ef6375c9c5fd1ccf1b9f9/logfire-4.0.1-py3-none-any.whl", hash = "sha256:6aab85dcdb8a8050ed46b2265c406ae59d24d9e7086405406bf01c2789e500ca", size = 211574, upload-time = "2025-07-31T16:05:20.61Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/63/4c61a3327ce7242cc4e7b08191f9e75a7a5d73744b1451d7cabb88986062/logfire-4.1.0-py3-none-any.whl", hash = "sha256:474032a2f941a0cf854a78d6c09fde1c9903f9069dacc22f8baff72bf7733a8f", size = 212236, upload-time = "2025-08-04T11:51:16.31Z" },
 ]
 
 [package.optional-dependencies]
-celery = [
-    { name = "opentelemetry-instrumentation-celery" },
-]
 fastapi = [
     { name = "opentelemetry-instrumentation-fastapi" },
 ]
@@ -617,20 +617,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/97/10/7ba59b586eb099fa0155521b387d857de476687c670096597f618d889323/opentelemetry_instrumentation_asgi-0.57b0.tar.gz", hash = "sha256:a6f880b5d1838f65688fc992c65fbb1d3571f319d370990c32e759d3160e510b", size = 24654, upload-time = "2025-07-29T15:42:48.199Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9e/07/ab97dd7e8bc680b479203f7d3b2771b7a097468135a669a38da3208f96cb/opentelemetry_instrumentation_asgi-0.57b0-py3-none-any.whl", hash = "sha256:47debbde6af066a7e8e911f7193730d5e40d62effc1ac2e1119908347790a3ea", size = 16599, upload-time = "2025-07-29T15:41:48.332Z" },
-]
-
-[[package]]
-name = "opentelemetry-instrumentation-celery"
-version = "0.57b0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-instrumentation" },
-    { name = "opentelemetry-semantic-conventions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/1e/7e157a0b892063df04d70f6e92fdb66022d844dcf8c5d7bae377bd414fd3/opentelemetry_instrumentation_celery-0.57b0.tar.gz", hash = "sha256:07f615a48a95a1f1e43743fe50be124ed20a8329ba4271fec53a772683b1f5f8", size = 14767, upload-time = "2025-07-29T15:42:54.215Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/17/5f/f68e9c68586d10a6f5961b1063c056cbf365898d59f1f7d869ef2ab4369e/opentelemetry_instrumentation_celery-0.57b0-py3-none-any.whl", hash = "sha256:4ac302f7468ddd231c32a61fef8292b0f1c1a37840b262c020bb1108c2786413", size = 13806, upload-time = "2025-07-29T15:41:56.903Z" },
 ]
 
 [[package]]
@@ -1183,16 +1169,16 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "20.32.0"
+version = "20.33.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
     { name = "filelock" },
     { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a9/96/0834f30fa08dca3738614e6a9d42752b6420ee94e58971d702118f7cfd30/virtualenv-20.32.0.tar.gz", hash = "sha256:886bf75cadfdc964674e6e33eb74d787dff31ca314ceace03ca5810620f4ecf0", size = 6076970, upload-time = "2025-07-21T04:09:50.985Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/2e/8a70dcbe8bf15213a08f9b0325ede04faca5d362922ae0d62ef0fa4b069d/virtualenv-20.33.0.tar.gz", hash = "sha256:47e0c0d2ef1801fce721708ccdf2a28b9403fa2307c3268aebd03225976f61d2", size = 6082069, upload-time = "2025-08-03T08:09:19.014Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/c6/f8f28009920a736d0df434b52e9feebfb4d702ba942f15338cb4a83eafc1/virtualenv-20.32.0-py3-none-any.whl", hash = "sha256:2c310aecb62e5aa1b06103ed7c2977b81e042695de2697d01017ff0f1034af56", size = 6057761, upload-time = "2025-07-21T04:09:48.059Z" },
+    { url = "https://files.pythonhosted.org/packages/43/87/b22cf40cdf7e2b2bf83f38a94d2c90c5ad6c304896e5a12d0c08a602eb59/virtualenv-20.33.0-py3-none-any.whl", hash = "sha256:106b6baa8ab1b526d5a9b71165c85c456fbd49b16976c88e2bc9352ee3bc5d3f", size = 6060205, upload-time = "2025-08-03T08:09:16.674Z" },
 ]
 
 [[package]]
@@ -1254,26 +1240,20 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "cleanstack", extra = ["fastapi"] },
+    { name = "alembic" },
+    { name = "cleanstack", extra = ["fastapi", "sql"] },
     { name = "fastapi" },
-    { name = "logfire", extra = ["celery", "fastapi", "sqlalchemy"] },
+    { name = "logfire", extra = ["fastapi", "sqlalchemy"] },
     { name = "passlib", extra = ["bcrypt"] },
+    { name = "psycopg", extra = ["binary"] },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
     { name = "pyjwt" },
+    { name = "pymongo" },
     { name = "python-multipart" },
+    { name = "sqlalchemy" },
     { name = "typer" },
     { name = "uvicorn" },
-]
-
-[package.optional-dependencies]
-mongo = [
-    { name = "pymongo" },
-]
-sql = [
-    { name = "alembic" },
-    { name = "psycopg", extra = ["binary"] },
-    { name = "sqlalchemy" },
 ]
 
 [package.dev-dependencies]
@@ -1291,22 +1271,21 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", marker = "extra == 'sql'", specifier = ">=1.16" },
-    { name = "cleanstack", extras = ["fastapi"], git = "https://github.com/julienpillaud/cleanstack?tag=0.3.0" },
+    { name = "alembic", specifier = ">=1.16" },
+    { name = "cleanstack", extras = ["fastapi", "sql"], git = "https://github.com/julienpillaud/cleanstack?tag=0.4.0" },
     { name = "fastapi", specifier = ">=0.115" },
-    { name = "logfire", extras = ["celery", "fastapi", "sqlalchemy"], specifier = ">=4.0" },
+    { name = "logfire", extras = ["fastapi", "sqlalchemy"], specifier = ">=4.0" },
     { name = "passlib", extras = ["bcrypt"], specifier = ">=1.7" },
-    { name = "psycopg", extras = ["binary"], marker = "extra == 'sql'", specifier = ">=3.2" },
+    { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.11" },
     { name = "pydantic-settings", specifier = ">=2.10" },
     { name = "pyjwt", specifier = ">=2.10" },
-    { name = "pymongo", marker = "extra == 'mongo'", specifier = ">=4.13" },
+    { name = "pymongo", specifier = ">=4.13.2" },
     { name = "python-multipart", specifier = ">=0.0" },
-    { name = "sqlalchemy", marker = "extra == 'sql'", specifier = ">=2.0" },
+    { name = "sqlalchemy", specifier = ">=2.0" },
     { name = "typer", specifier = ">=0.16" },
     { name = "uvicorn", specifier = ">=0.34" },
 ]
-provides-extras = ["sql", "mongo"]
 
 [package.metadata.requires-dev]
 dev = [

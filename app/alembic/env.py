@@ -1,12 +1,13 @@
 from logging.config import fileConfig
 
+from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 
 from app.core.config import Settings
-from app.infrastructure.sql import models
+from app.infrastructure.sql import models  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -17,7 +18,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = models.OrmBase.metadata
+target_metadata = OrmBase.metadata
 
 settings = Settings(_env_file=".env")
 config.set_main_option("sqlalchemy.url", str(settings.postgres_dsn))
