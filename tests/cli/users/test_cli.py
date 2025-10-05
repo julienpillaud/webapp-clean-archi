@@ -77,7 +77,7 @@ def test_create_user_already_exists(
 
     # Assert
     assert result.exit_code == 1
-    assert "AlreadyExistsError" in result.output
+    assert "ConflictError" in result.output
 
 
 def test_create_user_invalid_data(cli_app: typer.Typer, cli_runner: CliRunner) -> None:

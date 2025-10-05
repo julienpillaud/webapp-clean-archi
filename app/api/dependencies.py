@@ -1,15 +1,14 @@
 import uuid
 from functools import lru_cache
-from typing import Annotated
+from typing import Annotated, cast
 
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
+from starlette.requests import Request
 
 from app.core.config import Settings
-from app.core.context.context import Context
-from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
 from app.domain.users.entities import User
 
@@ -26,16 +25,8 @@ def get_settings() -> Settings:
     return Settings()
 
 
-def get_context(
-    settings: Annotated[Settings, Depends(get_settings)],
-) -> ContextProtocol:
-    return Context(settings=settings)
-
-
-def get_domain(
-    context: Annotated[ContextProtocol, Depends(get_context)],
-) -> Domain:
-    return Domain(context=context)
+def get_domain(request: Request) -> Domain:
+    return cast(Domain, request.app.state.domain)
 
 
 async def get_current_user(

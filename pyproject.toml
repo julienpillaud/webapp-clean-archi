@@ -5,22 +5,18 @@ requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.16",
     "cleanstack[fastapi,sql]",
-    "fastapi>=0.115",
-    "logfire[fastapi,sqlalchemy]>=4.3",
-    "passlib[bcrypt]>=1.7",
+    "fastapi[standard]>=0.118",
+    "logfire[fastapi,sqlalchemy]>=4.11",
     "psycopg[binary]>=3.2",
-    "pydantic-settings>=2.10",
+    "pwdlib[argon2]>=0.2",
+    "pydantic-settings>=2.11",
     "pydantic[email]>=2.11",
     "pyjwt>=2.10",
-    "pymongo>=4.14",
+    "pymongo>=4.15",
     "python-multipart>=0.0",
     "sqlalchemy>=2.0",
     "typer>=0.16",
-    "uvicorn>=0.34",
 ]
-
-[tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.4.0" }
 
 [dependency-groups]
 dev = [
@@ -30,10 +26,12 @@ dev = [
     "polyfactory>=2.22",
     "pre-commit>=4.1",
     "pytest>=8.4",
-    "ruff==0.12.10",
-    "types-passlib>=1.7",
+    "ruff==0.13.3",
     "watchfiles>=1.0",
 ]
+
+[tool.uv.sources]
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.5.0" }
 
 [tool.ruff]
 output-format = "concise"

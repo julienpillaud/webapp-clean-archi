@@ -1,23 +1,22 @@
 import json
 import logging
 import logging.config
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import Iterator
 from functools import lru_cache
 from pathlib import Path
 
 import pytest
 import typer
 from fastapi.testclient import TestClient
-from httpx import ASGITransport, AsyncClient
 from typer.testing import CliRunner
 
 from app.api.app import create_app
-from app.api.dependencies import get_context, get_settings
+from app.api.dependencies import get_settings
 from app.cli.app import create_cli_app
 from app.core.config import Settings
 from app.core.context.context import Context
+from app.core.core import initialize_app
 from app.core.security import create_access_token
-from app.domain.context import ContextProtocol
 from app.domain.domain import Domain
 from factories.users import UserFactory
 
@@ -38,11 +37,6 @@ def get_test_settings() -> Settings:
     return settings_
 
 
-def get_test_context() -> ContextProtocol:
-    settings = get_test_settings()
-    return Context(settings=settings)
-
-
 @pytest.fixture(scope="session")
 def settings() -> Settings:
     return get_test_settings()
@@ -54,30 +48,12 @@ def client(user_factory: UserFactory, settings: Settings) -> Iterator[TestClient
     token_data = create_access_token(settings=settings, subject=user.id)
 
     app = create_app(settings=settings)
+    initialize_app(settings=settings, app=app)
     app.dependency_overrides[get_settings] = get_test_settings
-    app.dependency_overrides[get_context] = get_test_context
 
     client = TestClient(app)
     client.headers["Authorization"] = f"Bearer {token_data.access_token}"
     yield client
-
-
-@pytest.fixture
-def anyio_backend() -> str:
-    return "asyncio"
-
-
-@pytest.fixture
-async def client_async(settings: Settings) -> AsyncIterator[AsyncClient]:
-    app = create_app(settings=settings)
-    app.dependency_overrides[get_settings] = get_test_settings
-    app.dependency_overrides[get_context] = get_test_context
-
-    async with AsyncClient(
-        transport=ASGITransport(app=app),
-        base_url="http://test",
-    ) as client:
-        yield client
 
 
 @pytest.fixture
@@ -89,6 +65,6 @@ def cli_runner() -> CliRunner:
 def cli_app(settings: Settings) -> typer.Typer:
     config = json.loads(Path("app/core/logging/config.json").read_text())
     logging.config.dictConfig(config)
-    context = get_test_context()
+    context = Context(settings=settings)
     domain = Domain(context=context)
     return create_cli_app(domain=domain)
