@@ -1,7 +1,7 @@
 import uuid
 
 from cleanstack.entities import EntityId
-from cleanstack.exceptions import AlreadyExistsError, NotFoundError
+from cleanstack.exceptions import ConflictError, NotFoundError
 
 from app.core.security import get_password_hash, verify_password
 from app.domain.context import ContextProtocol
@@ -26,7 +26,7 @@ def authenticate_user_command(
 def create_user_command(context: ContextProtocol, data: UserCreate) -> User:
     existing_user = context.user_repository.get_by_email(email=data.email)
     if existing_user:
-        raise AlreadyExistsError(f"User '{data.email}' already exists.")
+        raise ConflictError(f"User '{data.email}' already exists.")
 
     user = User(
         id=uuid.uuid4(),

@@ -5,7 +5,7 @@ from typing import Any, ParamSpec, TypeVar
 
 import typer
 from cleanstack.entities import EntityId
-from cleanstack.exceptions import AlreadyExistsError, NotFoundError
+from cleanstack.exceptions import ConflictError, NotFoundError
 from pydantic import BaseModel, ValidationError
 from rich import print
 from rich.panel import Panel
@@ -24,8 +24,8 @@ def exception_handler(function: Callable[P, R]) -> Callable[P, R]:
         except NotFoundError as error:
             print_result(error, title="NotFoundError", border_style="yellow")
             raise typer.Exit(code=1) from error
-        except AlreadyExistsError as error:
-            print_result(error, title="AlreadyExistsError", border_style="yellow")
+        except ConflictError as error:
+            print_result(error, title="ConflictError", border_style="yellow")
             raise typer.Exit(code=1) from error
 
     return decorator
