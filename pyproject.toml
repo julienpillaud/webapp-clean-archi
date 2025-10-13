@@ -26,7 +26,7 @@ dev = [
     "polyfactory>=2.22",
     "pre-commit>=4.1",
     "pytest>=8.4",
-    "ruff==0.13.3",
+    "ruff==0.14.0",
     "watchfiles>=1.0",
 ]
 
