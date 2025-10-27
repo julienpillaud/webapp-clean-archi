@@ -11,6 +11,7 @@ from app.infrastructure.sql.models import OrmUser
 
 
 class UserEntityFactory(ModelFactory[User]):
+    __check_model__ = True
     posts: ClassVar[list[Post]] = []
 
 

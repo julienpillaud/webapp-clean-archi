@@ -11,6 +11,7 @@ from factories.users import UserFactory
 
 
 class PostEntityFactory(ModelFactory[Post]):
+    __check_model__ = True
     # Create between 1 and 3 tags
     __randomize_collection_length__ = True
     __min_collection_length__ = 1
