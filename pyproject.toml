@@ -3,35 +3,35 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "alembic>=1.16",
+    "alembic>=1.17",
     "cleanstack[fastapi,sql]",
-    "fastapi[standard]>=0.118",
-    "logfire[fastapi,sqlalchemy]>=4.11",
+    "fastapi[standard]>=0.120",
+    "logfire[fastapi,sqlalchemy]>=4.14",
     "psycopg[binary]>=3.2",
-    "pwdlib[argon2]>=0.2",
+    "pwdlib[argon2]>=0.3",
     "pydantic-settings>=2.11",
     "pydantic[email]>=2.11",
     "pyjwt>=2.10",
     "pymongo>=4.15",
     "python-multipart>=0.0",
     "sqlalchemy>=2.0",
-    "typer>=0.16",
+    "typer>=0.20",
 ]
 
 [dependency-groups]
 dev = [
-    "coverage>=7.10",
+    "coverage>=7.11",
     "httpx>=0.28",
-    "mypy>=1.17",
+    "mypy==1.18.2",
     "polyfactory>=2.22",
-    "pre-commit>=4.1",
+    "pre-commit>=4.3",
     "pytest>=8.4",
-    "ruff==0.13.3",
-    "watchfiles>=1.0",
+    "ruff==0.14.2",
+    "watchfiles>=1.1",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.5.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.5.1" }
 
 [tool.ruff]
 output-format = "concise"
