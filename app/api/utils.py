@@ -1,10 +1,6 @@
-from typing import Generic, TypeVar
-
 from pydantic import BaseModel, NonNegativeInt
 
 from app.domain.entities import Pagination
-
-T = TypeVar("T", bound=BaseModel)
 
 
 class BaseQuery(Pagination):
@@ -15,7 +11,7 @@ class BaseQuery(Pagination):
         return Pagination(page=self.page, limit=self.limit)
 
 
-class PaginatedResponseDTO(BaseModel, Generic[T]):
+class PaginatedResponseDTO[T: BaseModel](BaseModel):
     total: NonNegativeInt
     limit: NonNegativeInt
     items: list[T]

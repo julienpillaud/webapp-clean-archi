@@ -1,13 +1,11 @@
-from typing import Protocol, TypeVar
+from typing import Protocol
 
 from cleanstack.entities import DomainModel, EntityId
 
 from app.domain.entities import PaginatedResponse, Pagination
 
-T = TypeVar("T", bound=DomainModel)
 
-
-class BaseRepositoryProtocol(Protocol[T]):
+class BaseRepositoryProtocol[T: DomainModel](Protocol):
     def get_all(
         self,
         pagination: Pagination | None = None,

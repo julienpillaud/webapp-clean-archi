@@ -1,10 +1,5 @@
-from typing import Generic, TypeVar
-
 from cleanstack.entities import DomainModel
 from pydantic import BaseModel, NonNegativeInt, PositiveInt
-
-T = TypeVar("T", bound=DomainModel)
-
 
 DEFAULT_PAGINATION_LIMIT = 10
 
@@ -19,7 +14,7 @@ class Pagination(BaseModel):
     limit: PositiveInt = DEFAULT_PAGINATION_LIMIT
 
 
-class PaginatedResponse(BaseModel, Generic[T]):
+class PaginatedResponse[T: DomainModel](BaseModel):
     total: NonNegativeInt
     limit: NonNegativeInt
     items: list[T]
