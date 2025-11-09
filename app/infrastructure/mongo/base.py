@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 from cleanstack.entities import DomainModel, EntityId
 from pymongo.database import Database
@@ -9,19 +9,16 @@ from app.domain.interfaces.repository import BaseRepositoryProtocol
 
 logger = logging.getLogger(__name__)
 
-Domain_T = TypeVar("Domain_T", bound=DomainModel)
-
 
 type MongoDocument = dict[str, Any]
 
 
-class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
-    domain_model: type[Domain_T]
+class BaseMongoRepository[T: DomainModel](BaseRepositoryProtocol[T]):
+    domain_model: type[T]
     collection_name: str
     searchable_fields: tuple[str, ...]
 
     def __init__(self, database: Database[MongoDocument]):
-        logger.debug(f"Instantiate '{self.__class__.__name__}'")
         self.database = database
         self.collection = self.database[self.collection_name]
 
@@ -29,7 +26,7 @@ class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
         self,
         pagination: Pagination | None = None,
         search: str | None = None,
-    ) -> PaginatedResponse[Domain_T]:
+    ) -> PaginatedResponse[T]:
         pagination = pagination or Pagination()
         skip = (pagination.page - 1) * pagination.limit
 
@@ -45,12 +42,12 @@ class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
 
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
 
-    def get_by_id(self, entity_id: EntityId, /) -> Domain_T | None:
+    def get_by_id(self, entity_id: EntityId, /) -> T | None:
         db_result = self._get_db_entity(entity_id)
 
         return self._to_domain_entity(db_result) if db_result else None
 
-    def create(self, entity: Domain_T, /) -> Domain_T:
+    def create(self, entity: T, /) -> T:
         db_entity = self._to_database_entity(entity)
 
         result = self.collection.insert_one(db_entity)
@@ -61,7 +58,7 @@ class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
 
         return self._to_domain_entity(db_result)
 
-    def update(self, entity: Domain_T, /) -> Domain_T:
+    def update(self, entity: T, /) -> T:
         db_entity = self._to_database_entity(entity)
 
         self.collection.replace_one({"_id": entity.id}, db_entity)
@@ -72,7 +69,7 @@ class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
 
         return self._to_domain_entity(db_result)
 
-    def delete(self, entity: Domain_T, /) -> None:
+    def delete(self, entity: T, /) -> None:
         self.collection.delete_one({"_id": entity.id})
 
     def _get_db_entity(self, entity_id: EntityId, /) -> MongoDocument | None:
@@ -82,12 +79,12 @@ class BaseMongoRepository(BaseRepositoryProtocol[Domain_T], Generic[Domain_T]):
         ]
         return next(self.collection.aggregate(pipeline), None)
 
-    def _to_domain_entity(self, document: MongoDocument, /) -> Domain_T:
+    def _to_domain_entity(self, document: MongoDocument, /) -> T:
         document["id"] = document.pop("_id")
         return self.domain_model.model_validate(document)
 
     @staticmethod
-    def _to_database_entity(entity: Domain_T, /) -> MongoDocument:
+    def _to_database_entity(entity: T, /) -> MongoDocument:
         document = entity.model_dump(exclude={"id"})
         document["_id"] = entity.id
         return document

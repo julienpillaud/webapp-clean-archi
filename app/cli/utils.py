@@ -1,7 +1,7 @@
 import re
 import uuid
 from collections.abc import Callable
-from typing import Any, ParamSpec, TypeVar
+from typing import Any
 
 import typer
 from cleanstack.entities import EntityId
@@ -11,13 +11,10 @@ from rich import print
 from rich.panel import Panel
 from rich.pretty import Pretty
 
-P = ParamSpec("P")
-R = TypeVar("R")
-
 object_id_pattern = re.compile(r"^[a-fA-F0-9]{24}$")
 
 
-def exception_handler(function: Callable[P, R]) -> Callable[P, R]:
+def exception_handler[**P, R](function: Callable[P, R]) -> Callable[P, R]:
     def decorator(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
             return function(*args, **kwargs)

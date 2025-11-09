@@ -5,12 +5,12 @@ requires-python = ">=3.13"
 dependencies = [
     "alembic>=1.17",
     "cleanstack[fastapi,sql]",
-    "fastapi[standard]>=0.120",
+    "fastapi[standard]>=0.121",
     "logfire[fastapi,sqlalchemy]>=4.14",
     "psycopg[binary]>=3.2",
     "pwdlib[argon2]>=0.3",
     "pydantic-settings>=2.11",
-    "pydantic[email]>=2.11",
+    "pydantic[email]>=2.12",
     "pyjwt>=2.10",
     "pymongo>=4.15",
     "python-multipart>=0.0",
@@ -24,14 +24,14 @@ dev = [
     "httpx>=0.28",
     "mypy==1.18.2",
     "polyfactory>=2.22",
-    "pre-commit>=4.3",
-    "pytest>=8.4",
-    "ruff==0.14.2",
+    "pre-commit>=4.4",
+    "pytest>=9.0",
+    "ruff==0.14.4",
     "watchfiles>=1.1",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.5.1" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.6.0" }
 
 [tool.ruff]
 output-format = "concise"
@@ -53,8 +53,6 @@ select = [
 ignore = [
     "PLR0913",  # Too many arguments in function definition (6 > 5)
     "PLC0414",  # Import alias does not rename original package
-    "UP046",  # non-pep695-generic-class
-    "UP047",  # non-pep695-generic-function
 ]
 
 [tool.mypy]
