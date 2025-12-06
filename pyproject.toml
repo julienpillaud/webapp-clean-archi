@@ -1,13 +1,13 @@
 [project]
 name = "webapp-clean-archi"
 version = "0.1.0"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "alembic>=1.17",
-    "cleanstack[fastapi,sql]",
-    "fastapi[standard]>=0.121",
-    "logfire[fastapi,sqlalchemy]>=4.14",
-    "psycopg[binary]>=3.2",
+    "cleanstack",
+    "fastapi[standard]>=0.124",
+    "logfire[fastapi,sqlalchemy]>=4.16",
+    "psycopg[binary]>=3.3",
     "pwdlib[argon2]>=0.3",
     "pydantic-settings>=2.11",
     "pydantic[email]>=2.12",
@@ -22,11 +22,11 @@ dependencies = [
 dev = [
     "coverage>=7.11",
     "httpx>=0.28",
-    "mypy==1.18.2",
+    "mypy==1.19.0",
     "polyfactory>=2.22",
-    "pre-commit>=4.4",
+    "pre-commit>=4.5",
     "pytest>=9.0",
-    "ruff==0.14.5",
+    "ruff==0.14.8",
     "watchfiles>=1.1",
 ]
 

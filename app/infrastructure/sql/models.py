@@ -23,7 +23,7 @@ class OrmUser(OrmBase):
     username: Mapped[str]
     hashed_password: Mapped[str]
 
-    posts: Mapped[list["OrmPost"]] = relationship(cascade="all, delete-orphan")
+    posts: Mapped[list[OrmPost]] = relationship(cascade="all, delete-orphan")
 
 
 class OrmPost(OrmBase):
@@ -35,7 +35,7 @@ class OrmPost(OrmBase):
         ForeignKey("user.id", ondelete="CASCADE")
     )
 
-    tags: Mapped[list["OrmTag"]] = relationship(secondary=post_tag)
+    tags: Mapped[list[OrmTag]] = relationship(secondary=post_tag)
 
 
 class OrmTag(OrmBase):
