@@ -22,11 +22,11 @@ dependencies = [
 dev = [
     "coverage>=7.11",
     "httpx>=0.28",
-    "mypy==1.19.0",
+    "mypy==1.19.1",
     "polyfactory>=2.22",
     "pre-commit>=4.5",
     "pytest>=9.0",
-    "ruff==0.14.8",
+    "ruff==0.14.9",
     "watchfiles>=1.1",
 ]
 
