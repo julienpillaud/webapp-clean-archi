@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from factories.users import UserFactory
+from tests.factories.users import UserFactory
 
 
 def test_get_access_token(user_factory: UserFactory, client: TestClient) -> None:

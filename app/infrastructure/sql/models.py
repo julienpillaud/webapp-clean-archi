@@ -1,12 +1,13 @@
 import uuid
 
-from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.infrastructure.sql.base import OrmEntity
+
 post_tag = Table(
     "post_tag",
-    OrmBase.metadata,
+    OrmEntity.metadata,
     Column[uuid.UUID](
         "post_id", ForeignKey("post.id", ondelete="CASCADE"), primary_key=True
     ),
@@ -16,7 +17,7 @@ post_tag = Table(
 )
 
 
-class OrmUser(OrmBase):
+class OrmUser(OrmEntity):
     __tablename__ = "user"
 
     email: Mapped[str] = mapped_column(unique=True)
@@ -26,7 +27,7 @@ class OrmUser(OrmBase):
     posts: Mapped[list[OrmPost]] = relationship(cascade="all, delete-orphan")
 
 
-class OrmPost(OrmBase):
+class OrmPost(OrmEntity):
     __tablename__ = "post"
 
     title: Mapped[str]
@@ -38,7 +39,7 @@ class OrmPost(OrmBase):
     tags: Mapped[list[OrmTag]] = relationship(secondary=post_tag)
 
 
-class OrmTag(OrmBase):
+class OrmTag(OrmEntity):
     __tablename__ = "tag"
 
     name: Mapped[str] = mapped_column(unique=True)

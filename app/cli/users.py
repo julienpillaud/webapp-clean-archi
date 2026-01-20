@@ -1,7 +1,6 @@
 from typing import Annotated
 
 import typer
-from cleanstack.entities import EntityId
 from pydantic import PositiveInt
 
 from app.cli.utils import (
@@ -10,7 +9,7 @@ from app.cli.utils import (
     parse_entity_id,
     print_result,
 )
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT, Pagination
+from app.domain.entities import DEFAULT_PAGINATION_LIMIT, EntityId, Pagination
 from app.domain.users.entities import UserCreate, UserUpdate
 
 app = typer.Typer()

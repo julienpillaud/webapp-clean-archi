@@ -4,8 +4,8 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.entities import DEFAULT_PAGINATION_LIMIT
-from factories.posts import PostFactory
-from factories.users import UserFactory
+from tests.factories.posts import PostFactory
+from tests.factories.users import UserFactory
 
 
 def test_get_users(user_factory: UserFactory, client: TestClient) -> None:

@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.infrastructure.sql.models import OrmUser
 from app.utils.sqlalchemy_instrument import SQLAlchemyInstrument
-from factories.posts import PostFactory
-from factories.users import UserFactory
+from tests.factories.posts import PostFactory
+from tests.factories.users import UserFactory
 
 number_of_users = 10
 numbers_of_test_users = 10

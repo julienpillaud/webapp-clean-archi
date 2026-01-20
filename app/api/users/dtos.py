@@ -1,7 +1,7 @@
-from cleanstack.entities import EntityId
 from pydantic import BaseModel
 
 from app.api.posts.dtos import PostDTO
+from app.domain.entities import EntityId
 
 
 class UserDTO(BaseModel):

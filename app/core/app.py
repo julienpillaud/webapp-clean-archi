@@ -8,7 +8,7 @@ from app.core.core import initialize_app
 
 logger = logging.getLogger(__name__)
 
-settings = Settings()
+settings = Settings()  # ty:ignore[missing-argument]
 logfire.configure(
     send_to_logfire="if-token-present",
     token=settings.logfire_token,

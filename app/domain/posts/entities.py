@@ -1,12 +1,13 @@
 from typing import NewType
 
-from cleanstack.entities import DomainModel, EntityId
 from pydantic import BaseModel, field_validator
+
+from app.domain.entities import DomainEntity, EntityId
 
 TagName = NewType("TagName", str)
 
 
-class Post(DomainModel):
+class Post(DomainEntity):
     title: str
     content: str
     author_id: EntityId
