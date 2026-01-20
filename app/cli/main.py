@@ -7,7 +7,7 @@ from app.core.config import Settings
 from app.core.context.context import Context
 from app.domain.domain import Domain
 
-settings = Settings(_env_file=".env")
+settings = Settings(_env_file=".env")  # ty:ignore[unknown-argument,missing-argument]
 context = Context(settings=settings)
 domain = Domain(context=context)
 
