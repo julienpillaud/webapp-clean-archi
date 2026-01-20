@@ -1,10 +1,10 @@
-from cleanstack.entities import DomainModel
 from pydantic import BaseModel, EmailStr
 
+from app.domain.entities import DomainEntity
 from app.domain.posts.entities import Post
 
 
-class User(DomainModel):
+class User(DomainEntity):
     email: EmailStr
     username: str
     hashed_password: str

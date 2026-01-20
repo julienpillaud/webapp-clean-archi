@@ -1,12 +1,12 @@
 from typing import Annotated, Any
 
-from cleanstack.entities import EntityId
 from fastapi import APIRouter, Depends, Query, status
 
 from app.api.dependencies import get_domain
 from app.api.users.dtos import UserDTO
 from app.api.utils import BaseQuery, PaginatedResponseDTO
 from app.domain.domain import Domain
+from app.domain.entities import EntityId
 from app.domain.users.entities import UserCreate, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])

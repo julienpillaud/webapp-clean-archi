@@ -2,11 +2,11 @@ import logging
 from collections.abc import Iterator
 
 import pytest
-from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
+from app.infrastructure.sql.base import OrmEntity
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +20,9 @@ def engine(settings: Settings) -> Engine:
 @pytest.fixture(scope="session")
 def setup_db(engine: Engine) -> None:
     logger.info("Drop all tables")
-    OrmBase.metadata.drop_all(engine)
+    OrmEntity.metadata.drop_all(engine)
     logger.info("Create all tables")
-    OrmBase.metadata.create_all(engine)
+    OrmEntity.metadata.create_all(engine)
 
 
 @pytest.fixture
@@ -33,6 +33,6 @@ def session(setup_db: None, engine: Engine) -> Iterator[Session]:
 
         session.rollback()
         logger.debug("Deleting database tables")
-        for table in reversed(OrmBase.metadata.sorted_tables):
+        for table in reversed(OrmEntity.metadata.sorted_tables):
             session.execute(table.delete())
         session.commit()

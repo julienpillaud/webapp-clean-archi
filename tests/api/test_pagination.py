@@ -1,7 +1,7 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from factories.posts import PostFactory
+from tests.factories.posts import PostFactory
 
 
 def test_pagination_request_less_than_total(

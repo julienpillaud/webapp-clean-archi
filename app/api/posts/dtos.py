@@ -1,6 +1,6 @@
-from cleanstack.entities import EntityId
 from pydantic import BaseModel
 
+from app.domain.entities import EntityId
 from app.domain.posts.entities import TagName
 
 

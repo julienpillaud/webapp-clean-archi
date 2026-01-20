@@ -18,7 +18,7 @@ from app.core.context.context import Context
 from app.core.core import initialize_app
 from app.core.security import create_access_token
 from app.domain.domain import Domain
-from factories.users import UserFactory
+from tests.factories.users import UserFactory
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ project_dir = Path(__file__).parents[1]
 
 @lru_cache(maxsize=1)
 def get_test_settings() -> Settings:
-    settings_ = Settings(_env_file=project_dir / ".env.test")
+    settings_ = Settings(_env_file=project_dir / ".env.test")  # ty:ignore[unknown-argument,missing-argument]
     logger.info(f"Loading settings for ENV {settings_.environment}")
     return settings_
 

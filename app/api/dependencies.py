@@ -22,7 +22,7 @@ credential_exception = HTTPException(
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    return Settings()
+    return Settings()  # ty:ignore[missing-argument]
 
 
 def get_domain(request: Request) -> Domain:

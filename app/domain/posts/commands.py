@@ -1,10 +1,9 @@
 import uuid
 
-from cleanstack.entities import EntityId
 from cleanstack.exceptions import NotFoundError
 
 from app.domain.context import ContextProtocol
-from app.domain.entities import PaginatedResponse, Pagination
+from app.domain.entities import EntityId, PaginatedResponse, Pagination
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 
@@ -14,7 +13,7 @@ def create_post_command(context: ContextProtocol, data: PostCreate) -> Post:
         raise NotFoundError(f"User '{data.author_id}' not found.")
 
     post = Post(
-        id=uuid.uuid4(),
+        id=uuid.uuid7(),
         title=data.title,
         content=data.content,
         author_id=author.id,

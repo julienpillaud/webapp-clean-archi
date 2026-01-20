@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     postgres_port: int
     postgres_db: str
 
-    @computed_field  # type: ignore[prop-decorator]
+    @computed_field
     @property
     def postgres_dsn(self) -> PostgresDsn:
         return PostgresDsn.build(

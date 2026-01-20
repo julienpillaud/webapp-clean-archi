@@ -1,11 +1,10 @@
 import logging
 from typing import Any
 
-from cleanstack.entities import DomainModel, EntityId
 from pymongo.database import Database
 
-from app.domain.entities import PaginatedResponse, Pagination
-from app.domain.interfaces.repository import BaseRepositoryProtocol
+from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
+from app.domain.interfaces.repository import RepositoryProtocol
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 type MongoDocument = dict[str, Any]
 
 
-class BaseMongoRepository[T: DomainModel](BaseRepositoryProtocol[T]):
+class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
     domain_model: type[T]
     collection_name: str
     searchable_fields: tuple[str, ...]

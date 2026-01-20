@@ -1,19 +1,27 @@
 import logging
 
-from cleanstack.entities import DomainModel, EntityId
-from cleanstack.infrastructure.sql.entities import OrmBase
 from sqlalchemy import Select, delete, func, or_, select
-from sqlalchemy.orm import InstrumentedAttribute, Session
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    InstrumentedAttribute,
+    Mapped,
+    Session,
+    mapped_column,
+)
 from sqlalchemy.orm.interfaces import ORMOption
 
-from app.domain.entities import PaginatedResponse, Pagination
-from app.domain.interfaces.repository import BaseRepositoryProtocol
+from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
+from app.domain.interfaces.repository import RepositoryProtocol
 
 logger = logging.getLogger(__name__)
 
 
-class BaseSqlRepository[DomainT: DomainModel, OrmT: OrmBase](
-    BaseRepositoryProtocol[DomainT],
+class OrmEntity(DeclarativeBase):
+    id: Mapped[EntityId] = mapped_column(primary_key=True)
+
+
+class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
+    RepositoryProtocol[DomainT],
 ):
     domain_model: type[DomainT]
     orm_model: type[OrmT]
