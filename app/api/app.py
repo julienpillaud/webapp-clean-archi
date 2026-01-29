@@ -5,6 +5,7 @@ from fastapi import FastAPI, status
 
 from app.api.auth.router import router as auth_router
 from app.api.dev.router import router as dev_router
+from app.api.dummies.router import router as dummies_router
 from app.api.posts.router import router as posts_router
 from app.api.users.router import router as users_router
 from app.core.config import Settings
@@ -29,6 +30,7 @@ def create_app(settings: Settings) -> FastAPI:
 
     app.include_router(auth_router)
     app.include_router(dev_router)
+    app.include_router(dummies_router)
     app.include_router(posts_router)
     app.include_router(users_router)
 

@@ -1,12 +1,13 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 
-from app.api.dependencies import get_domain
+from app.api.dependencies import get_domain, get_filters
 from app.api.posts.dtos import PostDTO
-from app.api.utils import BaseQuery, PaginatedResponseDTO
+from app.api.utils import PaginatedResponseDTO
 from app.domain.domain import Domain
-from app.domain.entities import EntityId
+from app.domain.entities import EntityId, Pagination
+from app.domain.filters import FilterEntity
 from app.domain.posts.entities import PostCreate, PostUpdate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -15,9 +16,11 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 @router.get("", response_model=PaginatedResponseDTO[PostDTO])
 def get_posts(
     domain: Annotated[Domain, Depends(get_domain)],
-    query: Annotated[BaseQuery, Query()],
+    pagination: Annotated[Pagination, Depends()],
+    filters: Annotated[list[FilterEntity], Depends(get_filters)],
+    search: str | None = None,
 ) -> Any:
-    return domain.get_posts(pagination=query.pagination, search=query.search)
+    return domain.get_posts(pagination=pagination, search=search, filters=filters)
 
 
 @router.get("/{post_id}", response_model=PostDTO)

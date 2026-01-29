@@ -4,6 +4,7 @@ from typing import Any
 from pymongo.database import Database
 
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
+from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
         self,
         pagination: Pagination | None = None,
         search: str | None = None,
+        filters: list[FilterEntity] | None = None,
     ) -> PaginatedResponse[T]:
         pagination = pagination or Pagination()
         skip = (pagination.page - 1) * pagination.limit

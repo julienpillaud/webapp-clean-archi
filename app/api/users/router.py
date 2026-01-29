@@ -1,12 +1,13 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 
-from app.api.dependencies import get_domain
+from app.api.dependencies import get_domain, get_filters
 from app.api.users.dtos import UserDTO
-from app.api.utils import BaseQuery, PaginatedResponseDTO
+from app.api.utils import PaginatedResponseDTO
 from app.domain.domain import Domain
-from app.domain.entities import EntityId
+from app.domain.entities import EntityId, Pagination
+from app.domain.filters import FilterEntity
 from app.domain.users.entities import UserCreate, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -15,9 +16,11 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get("", response_model=PaginatedResponseDTO[UserDTO])
 def get_users(
     domain: Annotated[Domain, Depends(get_domain)],
-    query: Annotated[BaseQuery, Query()],
+    pagination: Annotated[Pagination, Depends()],
+    filters: Annotated[list[FilterEntity], Depends(get_filters)],
+    search: str | None = None,
 ) -> Any:
-    return domain.get_users(pagination=query.pagination, search=query.search)
+    return domain.get_users(pagination=pagination, search=search, filters=filters)
 
 
 @router.get("/{user_id}", response_model=UserDTO)

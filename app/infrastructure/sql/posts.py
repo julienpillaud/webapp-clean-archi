@@ -12,8 +12,8 @@ from app.infrastructure.sql.models import OrmPost, OrmTag
 class PostSqlRepository(SqlRepository[Post, OrmPost], PostRepositoryProtocol):
     domain_model = Post
     orm_model = OrmPost
-    searchable_fields = (OrmPost.title, OrmPost.content)
     select_options = (selectinload(OrmPost.tags),)
+    searchable_fields = (OrmPost.title, OrmPost.content)
 
     def update(self, entity: Post, /) -> Post:
         assert entity.id is not None

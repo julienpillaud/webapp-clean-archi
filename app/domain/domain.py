@@ -7,6 +7,7 @@ from app.domain.dev.commands import (
     unexpected_domain_error_command,
     unexpected_error_command,
 )
+from app.domain.dummies.commands import get_dummies_command
 from app.domain.posts.commands import (
     create_post_command,
     delete_post_command,
@@ -37,6 +38,8 @@ class Domain(BaseDomain[ContextProtocol]):
     create_user = CommandHandler(create_user_command)
     update_user = CommandHandler(update_user_command)
     delete_user = CommandHandler(delete_user_command)
+
+    get_dummies = CommandHandler(get_dummies_command)
 
     benchmark = CommandHandler(benchmark_command)
     custom_error = CommandHandler(custom_error_command)
