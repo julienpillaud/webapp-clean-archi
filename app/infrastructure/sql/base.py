@@ -1,23 +1,17 @@
 import logging
+from typing import Any, ClassVar
 
-from sqlalchemy import Select, delete, func, or_, select
-from sqlalchemy.orm import (
-    DeclarativeBase,
-    InstrumentedAttribute,
-    Mapped,
-    Session,
-    mapped_column,
-)
+from sqlalchemy import delete, select
+from sqlalchemy.orm import InstrumentedAttribute, Session
 from sqlalchemy.orm.interfaces import ORMOption
 
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
+from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
+from app.infrastructure.sql.entities import OrmEntity
+from app.infrastructure.sql.utils import SQLQueryBuilder
 
 logger = logging.getLogger(__name__)
-
-
-class OrmEntity(DeclarativeBase):
-    id: Mapped[EntityId] = mapped_column(primary_key=True)
 
 
 class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
@@ -25,28 +19,36 @@ class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
 ):
     domain_model: type[DomainT]
     orm_model: type[OrmT]
-    searchable_fields: tuple[InstrumentedAttribute[str], ...]
     select_options: tuple[ORMOption, ...] = ()
+    filterable_fields: ClassVar[dict[str, InstrumentedAttribute[Any]]] = {}
+    searchable_fields: tuple[InstrumentedAttribute[Any], ...] = ()
 
     def __init__(self, session: Session):
         self.session = session
+        self.query_builder = SQLQueryBuilder(
+            model=self.orm_model,
+            select_options=self.select_options,
+            filterable_fields=self.filterable_fields,
+            searchable_fields=self.searchable_fields,
+        )
 
     def get_all(
         self,
         pagination: Pagination | None = None,
         search: str | None = None,
+        filters: list[FilterEntity] | None = None,
     ) -> PaginatedResponse[DomainT]:
         pagination = pagination or Pagination()
 
-        stmt = select(self.orm_model)
-        if self.select_options:
-            stmt = stmt.options(*self.select_options)
+        queries = self.query_builder.build(
+            search=search,
+            filters=filters,
+            pagination=pagination,
+        )
 
-        stmt = self._apply_search(stmt=stmt, search=search)
-        total = self._total_count(stmt=stmt)
-        stmt = self._apply_pagination(stmt=stmt, pagination=pagination)
+        total = self.session.scalar(queries.count) or 0
 
-        orm_entities = self.session.scalars(stmt)
+        orm_entities = self.session.scalars(queries.data)
         items = [self._to_domain_entity(orm_entity) for orm_entity in orm_entities]
 
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
@@ -88,23 +90,3 @@ class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
 
     def _to_database_entity(self, entity: DomainT, /) -> OrmT:
         return self.orm_model(**entity.model_dump())
-
-    def _apply_search(
-        self, stmt: Select[tuple[OrmT]], search: str | None
-    ) -> Select[tuple[OrmT]]:
-        if not search:
-            return stmt
-
-        conditions = [field.ilike(f"%{search}%") for field in self.searchable_fields]
-        return stmt.where(or_(*conditions))
-
-    def _total_count(self, stmt: Select[tuple[OrmT]]) -> int:
-        count_stmt = stmt.with_only_columns(func.count()).select_from(self.orm_model)
-        return self.session.scalar(count_stmt) or 0
-
-    @staticmethod
-    def _apply_pagination(
-        stmt: Select[tuple[OrmT]], pagination: Pagination
-    ) -> Select[tuple[OrmT]]:
-        offset = (pagination.page - 1) * pagination.limit
-        return stmt.offset(offset).limit(pagination.limit)

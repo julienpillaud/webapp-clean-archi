@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.domain.entities import DomainEntity
 from app.domain.interfaces.repository import RepositoryProtocol
-from app.infrastructure.sql.base import OrmEntity, SqlRepository
+from app.infrastructure.sql.base import SqlRepository
+from app.infrastructure.sql.entities import OrmEntity
 
 
 class BaseFactory[T: DomainEntity]:

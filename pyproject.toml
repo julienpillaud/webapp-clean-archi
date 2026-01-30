@@ -26,9 +26,10 @@ dev = [
     "httpx>=0.28",
     "mypy==1.19.1",
     "pre-commit>=4.5",
+    "prek>=0.3.0",
     "pytest>=9.0",
-    "ruff==0.14.13",
-    "ty==0.0.12",
+    "ruff>=0.14",
+    "ty>=0.0",
     "watchfiles>=1.1",
 ]
 
@@ -53,6 +54,7 @@ select = [
     "RUF",
 ]
 ignore = [
+    "PLR0911", # Too many return statements (7 > 6)
     "PLR0913", # Too many arguments in function definition (6 > 5)
     "PLC0414", # Import alias does not rename original package
 ]

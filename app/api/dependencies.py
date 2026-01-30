@@ -3,13 +3,15 @@ from functools import lru_cache
 from typing import Annotated, cast
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from starlette.requests import Request
 
+from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.domain.domain import Domain
+from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
 
 oauth2_password_bearer = OAuth2PasswordBearer(tokenUrl="auth/access-token")
@@ -52,3 +54,18 @@ async def get_current_user(
         raise credential_exception
 
     return user
+
+
+def get_filters(
+    filters: Annotated[list[str] | None, Query(alias="filter")] = None,
+) -> list[FilterEntity]:
+    if not filters:
+        return []
+
+    try:
+        return parse_filters(filters)
+    except ValueError as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Invalid filter format.",
+        ) from error
