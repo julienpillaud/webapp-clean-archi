@@ -13,9 +13,10 @@ class Settings(BaseSettings):
     api_version: str = "0.0.1"
     environment: str
 
+    jwt_secret: str
     jwt_algorithm: str = "HS256"
-    access_token_expire_minutes: int = 30
-    secret_key: str
+    jwt_audience: str
+
     logfire_token: str = ""
 
     postgres_user: str

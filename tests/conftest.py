@@ -12,11 +12,11 @@ from typer.testing import CliRunner
 
 from app.api.app import create_app
 from app.api.dependencies import get_settings
+from app.api.security import encode_jwt
 from app.cli.app import create_cli_app
 from app.core.config import Settings
 from app.core.context.context import Context
 from app.core.core import initialize_app
-from app.core.security import create_access_token
 from app.domain.domain import Domain
 from tests.factories.users import UserFactory
 
@@ -45,14 +45,18 @@ def settings() -> Settings:
 @pytest.fixture
 def client(user_factory: UserFactory, settings: Settings) -> Iterator[TestClient]:
     user = user_factory.create_one()
-    token_data = create_access_token(settings=settings, subject=user.id)
+    token = encode_jwt(
+        sub=user.provider_id,
+        email=user.email,
+        settings=settings,
+    )
 
     app = create_app(settings=settings)
     initialize_app(settings=settings, app=app)
     app.dependency_overrides[get_settings] = get_test_settings
 
     client = TestClient(app)
-    client.headers["Authorization"] = f"Bearer {token_data.access_token}"
+    client.headers["Authorization"] = f"Bearer {token}"
     yield client
 
 

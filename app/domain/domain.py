@@ -16,12 +16,8 @@ from app.domain.posts.commands import (
     update_post_command,
 )
 from app.domain.users.commands import (
-    authenticate_user_command,
-    create_user_command,
-    delete_user_command,
-    get_user_command,
+    get_user_by_provider_id_command,
     get_users_command,
-    update_user_command,
 )
 
 
@@ -32,12 +28,8 @@ class Domain(BaseDomain[ContextProtocol]):
     update_post = CommandHandler(update_post_command)
     delete_post = CommandHandler(delete_post_command)
 
-    authenticate_user = CommandHandler(authenticate_user_command)
+    get_user_by_provider_id = CommandHandler(get_user_by_provider_id_command)
     get_users = CommandHandler(get_users_command)
-    get_user = CommandHandler(get_user_command)
-    create_user = CommandHandler(create_user_command)
-    update_user = CommandHandler(update_user_command)
-    delete_user = CommandHandler(delete_user_command)
 
     get_dummies = CommandHandler(get_dummies_command)
 
