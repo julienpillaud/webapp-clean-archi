@@ -6,6 +6,7 @@ dependencies = [
     "alembic>=1.18",
     "cleanstack",
     "fastapi>=0.124",
+    "firebase-admin>=7.1.0",
     "logfire[fastapi,sqlalchemy]>=4.19",
     "psycopg[binary]>=3.3",
     "pwdlib[argon2]>=0.3",

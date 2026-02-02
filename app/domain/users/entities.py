@@ -1,22 +1,11 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
 
 from app.domain.entities import DomainEntity
 from app.domain.posts.entities import Post
 
 
 class User(DomainEntity):
+    provider_id: str
     email: EmailStr
     username: str
-    hashed_password: str
     posts: list[Post]
-
-
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-    username: str
-
-
-class UserUpdate(BaseModel):
-    username: str | None = None
-    email: str | None = None

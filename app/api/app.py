@@ -3,7 +3,6 @@ import logging
 from cleanstack.fastapi.exceptions import ExceptionRegistry, add_exception_handler
 from fastapi import FastAPI, status
 
-from app.api.auth.router import router as auth_router
 from app.api.dev.router import router as dev_router
 from app.api.dummies.router import router as dummies_router
 from app.api.posts.router import router as posts_router
@@ -28,7 +27,6 @@ def create_app(settings: Settings) -> FastAPI:
     ExceptionRegistry.register(CustomError, status.HTTP_418_IM_A_TEAPOT)
     add_exception_handler(app=app)
 
-    app.include_router(auth_router)
     app.include_router(dev_router)
     app.include_router(dummies_router)
     app.include_router(posts_router)

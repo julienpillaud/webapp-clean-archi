@@ -2,7 +2,7 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends
 
-from app.api.dependencies import get_domain, get_filters
+from app.api.dependencies import get_current_user, get_domain, get_filters
 from app.api.dummies.dtos import DummyDTO
 from app.api.utils import PaginatedResponseDTO
 from app.domain.domain import Domain
@@ -12,7 +12,11 @@ from app.domain.filters import FilterEntity
 router = APIRouter(prefix="/dummies", tags=["dummies"])
 
 
-@router.get("", response_model=PaginatedResponseDTO[DummyDTO])
+@router.get(
+    "",
+    response_model=PaginatedResponseDTO[DummyDTO],
+    dependencies=[Depends(get_current_user)],
+)
 def get_dummies(
     domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[Pagination, Depends()],

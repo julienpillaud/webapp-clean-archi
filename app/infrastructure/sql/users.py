@@ -13,29 +13,17 @@ class UserSqlRepository(SqlRepository[User, OrmUser], UserRepositoryProtocol):
     orm_model = OrmUser
     select_options = (selectinload(OrmUser.posts).selectinload(OrmPost.tags),)
 
-    def get_by_email(self, email: str) -> User | None:
-        stmt = select(OrmUser).where(OrmUser.email == email)
+    def get_by_provider_id(self, provider_id: str, /) -> User | None:
+        stmt = select(OrmUser).where(OrmUser.provider_id == provider_id)
         orm_entity = self.session.execute(stmt).scalar_one_or_none()
-
         return self._to_domain_entity(orm_entity=orm_entity) if orm_entity else None
-
-    def update(self, entity: User, /) -> User:
-        db_entity = self._get_db_entity(entity_id=entity.id)
-        if not db_entity:
-            raise RuntimeError()
-
-        for key, value in entity.model_dump(exclude={"id", "posts"}).items():
-            if hasattr(db_entity, key):
-                setattr(db_entity, key, value)
-
-        return self._to_domain_entity(orm_entity=db_entity)
 
     def _to_domain_entity(self, orm_entity: OrmUser) -> User:
         return User(
             id=orm_entity.id,
+            provider_id=orm_entity.provider_id,
             email=orm_entity.email,
             username=orm_entity.username,
-            hashed_password=orm_entity.hashed_password,
             posts=[
                 Post(
                     id=post.id,

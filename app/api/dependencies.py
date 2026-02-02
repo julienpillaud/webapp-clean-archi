@@ -1,20 +1,16 @@
-import uuid
 from functools import lru_cache
 from typing import Annotated, cast
 
-import jwt
 from fastapi import Depends, HTTPException, Query, status
-from fastapi.security import OAuth2PasswordBearer
-from jwt import InvalidTokenError
+from fastapi.security import HTTPAuthorizationCredentials
 from starlette.requests import Request
 
+from app.api.security import decode_jwt, http_bearer
 from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.domain.domain import Domain
 from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
-
-oauth2_password_bearer = OAuth2PasswordBearer(tokenUrl="auth/access-token")
 
 credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -34,22 +30,16 @@ def get_domain(request: Request) -> Domain:
 async def get_current_user(
     settings: Annotated[Settings, Depends(get_settings)],
     domain: Annotated[Domain, Depends(get_domain)],
-    token: Annotated[str, Depends(oauth2_password_bearer)],
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(http_bearer)],
 ) -> User:
-    try:
-        payload = jwt.decode(
-            jwt=token,
-            key=settings.secret_key,
-            algorithms=[settings.jwt_algorithm],
-        )
-    except InvalidTokenError as error:
-        raise credential_exception from error
-
-    user_id = payload.get("sub")
-    if user_id is None:
+    if not credentials:
         raise credential_exception
 
-    user = domain.get_user(user_id=uuid.UUID(user_id))
+    payload = decode_jwt(credentials.credentials, settings=settings)
+    if not payload:
+        raise credential_exception
+
+    user = domain.get_user_by_provider_id(provider_id=payload.sub)
     if user is None:
         raise credential_exception
 
