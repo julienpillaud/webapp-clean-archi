@@ -5,14 +5,17 @@ from functools import cached_property
 
 import logfire
 from cleanstack.domain import UnitOfWorkProtocol
+from redis import Redis
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
 from app.domain.context import ContextProtocol
 from app.domain.dummies.repository import DummyRepositoryProtocol
+from app.domain.interfaces.cache_manager import CacheManagerProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
+from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManager
 from app.infrastructure.sql.dummies import DummySqlRepository
 from app.infrastructure.sql.posts import PostSqlRepository
 from app.infrastructure.sql.users import UserSqlRepository
@@ -25,6 +28,10 @@ class SQLUnitOfWork(UnitOfWorkProtocol):
         self._session: Session | None = None
         self.settings = settings
         self._session_factory = self._get_session_factory()
+        self.redis_client = Redis.from_url(
+            str(settings.redis_dsn),
+            decode_responses=True,
+        )
 
     def _get_session_factory(self) -> sessionmaker[Session]:
         engine = create_engine(str(self.settings.postgres_dsn))
@@ -60,6 +67,10 @@ class SQLUnitOfWork(UnitOfWorkProtocol):
 
 
 class SQLContext(SQLUnitOfWork, ContextProtocol):
+    @property
+    def cache_manager(self) -> CacheManagerProtocol:
+        return RedisCacheManager(client=self.redis_client)
+
     @property
     def dummy_repository(self) -> DummyRepositoryProtocol:
         return DummySqlRepository(session=self.session)

@@ -1,4 +1,4 @@
-from pydantic import PostgresDsn, SecretStr, computed_field
+from pydantic import PostgresDsn, RedisDsn, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,10 +22,14 @@ class Settings(BaseSettings):
     postgres_user: str
     postgres_password: SecretStr
     postgres_host: str
-    postgres_port: int
+    postgres_port: int = 5432
     postgres_db: str
 
-    @computed_field
+    redis_host: str
+    redis_port: int = 6379
+    redis_db: str = "0"
+
+    @computed_field  # type: ignore
     @property
     def postgres_dsn(self) -> PostgresDsn:
         return PostgresDsn.build(
@@ -35,4 +39,14 @@ class Settings(BaseSettings):
             host=self.postgres_host,
             port=self.postgres_port,
             path=self.postgres_db,
+        )
+
+    @computed_field  # type: ignore
+    @property
+    def redis_dsn(self) -> RedisDsn:
+        return RedisDsn.build(
+            scheme="redis",
+            host=self.redis_host,
+            port=self.redis_port,
+            path=self.redis_db,
         )

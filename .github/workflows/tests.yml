@@ -2,7 +2,7 @@ name: 🧪 Tests
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
   push:
     branches:
       - main
@@ -13,20 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:17
+        image: postgres:18.1
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
           POSTGRES_DB: database
         ports:
           - 5432:5432
-      mongo:
-        image: mongo:6
-        env:
-          MONGO_INITDB_ROOT_USERNAME: user
-          MONGO_INITDB_ROOT_PASSWORD: password
+      redis:
+        image: redis:8.6
         ports:
-          - 27017:27017
+          - 6379:6379
 
     steps:
       - name: Checkout

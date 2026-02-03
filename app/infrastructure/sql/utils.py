@@ -179,15 +179,15 @@ def apply_operator(
 ) -> ColumnExpressionArgument[bool]:
     match operator:
         case FilterOperator.EQ:
-            return column == value
+            return column == value  # type: ignore
         case FilterOperator.GT:
-            return column > value
+            return column > value  # type: ignore
         case FilterOperator.LT:
-            return column < value
+            return column < value  # type: ignore
         case FilterOperator.GTE:
-            return column >= value
+            return column >= value  # type: ignore
         case FilterOperator.LTE:
-            return column <= value
+            return column <= value  # type: ignore
         case FilterOperator.IN:
             return column.in_(value)
         case FilterOperator.NIN:

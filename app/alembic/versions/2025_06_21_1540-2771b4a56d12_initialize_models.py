@@ -55,10 +55,23 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["tag_id"], ["tag.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("post_id", "tag_id"),
     )
+    op.create_table(
+        "dummy",
+        sa.Column("uuid_field", sa.Uuid(), nullable=False),
+        sa.Column("string_field", sa.String(), nullable=False),
+        sa.Column("int_field", sa.Integer(), nullable=False),
+        sa.Column("float_field", sa.Float(), nullable=False),
+        sa.Column("bool_field", sa.Boolean(), nullable=False),
+        sa.Column("date_field", sa.Date(), nullable=False),
+        sa.Column("datetime_field", sa.DateTime(), nullable=False),
+        sa.Column("id", sa.Uuid(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+    )
 
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_table('dummy')
     op.drop_table("post_tag")
     op.drop_table("post")
     op.drop_table("user")
