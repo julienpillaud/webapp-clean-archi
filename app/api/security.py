@@ -45,15 +45,17 @@ def decode_jwt(value: str | None, /, settings: Settings) -> JWTPayload | None:
 def encode_jwt(
     sub: str,
     email: EmailStr | None = None,
+    exp_delta: datetime.timedelta | None = None,
     *,
     settings: Settings,
 ) -> str:
     current_time = datetime.datetime.now(datetime.UTC)
+    exp_delta = exp_delta or datetime.timedelta(hours=1)
     payload = {
         "sub": sub,
         "aud": settings.jwt_audience,
         "iat": current_time,
-        "exp": current_time + datetime.timedelta(hours=1),
+        "exp": current_time + exp_delta,
     }
     if email:
         payload["email"] = email

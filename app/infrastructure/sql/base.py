@@ -1,4 +1,5 @@
 import logging
+from functools import cached_property
 from typing import Any, ClassVar
 
 from sqlalchemy import delete, select
@@ -25,7 +26,10 @@ class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
 
     def __init__(self, session: Session):
         self.session = session
-        self.query_builder = SQLQueryBuilder(
+
+    @cached_property
+    def query_builder(self) -> SQLQueryBuilder[OrmT]:
+        return SQLQueryBuilder(
             model=self.orm_model,
             select_options=self.select_options,
             filterable_fields=self.filterable_fields,

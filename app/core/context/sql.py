@@ -1,11 +1,11 @@
 import logging
 from collections.abc import Iterator
 from contextlib import contextmanager
-from functools import lru_cache
+from functools import cached_property
 
 import logfire
 from cleanstack.domain import UnitOfWorkProtocol
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
@@ -20,25 +20,19 @@ from app.infrastructure.sql.users import UserSqlRepository
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=1)
-def get_engine(settings: Settings) -> Engine:
-    engine = create_engine(str(settings.postgres_dsn))
-    logger.debug(f"Created engine {engine.url.render_as_string(hide_password=True)}")
-    logfire.instrument_sqlalchemy(engine=engine)
-    return engine
-
-
-@lru_cache(maxsize=1)
-def get_session_factory(settings: Settings) -> sessionmaker[Session]:
-    engine = get_engine(settings=settings)
-    return sessionmaker(bind=engine)
-
-
 class SQLUnitOfWork(UnitOfWorkProtocol):
     def __init__(self, settings: Settings) -> None:
         self._session: Session | None = None
         self.settings = settings
-        self._session_factory = get_session_factory(settings=settings)
+        self._session_factory = self._get_session_factory()
+
+    def _get_session_factory(self) -> sessionmaker[Session]:
+        engine = create_engine(str(self.settings.postgres_dsn))
+        logger.debug(
+            f"Created engine {engine.url.render_as_string(hide_password=True)}"
+        )
+        logfire.instrument_sqlalchemy(engine=engine)
+        return sessionmaker(bind=engine)
 
     @contextmanager
     def transaction(self) -> Iterator[None]:
@@ -70,7 +64,7 @@ class SQLContext(SQLUnitOfWork, ContextProtocol):
     def dummy_repository(self) -> DummyRepositoryProtocol:
         return DummySqlRepository(session=self.session)
 
-    @property
+    @cached_property
     def post_repository(self) -> PostRepositoryProtocol:
         return PostSqlRepository(session=self.session)
 
