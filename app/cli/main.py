@@ -4,7 +4,7 @@ from pathlib import Path
 
 from app.cli.app import create_cli_app
 from app.core.config import Settings
-from app.core.context.context import Context
+from app.core.context import Context
 from app.domain.domain import Domain
 
 settings = Settings(_env_file=".env")  # ty:ignore[unknown-argument,missing-argument]

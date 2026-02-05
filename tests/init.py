@@ -3,7 +3,7 @@ from functools import lru_cache
 from fastapi import FastAPI
 
 from app.core.config import Settings
-from app.core.context.context import Context
+from app.core.context import Context
 from app.domain.domain import Domain
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
 from app.infrastructure.cache_manager.inmemory_cache_manager import InMemoryCacheManager
@@ -24,6 +24,7 @@ def get_test_settings() -> Settings:
         postgres_user="user",
         postgres_password="password",
         postgres_host="localhost",
+        postgres_port=5432,
         postgres_db="database",
         redis_host="localhost",
     )

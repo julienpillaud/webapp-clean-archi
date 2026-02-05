@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from cleanstack.domain import UnitOfWorkProtocol
+from cleanstack.uow import UnitOfWorkProtocol
 
 from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.core.config import Settings
-from app.core.context.context import Context
+from app.core.context import Context
 from app.domain.domain import Domain
 
 
