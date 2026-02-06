@@ -34,7 +34,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.10.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.11.0" }
 
 [tool.ruff]
 output-format = "concise"
