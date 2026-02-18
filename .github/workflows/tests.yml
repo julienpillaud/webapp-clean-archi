@@ -20,24 +20,15 @@ jobs:
           POSTGRES_DB: test
         ports:
           - 5432:5432
-      mongodb:
-        image: mongo:8
-        options: --replSet rs0 --bind_ip_all
-        ports:
-          - 27017:27017
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Init ReplicaSet
-        run: |
-          mongosh --host mongodb --eval "
-            rs.initiate({
-              _id: 'rs0',
-              members: [{ _id: 0, host: 'localhost:27017' }]
-            })
-          "
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.12.1
+        with:
+          mongodb-replica-set: rs0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
