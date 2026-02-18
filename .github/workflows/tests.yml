@@ -20,7 +20,7 @@ jobs:
           POSTGRES_DB: test
         ports:
           - 5432:5432
-      mongo:
+      mongodb:
         image: mongo:8
         ports:
           - 27017:27017
