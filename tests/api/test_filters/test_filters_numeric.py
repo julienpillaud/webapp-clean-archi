@@ -3,10 +3,10 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
-def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     dummy_factory.create_one(int_field=1)
     dummy_factory.create_one(int_field=2)
@@ -19,7 +19,7 @@ def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(response.json()["items"]) == count
 
 
-def test_operator_nin(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_nin(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 1
     dummy_factory.create_one(int_field=1)
     dummy_factory.create_one(int_field=2)
@@ -50,7 +50,7 @@ def test_operator_nin(dummy_factory: DummyFactory, client: TestClient) -> None:
     ],
 )
 def test_others_operators(
-    dummy_factory: DummyFactory,
+    dummy_factory: DummySQLFactory,
     client: TestClient,
     field_name: str,
     values: list[int | float],

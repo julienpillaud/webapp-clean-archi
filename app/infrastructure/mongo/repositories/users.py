@@ -1,10 +1,10 @@
 from app.domain.posts.entities import Post
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.mongo.base import BaseMongoRepository, MongoDocument
+from app.infrastructure.mongo.base import MongoDocument, MongoRepository
 
 
-class UserMongoRepository(BaseMongoRepository[User], UserRepositoryProtocol):
+class UserMongoRepository(MongoRepository[User], UserRepositoryProtocol):
     domain_model = User
     collection_name = "users"
 

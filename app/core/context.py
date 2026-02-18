@@ -1,47 +1,51 @@
-import logging
 from functools import cached_property
 
-from cleanstack.uow import CompositeUniOfWork
-from redis import Redis
-
 from app.core.config import Settings
-from app.core.uows import SQLUnitOfWork
+from app.core.logger import logger
+from app.core.uow import UnitOfWork
 from app.domain.context import ContextProtocol
 from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
+from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManager
-from app.infrastructure.sql.dummies import DummySqlRepository
-from app.infrastructure.sql.posts import PostSqlRepository
-from app.infrastructure.sql.users import UserSqlRepository
+from app.infrastructure.mongo.repositories.items import ItemMongoRepository
+from app.infrastructure.sql.repositories.dummies import DummySQLRepository
+from app.infrastructure.sql.repositories.items import ItemSQLRepository
+from app.infrastructure.sql.repositories.posts import PostSQLRepository
+from app.infrastructure.sql.repositories.users import UserSQLRepository
 
-logger = logging.getLogger(__name__)
 
+class Context(ContextProtocol):
+    def __init__(self, settings: Settings, uow: UnitOfWork):
+        logger.debug("Initializing context")
+        self.settings = settings
+        self.uow = uow
 
-class Context(CompositeUniOfWork, ContextProtocol):
-    def __init__(self, settings: Settings) -> None:
-        logger.debug("Initializing context...")
-        self.sql_uow = SQLUnitOfWork(settings=settings)
-        self.members = [self.sql_uow]
-
-        self.redis_client = Redis.from_url(
-            str(settings.redis_dsn),
-            decode_responses=True,
-        )
-
-    @property
+    @cached_property
     def cache_manager(self) -> CacheManagerProtocol:
-        return RedisCacheManager(client=self.redis_client)
+        return RedisCacheManager(settings=self.settings)
 
-    @property
+    @cached_property
     def dummy_repository(self) -> DummyRepositoryProtocol:
-        return DummySqlRepository(session=self.sql_uow.session)
+        return DummySQLRepository(session=self.uow.sql.session)
 
     @cached_property
     def post_repository(self) -> PostRepositoryProtocol:
-        return PostSqlRepository(session=self.sql_uow.session)
+        return PostSQLRepository(session=self.uow.sql.session)
 
-    @property
+    @cached_property
     def user_repository(self) -> UserRepositoryProtocol:
-        return UserSqlRepository(session=self.sql_uow.session)
+        return UserSQLRepository(session=self.uow.sql.session)
+
+    @cached_property
+    def item_relational_repository(self) -> ItemRepositoryProtocol:
+        return ItemSQLRepository(session=self.uow.sql.session)
+
+    @cached_property
+    def item_document_repository(self) -> ItemRepositoryProtocol:
+        return ItemMongoRepository(
+            database=self.uow.mongo.database,
+            session=self.uow.mongo.session,
+        )

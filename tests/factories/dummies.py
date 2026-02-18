@@ -4,9 +4,9 @@ from typing import Any
 from faker import Faker
 
 from app.domain.dummies.entities import Dummy
-from app.infrastructure.sql.dummies import DummySqlRepository
-from app.infrastructure.sql.models import OrmDummy
-from tests.factories.base import BaseSqlFactory
+from app.domain.dummies.repository import DummyRepositoryProtocol
+from app.infrastructure.sql.repositories.dummies import DummySQLRepository
+from tests.factories.base import BaseSQLFactory
 
 
 def generate_dummy(faker: Faker, **kwargs: Any) -> Dummy:
@@ -30,8 +30,10 @@ def generate_dummy(faker: Faker, **kwargs: Any) -> Dummy:
     )
 
 
-class DummyFactory(BaseSqlFactory[Dummy, OrmDummy]):
-    repository_class = DummySqlRepository
-
+class DummySQLFactory(BaseSQLFactory[Dummy]):
     def build(self, **kwargs: Any) -> Dummy:
         return generate_dummy(faker=self.faker, **kwargs)
+
+    @property
+    def repository(self) -> DummyRepositoryProtocol:
+        return DummySQLRepository(session=self.session)

@@ -5,10 +5,10 @@ from starlette import status
 from starlette.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
-def test_operator_eq(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_eq(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     field = uuid.uuid7()
     dummy_factory.create_one()
@@ -22,7 +22,7 @@ def test_operator_eq(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(result["items"]) == count
 
 
-def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     fields = (uuid.uuid7(), uuid.uuid7())
     dummy_factory.create_one()
@@ -37,7 +37,7 @@ def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(result["items"]) == count
 
 
-def test_operator_not_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_not_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 1
     fields = (uuid.uuid7(), uuid.uuid7())
     dummy_factory.create_one()

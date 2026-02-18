@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.infrastructure.sql.models import OrmUser
 from app.utils.sqlalchemy_instrument import SQLAlchemyInstrument
-from tests.factories.posts import PostFactory
-from tests.factories.users import UserFactory
+from tests.factories.posts import PostSQLFactory
+from tests.factories.users import UserSQLFactory
 
 number_of_users = 10
 numbers_of_test_users = 10
@@ -13,7 +13,7 @@ number_of_posts = 2
 
 
 @pytest.fixture
-def users(user_factory: UserFactory, post_factory: PostFactory) -> None:
+def users(user_factory: UserSQLFactory, post_factory: PostSQLFactory) -> None:
     users = user_factory.create_many(number_of_users)
     test_users = user_factory.create_many(numbers_of_test_users, username="test")
     for user in users + test_users:

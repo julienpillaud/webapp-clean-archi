@@ -5,7 +5,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
 @pytest.mark.parametrize(
@@ -19,7 +19,7 @@ from tests.factories.dummies import DummyFactory
     ],
 )
 def test_comparison_operators(
-    dummy_factory: DummyFactory,
+    dummy_factory: DummySQLFactory,
     client: TestClient,
     operator: FilterOperator,
     expected_count: int,
@@ -41,7 +41,7 @@ def test_comparison_operators(
     assert len(result["items"]) == expected_count
 
 
-def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     date_a = datetime.date(2026, 1, 1)
     date_b = datetime.date(2026, 2, 2)
@@ -59,7 +59,7 @@ def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(result["items"]) == count
 
 
-def test_operator_nin(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_nin(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 1
     date_a = datetime.date(2026, 1, 1)
     date_b = datetime.date(2026, 2, 2)

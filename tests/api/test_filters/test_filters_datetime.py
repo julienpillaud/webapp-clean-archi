@@ -5,7 +5,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
 @pytest.mark.parametrize(
@@ -19,7 +19,7 @@ from tests.factories.dummies import DummyFactory
     ],
 )
 def test_comparison_operators(
-    dummy_factory: DummyFactory,
+    dummy_factory: DummySQLFactory,
     client: TestClient,
     operator: str,
     expected_count: int,

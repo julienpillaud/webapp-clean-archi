@@ -3,10 +3,10 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
-def test_operator_eq(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_eq(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     field = "included"
     dummy_factory.create_one(string_field="excluded")
@@ -20,7 +20,7 @@ def test_operator_eq(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(result["items"]) == count
 
 
-def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     fields = ("included1", "included2")
     dummy_factory.create_one(string_field="excluded")
@@ -35,7 +35,7 @@ def test_operator_in(dummy_factory: DummyFactory, client: TestClient) -> None:
     assert len(result["items"]) == count
 
 
-def test_operator_not_in(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_not_in(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 1
     fields = ("excluded1", "excluded2")
     dummy_factory.create_one(string_field="excluded1")

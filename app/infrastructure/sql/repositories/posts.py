@@ -5,11 +5,11 @@ from sqlalchemy.orm import selectinload
 
 from app.domain.posts.entities import Post, TagName
 from app.domain.posts.repository import PostRepositoryProtocol
-from app.infrastructure.sql.base import SqlRepository
+from app.infrastructure.sql.base import SQLRepository
 from app.infrastructure.sql.models import OrmPost, OrmTag
 
 
-class PostSqlRepository(SqlRepository[Post, OrmPost], PostRepositoryProtocol):
+class PostSQLRepository(SQLRepository[Post, OrmPost], PostRepositoryProtocol):
     domain_model = Post
     orm_model = OrmPost
     select_options = (selectinload(OrmPost.tags),)
