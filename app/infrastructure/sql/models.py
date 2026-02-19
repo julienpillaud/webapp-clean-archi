@@ -56,3 +56,9 @@ class OrmDummy(OrmEntity):
     bool_field: Mapped[bool]
     date_field: Mapped[datetime.date]
     datetime_field: Mapped[datetime.datetime]
+
+
+class OrmItem(OrmEntity):
+    __tablename__ = "item"
+
+    name: Mapped[str]

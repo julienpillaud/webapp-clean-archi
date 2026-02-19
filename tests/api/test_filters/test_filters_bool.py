@@ -3,10 +3,10 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.domain.filters import FilterOperator
-from tests.factories.dummies import DummyFactory
+from tests.factories.dummies import DummySQLFactory
 
 
-def test_operator_eq(dummy_factory: DummyFactory, client: TestClient) -> None:
+def test_operator_eq(dummy_factory: DummySQLFactory, client: TestClient) -> None:
     count = 2
     dummy_factory.create_many(1, bool_field=True)
     dummy_factory.create_many(count, bool_field=False)

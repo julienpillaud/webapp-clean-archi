@@ -4,9 +4,9 @@ from typing import Any
 from faker import Faker
 
 from app.domain.users.entities import User
-from app.infrastructure.sql.models import OrmUser
-from app.infrastructure.sql.users import UserSqlRepository
-from tests.factories.base import BaseSqlFactory
+from app.domain.users.repository import UserRepositoryProtocol
+from app.infrastructure.sql.repositories.users import UserSQLRepository
+from tests.factories.base import BaseSQLFactory
 
 
 def generate_user(faker: Faker, **kwargs: Any) -> User:
@@ -21,8 +21,10 @@ def generate_user(faker: Faker, **kwargs: Any) -> User:
     )
 
 
-class UserFactory(BaseSqlFactory[User, OrmUser]):
-    repository_class = UserSqlRepository
-
+class UserSQLFactory(BaseSQLFactory[User]):
     def build(self, **kwargs: Any) -> User:
         return generate_user(faker=self.faker, **kwargs)
+
+    @property
+    def repository(self) -> UserRepositoryProtocol:
+        return UserSQLRepository(session=self.session)

@@ -13,17 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:18.1
+        image: postgres:18
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: database
+          POSTGRES_DB: test
         ports:
           - 5432:5432
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.12.1
+        with:
+          mongodb-replica-set: rs0
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7

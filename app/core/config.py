@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str
 
+    mongo_host: str
+    mongo_port: int = 27017
+    mongo_rs_name: str = "rs0"
+    mongo_database: str
+
     redis_host: str
     redis_port: int = 6379
     redis_db: str = "0"
@@ -39,6 +44,15 @@ class Settings(BaseSettings):
             host=self.postgres_host,
             port=self.postgres_port,
             path=self.postgres_db,
+        )
+
+    @computed_field  # type: ignore
+    @property
+    def mongo_uri(self) -> str:
+        return (
+            f"mongodb://"
+            f"{self.mongo_host}:{self.mongo_port}/"
+            f"?replicaSet={self.mongo_rs_name}"
         )
 
     @computed_field  # type: ignore

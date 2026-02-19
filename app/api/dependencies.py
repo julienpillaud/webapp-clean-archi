@@ -1,16 +1,19 @@
 from functools import lru_cache
-from typing import Annotated, cast
+from typing import Annotated
 
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
-from starlette.requests import Request
 
 from app.api.security import decode_jwt, http_bearer
 from app.api.utils import parse_filters
 from app.core.config import Settings
+from app.core.context import Context
+from app.core.uow import UnitOfWork
 from app.domain.domain import Domain
 from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
+from app.infrastructure.mongo.uow import MongoUnitOfWork
+from app.infrastructure.sql.uow import SQLUnitOfWork
 
 credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -23,8 +26,35 @@ def get_settings() -> Settings:
     return Settings()  # ty:ignore[missing-argument]
 
 
-def get_domain(request: Request) -> Domain:
-    return cast(Domain, request.app.state.domain)
+def get_sql_uow(settings: Annotated[Settings, Depends(get_settings)]) -> SQLUnitOfWork:
+    return SQLUnitOfWork(settings=settings)
+
+
+def get_mongo_uow(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> MongoUnitOfWork:
+    return MongoUnitOfWork(settings=settings)
+
+
+def get_uow(
+    sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
+    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
+) -> UnitOfWork:
+    return UnitOfWork(sql=sql_uow, mongo=mongo_uow)
+
+
+def get_context(
+    settings: Annotated[Settings, Depends(get_settings)],
+    uow: Annotated[UnitOfWork, Depends(get_uow)],
+) -> Context:
+    return Context(settings=settings, uow=uow)
+
+
+def get_domain(
+    uow: Annotated[UnitOfWork, Depends(get_uow)],
+    context: Annotated[Context, Depends(get_context)],
+) -> Domain:
+    return Domain(uow=uow, context=context)
 
 
 async def get_current_user(

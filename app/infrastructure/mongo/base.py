@@ -1,26 +1,28 @@
-import logging
 from typing import Any
 
+from pymongo.client_session import ClientSession
 from pymongo.database import Database
 
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
 from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
 
-logger = logging.getLogger(__name__)
-
-
 type MongoDocument = dict[str, Any]
 
 
-class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
+class MongoRepository[T: DomainEntity](RepositoryProtocol[T]):
     domain_model: type[T]
     collection_name: str
     searchable_fields: tuple[str, ...]
 
-    def __init__(self, database: Database[MongoDocument]):
+    def __init__(
+        self,
+        database: Database[MongoDocument],
+        session: ClientSession | None = None,
+    ):
         self.database = database
         self.collection = self.database[self.collection_name]
+        self.session = session
 
     def get_all(
         self,
@@ -34,11 +36,19 @@ class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
         pipeline = self._search_pipeline(search) + self._aggregation_pipeline()
 
         count_pipeline = [*pipeline, {"$count": "total"}]
-        count_result = list(self.collection.aggregate(count_pipeline))
+        count_result = list(
+            self.collection.aggregate(
+                count_pipeline,
+                session=self.session,
+            )
+        )
         total = count_result[0]["total"] if count_result else 0
 
         paginated_pipeline = [*pipeline, {"$skip": skip}, {"$limit": pagination.limit}]
-        items_db = self.collection.aggregate(paginated_pipeline)
+        items_db = self.collection.aggregate(
+            paginated_pipeline,
+            session=self.session,
+        )
         items = [self._to_domain_entity(item) for item in items_db]
 
         return PaginatedResponse(total=total, limit=pagination.limit, items=items)
@@ -51,7 +61,7 @@ class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
     def create(self, entity: T, /) -> T:
         db_entity = self._to_database_entity(entity)
 
-        result = self.collection.insert_one(db_entity)
+        result = self.collection.insert_one(db_entity, session=self.session)
 
         db_result = self._get_db_entity(result.inserted_id)
         if not db_result:
@@ -62,7 +72,11 @@ class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
     def update(self, entity: T, /) -> T:
         db_entity = self._to_database_entity(entity)
 
-        self.collection.replace_one({"_id": entity.id}, db_entity)
+        self.collection.replace_one(
+            {"_id": entity.id},
+            db_entity,
+            session=self.session,
+        )
 
         db_result = self._get_db_entity(entity.id)
         if not db_result:
@@ -71,14 +85,14 @@ class BaseMongoRepository[T: DomainEntity](RepositoryProtocol[T]):
         return self._to_domain_entity(db_result)
 
     def delete(self, entity: T, /) -> None:
-        self.collection.delete_one({"_id": entity.id})
+        self.collection.delete_one({"_id": entity.id}, session=self.session)
 
     def _get_db_entity(self, entity_id: EntityId, /) -> MongoDocument | None:
         pipeline = [
             {"$match": {"_id": entity_id}},
             *self._aggregation_pipeline(),
         ]
-        return next(self.collection.aggregate(pipeline), None)
+        return next(self.collection.aggregate(pipeline, session=self.session), None)
 
     def _to_domain_entity(self, document: MongoDocument, /) -> T:
         document["id"] = document.pop("_id")

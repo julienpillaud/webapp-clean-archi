@@ -4,16 +4,12 @@ from pathlib import Path
 
 from app.cli.app import create_cli_app
 from app.core.config import Settings
-from app.core.context import Context
-from app.domain.domain import Domain
 
-settings = Settings(_env_file=".env")  # ty:ignore[unknown-argument,missing-argument]
-context = Context(settings=settings)
-domain = Domain(context=context)
+settings = Settings(_env_file=".env")
 
 
 if __name__ == "__main__":
     config = json.loads(Path("app/core/logging/config.json").read_text())
     logging.config.dictConfig(config)
-    app = create_cli_app(domain=domain)
+    app = create_cli_app(settings=settings)
     app()

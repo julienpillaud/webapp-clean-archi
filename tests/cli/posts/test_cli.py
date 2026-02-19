@@ -3,8 +3,8 @@ import uuid
 import typer
 from typer.testing import CliRunner
 
-from tests.factories.posts import PostFactory
-from tests.factories.users import UserFactory
+from tests.factories.posts import PostSQLFactory
+from tests.factories.users import UserSQLFactory
 
 
 def test_get_posts(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
@@ -18,7 +18,7 @@ def test_get_posts(cli_app: typer.Typer, cli_runner: CliRunner) -> None:
 
 
 def test_get_post(
-    post_factory: PostFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    post_factory: PostSQLFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     post = post_factory.create_one()
@@ -51,7 +51,9 @@ def test_get_post_invalid_id(cli_app: typer.Typer, cli_runner: CliRunner) -> Non
 
 
 def test_create_post(
-    user_factory: UserFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    user_factory: UserSQLFactory,
+    cli_app: typer.Typer,
+    cli_runner: CliRunner,
 ) -> None:
     # Arrange
     user = user_factory.create_one()
@@ -79,7 +81,7 @@ def test_create_post_invalid_data(cli_app: typer.Typer, cli_runner: CliRunner) -
 
 
 def test_update_post(
-    post_factory: PostFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    post_factory: PostSQLFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     post = post_factory.create_one()
@@ -104,7 +106,7 @@ def test_update_post_not_found(cli_app: typer.Typer, cli_runner: CliRunner) -> N
 
 
 def test_update_post_invalid_data(
-    post_factory: PostFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    post_factory: PostSQLFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     post = post_factory.create_one()
@@ -120,7 +122,7 @@ def test_update_post_invalid_data(
 
 
 def test_delete_post(
-    post_factory: PostFactory, cli_app: typer.Typer, cli_runner: CliRunner
+    post_factory: PostSQLFactory, cli_app: typer.Typer, cli_runner: CliRunner
 ) -> None:
     # Arrange
     post = post_factory.create_one()

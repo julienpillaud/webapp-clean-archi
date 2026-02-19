@@ -1,4 +1,6 @@
-from cleanstack.domain import BaseDomain, CommandHandler, QueryHandler
+from cleanstack.domain import BaseDomain
+from cleanstack.handlers import CommandHandler, QueryHandler
+from cleanstack.uow import UnitOfWorkProtocol
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (
@@ -8,6 +10,7 @@ from app.domain.dev.commands import (
     unexpected_error_command,
 )
 from app.domain.dummies.commands import get_dummies_cached_command, get_dummies_command
+from app.domain.items.commands import get_items_command
 from app.domain.posts.commands import (
     create_post_command,
     delete_post_command,
@@ -21,7 +24,7 @@ from app.domain.users.commands import (
 )
 
 
-class Domain(BaseDomain[ContextProtocol]):
+class Domain(BaseDomain[UnitOfWorkProtocol, ContextProtocol]):
     get_posts = QueryHandler(get_posts_command)
     get_post = QueryHandler(get_post_command)
     create_post = CommandHandler(create_post_command)
@@ -33,6 +36,8 @@ class Domain(BaseDomain[ContextProtocol]):
 
     get_dummies = QueryHandler(get_dummies_command)
     get_dummies_cached = QueryHandler(get_dummies_cached_command)
+
+    get_items = QueryHandler(get_items_command)
 
     benchmark = QueryHandler(benchmark_command)
     custom_error = QueryHandler(custom_error_command)

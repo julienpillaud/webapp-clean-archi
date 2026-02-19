@@ -1,11 +1,36 @@
-from fastapi import FastAPI
+import uuid
+
+from sqlalchemy import select
 
 from app.core.config import Settings
-from app.core.context import Context
-from app.domain.domain import Domain
+from app.core.logger import logger
+from app.infrastructure.sql.entities import OrmEntity
+from app.infrastructure.sql.models import OrmUser
+from app.infrastructure.sql.provider import SQLProvider
 
 
-def initialize_app(settings: Settings, app: FastAPI) -> None:
-    context = Context(settings=settings)
-    domain = Domain(context=context)
-    app.state.domain = domain
+def initialize_app(settings: Settings) -> None:
+    initialize_sql_database(settings=settings)
+
+
+def initialize_sql_database(settings: Settings) -> None:
+    """Only used in this project for convenience."""
+    logger.debug("Creating SQL database tables")
+    SQLProvider.init(settings)
+    OrmEntity.metadata.create_all(SQLProvider.get_engine())
+
+    provider_id = uuid.UUID("019c7037-f5bf-7305-b68a-510430df2d3c")
+    session_factory = SQLProvider.get_session_factory()
+    with session_factory() as session:
+        stmt = select(OrmUser).where(OrmUser.provider_id == str(provider_id))
+        user = session.execute(stmt).scalar_one_or_none()
+        if not user:
+            logger.debug("Creating dev user")
+            user = OrmUser(
+                id=uuid.uuid7(),
+                provider_id=str(provider_id),
+                email="user@mail.com",
+                username="user",
+            )
+            session.add(user)
+            session.commit()

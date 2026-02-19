@@ -1,10 +1,10 @@
 from app.domain.posts.entities import Post
 from app.domain.posts.repository import PostRepositoryProtocol
-from app.infrastructure.mongo.base import BaseMongoRepository, MongoDocument
+from app.infrastructure.mongo.base import MongoDocument, MongoRepository
 
 
 class PostMongoRepository(
-    BaseMongoRepository[Post],
+    MongoRepository[Post],
     PostRepositoryProtocol,
 ):
     domain_model = Post

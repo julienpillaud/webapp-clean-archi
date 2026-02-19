@@ -4,11 +4,11 @@ from sqlalchemy.orm import InstrumentedAttribute
 
 from app.domain.dummies.entities import Dummy
 from app.domain.dummies.repository import DummyRepositoryProtocol
-from app.infrastructure.sql.base import SqlRepository
+from app.infrastructure.sql.base import SQLRepository
 from app.infrastructure.sql.models import OrmDummy
 
 
-class DummySqlRepository(SqlRepository[Dummy, OrmDummy], DummyRepositoryProtocol):
+class DummySQLRepository(SQLRepository[Dummy, OrmDummy], DummyRepositoryProtocol):
     domain_model = Dummy
     orm_model = OrmDummy
     filterable_fields: ClassVar[dict[str, InstrumentedAttribute[Any]]] = {

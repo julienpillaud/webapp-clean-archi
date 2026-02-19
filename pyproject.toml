@@ -6,7 +6,7 @@ dependencies = [
     "alembic>=1.18",
     "cleanstack",
     "fastapi>=0.128",
-    "logfire[fastapi,sqlalchemy,redis]>=4.21",
+    "logfire[fastapi,pymongo,redis,sqlalchemy]>=4.21",
     "psycopg[binary]>=3.3",
     "pydantic-settings>=2.12",
     "pydantic[email]>=2.12",
@@ -16,7 +16,11 @@ dependencies = [
     "redis>=7.1",
     "sqlalchemy>=2.0",
     "typer>=0.21",
-    "uvicorn>=0.40",
+    # Server
+    "gunicorn>=25.1",
+    "httptools>=0.7",
+    "uvicorn-worker>=0.4",
+    "uvloop>=0.22",
 ]
 
 [dependency-groups]
@@ -30,11 +34,13 @@ dev = [
     "pytest>=9.0",
     "ruff>=0.15",
     "ty>=0.0",
+    # Server
+    "uvicorn>=0.41",
     "watchfiles>=1.1",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.11.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.12.0" }
 
 [tool.ruff]
 output-format = "concise"

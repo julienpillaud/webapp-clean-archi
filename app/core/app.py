@@ -1,12 +1,9 @@
-import logging
-
 import logfire
 
 from app.api.app import create_app
 from app.core.config import Settings
 from app.core.core import initialize_app
-
-logger = logging.getLogger(__name__)
+from app.core.logger import logger
 
 settings = Settings()  # ty:ignore[missing-argument]
 logfire.configure(
@@ -19,5 +16,5 @@ logfire.configure(
 )
 logger.debug(f"Loading settings for ENV {settings.environment}")
 app = create_app(settings=settings)
-initialize_app(settings=settings, app=app)
+initialize_app(settings=settings)
 logfire.instrument_fastapi(app, capture_headers=True, extra_spans=True)

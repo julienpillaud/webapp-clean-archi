@@ -1,11 +1,11 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from tests.factories.posts import PostFactory
+from tests.factories.posts import PostSQLFactory
 
 
 def test_pagination_request_less_than_total(
-    post_factory: PostFactory, client: TestClient
+    post_factory: PostSQLFactory, client: TestClient
 ) -> None:
     # Arrange
     total_number = 9
@@ -24,7 +24,7 @@ def test_pagination_request_less_than_total(
 
 
 def test_pagination_request_more_than_total(
-    post_factory: PostFactory, client: TestClient
+    post_factory: PostSQLFactory, client: TestClient
 ) -> None:
     # Arrange
     total_number = 9
@@ -42,7 +42,9 @@ def test_pagination_request_more_than_total(
     assert len(result["items"]) == total_number - request_number
 
 
-def test_pagination_out_of_range(post_factory: PostFactory, client: TestClient) -> None:
+def test_pagination_out_of_range(
+    post_factory: PostSQLFactory, client: TestClient
+) -> None:
     # Arrange
     total_number = 9
     request_number = 5

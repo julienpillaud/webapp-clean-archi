@@ -4,10 +4,10 @@ from typing import Any
 from faker import Faker
 
 from app.domain.posts.entities import Post
-from app.infrastructure.sql.models import OrmPost
-from app.infrastructure.sql.posts import PostSqlRepository
-from tests.factories.base import BaseSqlFactory
-from tests.factories.users import UserFactory
+from app.domain.posts.repository import PostRepositoryProtocol
+from app.infrastructure.sql.repositories.posts import PostSQLRepository
+from tests.factories.base import BaseSQLFactory
+from tests.factories.users import UserSQLFactory
 
 
 def generate_post(faker: Faker, **kwargs: Any) -> Post:
@@ -20,14 +20,16 @@ def generate_post(faker: Faker, **kwargs: Any) -> Post:
     )
 
 
-class PostFactory(BaseSqlFactory[Post, OrmPost]):
-    repository_class = PostSqlRepository
-
+class PostSQLFactory(BaseSQLFactory[Post]):
     @property
-    def user_factory(self) -> UserFactory:
-        return UserFactory(faker=self.faker, session=self.session)
+    def user_factory(self) -> UserSQLFactory:
+        return UserSQLFactory(faker=self.faker, session=self.session)
 
     def build(self, **kwargs: Any) -> Post:
         if "author_id" not in kwargs:
             kwargs["author_id"] = self.user_factory.create_one().id
         return generate_post(faker=self.faker, **kwargs)
+
+    @property
+    def repository(self) -> PostRepositoryProtocol:
+        return PostSQLRepository(session=self.session)

@@ -4,11 +4,11 @@ from sqlalchemy.orm import selectinload
 from app.domain.posts.entities import Post, TagName
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.sql.base import SqlRepository
+from app.infrastructure.sql.base import SQLRepository
 from app.infrastructure.sql.models import OrmPost, OrmUser
 
 
-class UserSqlRepository(SqlRepository[User, OrmUser], UserRepositoryProtocol):
+class UserSQLRepository(SQLRepository[User, OrmUser], UserRepositoryProtocol):
     domain_model = User
     orm_model = OrmUser
     select_options = (selectinload(OrmUser.posts).selectinload(OrmPost.tags),)

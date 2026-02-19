@@ -1,4 +1,3 @@
-import logging
 from functools import cached_property
 from typing import Any, ClassVar
 
@@ -12,10 +11,8 @@ from app.domain.interfaces.repository import RepositoryProtocol
 from app.infrastructure.sql.entities import OrmEntity
 from app.infrastructure.sql.utils import SQLQueryBuilder
 
-logger = logging.getLogger(__name__)
 
-
-class SqlRepository[DomainT: DomainEntity, OrmT: OrmEntity](
+class SQLRepository[DomainT: DomainEntity, OrmT: OrmEntity](
     RepositoryProtocol[DomainT],
 ):
     domain_model: type[DomainT]
