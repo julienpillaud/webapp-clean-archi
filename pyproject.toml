@@ -16,7 +16,11 @@ dependencies = [
     "redis>=7.1",
     "sqlalchemy>=2.0",
     "typer>=0.21",
-    "uvicorn>=0.40",
+    # Server
+    "gunicorn>=25.1",
+    "httptools>=0.7",
+    "uvicorn-worker>=0.4",
+    "uvloop>=0.22",
 ]
 
 [dependency-groups]
@@ -30,6 +34,8 @@ dev = [
     "pytest>=9.0",
     "ruff>=0.15",
     "ty>=0.0",
+    # Server
+    "uvicorn>=0.41",
     "watchfiles>=1.1",
 ]
 
