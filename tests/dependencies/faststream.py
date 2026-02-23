@@ -1,7 +1,19 @@
-from fast_depends import dependency_provider
+from typing import Annotated
 
-from app.event_handler.dependencies import get_context, get_settings
-from tests.dependencies.dependencies import get_context_override, get_settings_override
+from fast_depends import Depends, dependency_provider
+
+from app.core.config import Settings
+from app.core.uow import UnitOfWork
+from app.event_handler.dependencies import get_context, get_settings, get_uow
+from tests.context import ContextTest
+from tests.dependencies.dependencies import get_settings_override
+
+
+def get_context_override(
+    settings: Annotated[Settings, Depends(get_settings_override)],
+    uow: Annotated[UnitOfWork, Depends(get_uow)],
+) -> ContextTest:
+    return ContextTest(settings=settings, uow=uow)
 
 
 def apply_faststream_overrides() -> None:
