@@ -31,3 +31,9 @@ def get_items(
         search=search,
         filters=filters,
     )
+
+
+@router.post("/event")
+def send_item_event(domain: Annotated[Domain, Depends(get_domain)]) -> dict[str, str]:
+    domain.send_item_event()
+    return {"detail": "Event sent successfully"}

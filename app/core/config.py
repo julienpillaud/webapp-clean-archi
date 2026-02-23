@@ -1,4 +1,4 @@
-from pydantic import PostgresDsn, RedisDsn, SecretStr, computed_field
+from pydantic import AmqpDsn, PostgresDsn, RedisDsn, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -34,6 +34,12 @@ class Settings(BaseSettings):
     redis_port: int = 6379
     redis_db: str = "0"
 
+    rabbitmq_user: str
+    rabbitmq_password: str
+    rabbitmq_host: str
+    rabbitmq_port: int = 5672
+    rabbitmq_vhost: str = "/"
+
     @computed_field  # type: ignore
     @property
     def postgres_dsn(self) -> PostgresDsn:
@@ -63,4 +69,16 @@ class Settings(BaseSettings):
             host=self.redis_host,
             port=self.redis_port,
             path=self.redis_db,
+        )
+
+    @computed_field  # type: ignore
+    @property
+    def rabbitmq_dsn(self) -> AmqpDsn:
+        return AmqpDsn.build(
+            scheme="amqp",
+            username=self.rabbitmq_user,
+            password=self.rabbitmq_password,
+            host=self.rabbitmq_host,
+            port=self.rabbitmq_port,
+            path=self.rabbitmq_vhost,
         )
