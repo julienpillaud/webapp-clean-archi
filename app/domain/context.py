@@ -4,6 +4,7 @@ from cleanstack.context import BaseContextProtocol
 
 from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
+from app.domain.interfaces.event_publisher import EventPublisherProtocol
 from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
@@ -12,6 +13,9 @@ from app.domain.users.repository import UserRepositoryProtocol
 class ContextProtocol(BaseContextProtocol, Protocol):
     @property
     def cache_manager(self) -> CacheManagerProtocol: ...
+
+    @property
+    def event_publisher(self) -> EventPublisherProtocol: ...
 
     @property
     def dummy_repository(self) -> DummyRepositoryProtocol: ...

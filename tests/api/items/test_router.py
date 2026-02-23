@@ -32,3 +32,9 @@ def test_get_items(
     assert result["total"] == number_of_items
     assert result["limit"] == DEFAULT_PAGINATION_LIMIT
     assert len(result["items"]) == number_of_items
+
+
+def test_send_item_event(client: TestClient) -> None:
+    response = client.post("/items/event")
+
+    assert response.status_code == status.HTTP_200_OK

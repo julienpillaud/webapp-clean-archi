@@ -6,10 +6,14 @@ from app.core.uow import UnitOfWork
 from app.domain.context import ContextProtocol
 from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
+from app.domain.interfaces.event_publisher import EventPublisherProtocol
 from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManager
+from app.infrastructure.event_publisher.faststream_event_publisher import (
+    FastStreamEventPublisher,
+)
 from app.infrastructure.mongo.repositories.items import ItemMongoRepository
 from app.infrastructure.sql.repositories.dummies import DummySQLRepository
 from app.infrastructure.sql.repositories.items import ItemSQLRepository
@@ -26,6 +30,10 @@ class Context(ContextProtocol):
     @cached_property
     def cache_manager(self) -> CacheManagerProtocol:
         return RedisCacheManager(settings=self.settings)
+
+    @cached_property
+    def event_publisher(self) -> EventPublisherProtocol:
+        return FastStreamEventPublisher(settings=self.settings)
 
     @cached_property
     def dummy_repository(self) -> DummyRepositoryProtocol:

@@ -18,22 +18,33 @@
   "loggers": {
     "app": {
       "level": "DEBUG",
-      "handlers": ["console", "logfire"],
+      "handlers": [
+        "console",
+        "logfire"
+      ],
       "propagate": false
     },
     "cleanstack": {
       "level": "DEBUG",
-      "handlers": ["console", "logfire"],
+      "handlers": [
+        "console",
+        "logfire"
+      ],
       "propagate": false
     },
     "watchfiles": {
       "level": "WARNING",
-      "handlers": ["console"],
+      "handlers": [
+        "console"
+      ],
       "propagate": false
     }
   },
   "root": {
     "level": "INFO",
-    "handlers": ["console", "logfire"]
+    "handlers": [
+      "console",
+      "logfire"
+    ]
   }
 }

@@ -23,7 +23,7 @@ credential_exception = HTTPException(
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    return Settings()  # ty:ignore[missing-argument]
+    return Settings()
 
 
 def get_sql_uow(settings: Annotated[Settings, Depends(get_settings)]) -> SQLUnitOfWork:
