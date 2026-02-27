@@ -4,7 +4,6 @@ from typing import Any
 from faker import Faker
 
 from app.domain.posts.entities import Post
-from app.domain.posts.repository import PostRepositoryProtocol
 from app.infrastructure.sql.repositories.posts import PostSQLRepository
 from tests.factories.base import BaseSQLFactory
 from tests.factories.users import UserSQLFactory
@@ -23,7 +22,7 @@ def generate_post(faker: Faker, **kwargs: Any) -> Post:
 class PostSQLFactory(BaseSQLFactory[Post]):
     @property
     def user_factory(self) -> UserSQLFactory:
-        return UserSQLFactory(faker=self.faker, session=self.session)
+        return UserSQLFactory(faker=self.faker, context=self.context)
 
     def build(self, **kwargs: Any) -> Post:
         if "author_id" not in kwargs:
@@ -31,5 +30,5 @@ class PostSQLFactory(BaseSQLFactory[Post]):
         return generate_post(faker=self.faker, **kwargs)
 
     @property
-    def repository(self) -> PostRepositoryProtocol:
-        return PostSQLRepository(session=self.session)
+    def _repository(self) -> PostSQLRepository:
+        return PostSQLRepository(uow=self.uow)

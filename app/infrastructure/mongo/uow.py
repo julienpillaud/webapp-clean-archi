@@ -2,20 +2,36 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 
 from cleanstack.uow import UnitOfWorkProtocol
+from pydantic import BaseModel, ConfigDict
 from pymongo import MongoClient
 from pymongo.client_session import ClientSession
+from pymongo.database import Database
 
-from app.core.config import Settings
-from app.infrastructure.mongo.base import MongoDocument
-from app.infrastructure.mongo.provider import MongoProvider
+from app.infrastructure.mongo.logger import logger
+from app.infrastructure.mongo.types import MongoDocument
+
+
+class MongoContext(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    client: MongoClient[MongoDocument]
+    database: Database[MongoDocument]
+
+    @classmethod
+    def from_settings(cls, uri: str, database_name: str) -> MongoContext:
+        logger.debug(f"Creating MongoDB client: {uri}")
+        client: MongoClient[MongoDocument] = MongoClient(
+            uri, uuidRepresentation="standard"
+        )
+        database = client[database_name]
+        return cls(client=client, database=database)
 
 
 class MongoUnitOfWork(UnitOfWorkProtocol):
-    def __init__(self, settings: Settings) -> None:
-        MongoProvider.init(settings)
-        self.client: MongoClient[MongoDocument] = MongoProvider.get_client()
-        self.database = self.client[settings.mongo_database]
+    def __init__(self, context: MongoContext) -> None:
         self._session: ClientSession | None = None
+        self.client = context.client
+        self.database = context.database
 
     @property
     def session(self) -> ClientSession:

@@ -1,51 +1,73 @@
+from abc import ABC, abstractmethod
+from collections.abc import Iterator
+from contextlib import contextmanager
 from typing import Any
 
 from faker import Faker
-from pymongo.database import Database
-from sqlalchemy.orm import Session
 
 from app.domain.entities import DomainEntity
 from app.domain.interfaces.repository import RepositoryProtocol
-from app.infrastructure.mongo.base import MongoDocument
+from app.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
+from app.infrastructure.sql.uow import SQLContext, SQLUnitOfWork
 
 
-class BaseFactory[T: DomainEntity]:
-    def __init__(self, faker: Faker):
-        self.faker = faker
-
-    def build(self, **kwargs: Any) -> T:
-        raise NotImplementedError()
-
-    @property
-    def repository(self) -> RepositoryProtocol[T]:
-        raise NotImplementedError()
-
+class BaseFactory[T: DomainEntity](ABC):
     def create_one(self, **kwargs: Any) -> T:
         entity = self.build(**kwargs)
-        created_entity = self.repository.create(entity)
-        self._commit()
-        return created_entity
+        with self._persistence_context():
+            created = self._repository.create(entity)
+            self._commit()
+            return created
 
     def create_many(self, count: int, /, **kwargs: Any) -> list[T]:
-        return [self.create_one(**kwargs) for _ in range(count)]
+        entities = [self.build(**kwargs) for _ in range(count)]
+        created_entities: list[T] = []
+        with self._persistence_context():
+            for entity in entities:
+                created = self._repository.create(entity)
+                created_entities.append(created)
+            self._commit()
+        return created_entities
+
+    @abstractmethod
+    def build(self, **kwargs: Any) -> T: ...
+
+    @abstractmethod
+    def _commit(self) -> None: ...
+
+    @contextmanager
+    @abstractmethod
+    def _persistence_context(self) -> Iterator[None]: ...
+
+    @property
+    @abstractmethod
+    def _repository(self) -> RepositoryProtocol[T]: ...
+
+
+class BaseSQLFactory[T: DomainEntity](BaseFactory[T], ABC):
+    def __init__(self, faker: Faker, context: SQLContext) -> None:
+        self.faker = faker
+        self.context = context
+        self.uow = SQLUnitOfWork(context=context)
+
+    @contextmanager
+    def _persistence_context(self) -> Iterator[None]:
+        with self.uow.transaction():
+            yield
 
     def _commit(self) -> None:
-        raise NotImplementedError()
+        self.uow.commit()
 
 
-class BaseSQLFactory[T: DomainEntity](BaseFactory[T]):
-    def __init__(self, faker: Faker, session: Session):
-        super().__init__(faker)
-        self.session = session
+class BaseMongoFactory[T: DomainEntity](BaseFactory[T], ABC):
+    def __init__(self, faker: Faker, context: MongoContext) -> None:
+        self.faker = faker
+        self.uow = MongoUnitOfWork(context=context)
 
-    def _commit(self) -> None:
-        self.session.commit()
-
-
-class BaseMongoFactory[T: DomainEntity](BaseFactory[T]):
-    def __init__(self, faker: Faker, database: Database[MongoDocument]):
-        super().__init__(faker)
-        self.database = database
+    @contextmanager
+    def _persistence_context(self) -> Iterator[None]:
+        with self.uow.transaction():
+            yield
 
     def _commit(self) -> None:
-        pass
+        self.uow.commit()

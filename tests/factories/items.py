@@ -4,7 +4,6 @@ from typing import Any
 from faker import Faker
 
 from app.domain.items.entities import Item
-from app.domain.items.repository import ItemRepositoryProtocol
 from app.infrastructure.mongo.repositories.items import ItemMongoRepository
 from app.infrastructure.sql.repositories.items import ItemSQLRepository
 from tests.factories.base import BaseMongoFactory, BaseSQLFactory
@@ -22,8 +21,8 @@ class ItemSQLFactory(BaseSQLFactory[Item]):
         return generate_item(faker=self.faker, **kwargs)
 
     @property
-    def repository(self) -> ItemRepositoryProtocol:
-        return ItemSQLRepository(session=self.session)
+    def _repository(self) -> ItemSQLRepository:
+        return ItemSQLRepository(uow=self.uow)
 
 
 class ItemMongoFactory(BaseMongoFactory[Item]):
@@ -31,5 +30,5 @@ class ItemMongoFactory(BaseMongoFactory[Item]):
         return generate_item(faker=self.faker, **kwargs)
 
     @property
-    def repository(self) -> ItemRepositoryProtocol:
-        return ItemMongoRepository(database=self.database)
+    def _repository(self) -> ItemMongoRepository:
+        return ItemMongoRepository(uow=self.uow)

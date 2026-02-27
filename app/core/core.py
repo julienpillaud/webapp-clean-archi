@@ -6,7 +6,7 @@ from app.core.config import Settings
 from app.core.logger import logger
 from app.infrastructure.sql.entities import OrmEntity
 from app.infrastructure.sql.models import OrmUser
-from app.infrastructure.sql.provider import SQLProvider
+from app.infrastructure.sql.uow import SQLContext
 
 
 def initialize_app(settings: Settings) -> None:
@@ -15,12 +15,12 @@ def initialize_app(settings: Settings) -> None:
 
 def initialize_sql_database(settings: Settings) -> None:
     """Only used in this project for convenience."""
-    logger.debug("Creating SQL database tables")
-    SQLProvider.init(settings)
-    OrmEntity.metadata.create_all(SQLProvider.get_engine())
+    logger.info("Creating SQL database tables")
+    context = SQLContext.from_settings(dsn=str(settings.postgres_dsn))
+    session_factory = context.session_factory
+    OrmEntity.metadata.create_all(context.engine)
 
     provider_id = uuid.UUID("019c7037-f5bf-7305-b68a-510430df2d3c")
-    session_factory = SQLProvider.get_session_factory()
     with session_factory() as session:
         stmt = select(OrmUser).where(OrmUser.provider_id == str(provider_id))
         user = session.execute(stmt).scalar_one_or_none()

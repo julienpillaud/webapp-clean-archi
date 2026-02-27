@@ -1,6 +1,7 @@
 from app.domain.posts.entities import Post
 from app.domain.posts.repository import PostRepositoryProtocol
-from app.infrastructure.mongo.base import MongoDocument, MongoRepository
+from app.infrastructure.mongo.base import MongoRepository
+from app.infrastructure.mongo.types import MongoDocument
 
 
 class PostMongoRepository(

@@ -4,7 +4,6 @@ from typing import Any
 from faker import Faker
 
 from app.domain.dummies.entities import Dummy
-from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.infrastructure.sql.repositories.dummies import DummySQLRepository
 from tests.factories.base import BaseSQLFactory
 
@@ -35,5 +34,5 @@ class DummySQLFactory(BaseSQLFactory[Dummy]):
         return generate_dummy(faker=self.faker, **kwargs)
 
     @property
-    def repository(self) -> DummyRepositoryProtocol:
-        return DummySQLRepository(session=self.session)
+    def _repository(self) -> DummySQLRepository:
+        return DummySQLRepository(uow=self.uow)

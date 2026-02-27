@@ -2,9 +2,13 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, status
 
-from app.api.dependencies import get_current_user, get_domain, get_filters
 from app.api.posts.dtos import PostDTO
 from app.api.utils import PaginatedResponseDTO
+from app.dependencies.fastapi.dependencies import (
+    get_current_user,
+    get_domain,
+    get_filters,
+)
 from app.domain.domain import Domain
 from app.domain.entities import EntityId, Pagination
 from app.domain.filters import FilterEntity

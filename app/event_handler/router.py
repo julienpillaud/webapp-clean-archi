@@ -4,9 +4,9 @@ import logfire
 from faststream import Depends
 from faststream.rabbit import RabbitRouter
 
+from app.dependencies.faststream.dependencies import get_domain
 from app.domain.domain import Domain
 from app.domain.items.entities import ItemMessage
-from app.event_handler.dependencies import get_domain
 
 router = RabbitRouter()
 

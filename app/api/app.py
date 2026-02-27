@@ -12,7 +12,7 @@ from app.domain.exceptions import CustomError
 
 
 def create_fastapi_app(settings: Settings) -> FastAPI:
-    logger.debug("Creating FastAPI app")
+    logger.info("Creating FastAPI app")
     app = FastAPI(
         title=settings.project_name,
         version=settings.api_version,

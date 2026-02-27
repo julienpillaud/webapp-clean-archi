@@ -26,5 +26,5 @@ class UserSQLFactory(BaseSQLFactory[User]):
         return generate_user(faker=self.faker, **kwargs)
 
     @property
-    def repository(self) -> UserRepositoryProtocol:
-        return UserSQLRepository(session=self.session)
+    def _repository(self) -> UserRepositoryProtocol:
+        return UserSQLRepository(uow=self.uow)

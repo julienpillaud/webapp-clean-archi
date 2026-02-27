@@ -1,4 +1,3 @@
-from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Query, status
@@ -9,6 +8,9 @@ from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.core.context import Context
 from app.core.uow import UnitOfWork
+from app.dependencies.fastapi.mongo import get_mongo_uow
+from app.dependencies.fastapi.sql import get_sql_uow
+from app.dependencies.settings import get_settings
 from app.domain.domain import Domain
 from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
@@ -19,21 +21,6 @@ credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Could not validate credentials.",
 )
-
-
-@lru_cache(maxsize=1)
-def get_settings() -> Settings:
-    return Settings()
-
-
-def get_sql_uow(settings: Annotated[Settings, Depends(get_settings)]) -> SQLUnitOfWork:
-    return SQLUnitOfWork(settings=settings)
-
-
-def get_mongo_uow(
-    settings: Annotated[Settings, Depends(get_settings)],
-) -> MongoUnitOfWork:
-    return MongoUnitOfWork(settings=settings)
 
 
 def get_uow(

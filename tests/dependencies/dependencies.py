@@ -1,3 +1,4 @@
+import secrets
 from functools import lru_cache
 
 from pydantic import SecretStr
@@ -9,7 +10,7 @@ from app.core.config import Settings
 def get_settings_override() -> Settings:
     return Settings(
         environment="test",
-        jwt_secret="secret",
+        jwt_secret=secrets.token_hex(32),
         jwt_audience="authenticated",
         postgres_user="user",
         postgres_password=SecretStr("password"),

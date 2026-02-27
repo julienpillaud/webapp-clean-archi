@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.factories.posts import PostSQLFactory
+from tests.factories.users import UserSQLFactory
 
 
 def test_get_posts(post_factory: PostSQLFactory, client: TestClient) -> None:
@@ -50,7 +51,7 @@ def test_get_post_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"Post '{entity_id}' not found"}
 
 
-def test_create_post(user_factory: PostSQLFactory, client: TestClient) -> None:
+def test_create_post(user_factory: UserSQLFactory, client: TestClient) -> None:
     # Arrange
     user = user_factory.create_one()
 

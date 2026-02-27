@@ -1,29 +1,16 @@
-from functools import lru_cache
 from typing import Annotated
 
-from faststream import Depends
+from fast_depends import Depends
 
 from app.core.config import Settings
 from app.core.context import Context
 from app.core.uow import UnitOfWork
+from app.dependencies.faststream.mongo import get_mongo_uow
+from app.dependencies.faststream.sql import get_sql_uow
+from app.dependencies.settings import get_settings
 from app.domain.domain import Domain
 from app.infrastructure.mongo.uow import MongoUnitOfWork
 from app.infrastructure.sql.uow import SQLUnitOfWork
-
-
-@lru_cache(maxsize=1)
-def get_settings() -> Settings:
-    return Settings()
-
-
-def get_sql_uow(settings: Annotated[Settings, Depends(get_settings)]) -> SQLUnitOfWork:
-    return SQLUnitOfWork(settings=settings)
-
-
-def get_mongo_uow(
-    settings: Annotated[Settings, Depends(get_settings)],
-) -> MongoUnitOfWork:
-    return MongoUnitOfWork(settings=settings)
 
 
 def get_uow(
