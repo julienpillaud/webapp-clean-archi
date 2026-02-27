@@ -25,3 +25,10 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+    restart: unless-stopped

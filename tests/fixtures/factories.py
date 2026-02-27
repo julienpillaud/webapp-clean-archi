@@ -1,9 +1,8 @@
 import pytest
 from faker import Faker
-from pymongo.database import Database
-from sqlalchemy.orm import Session
 
-from app.infrastructure.mongo.base import MongoDocument
+from app.infrastructure.mongo.uow import MongoContext
+from app.infrastructure.sql.uow import SQLContext
 from tests.factories.dummies import DummySQLFactory
 from tests.factories.items import ItemMongoFactory, ItemSQLFactory
 from tests.factories.posts import PostSQLFactory
@@ -16,28 +15,25 @@ def faker() -> Faker:
 
 
 @pytest.fixture
-def dummy_factory(faker: Faker, session: Session) -> DummySQLFactory:
-    return DummySQLFactory(faker=faker, session=session)
+def dummy_factory(faker: Faker, sql_context: SQLContext) -> DummySQLFactory:
+    return DummySQLFactory(faker=faker, context=sql_context)
 
 
 @pytest.fixture
-def item_sql_factory(faker: Faker, session: Session) -> ItemSQLFactory:
-    return ItemSQLFactory(faker=faker, session=session)
+def item_sql_factory(faker: Faker, sql_context: SQLContext) -> ItemSQLFactory:
+    return ItemSQLFactory(faker=faker, context=sql_context)
 
 
 @pytest.fixture
-def item_mongo_factory(
-    faker: Faker,
-    mongo_database: Database[MongoDocument],
-) -> ItemMongoFactory:
-    return ItemMongoFactory(faker=faker, database=mongo_database)
+def item_mongo_factory(faker: Faker, mongo_context: MongoContext) -> ItemMongoFactory:
+    return ItemMongoFactory(faker=faker, context=mongo_context)
 
 
 @pytest.fixture
-def user_factory(faker: Faker, session: Session) -> UserSQLFactory:
-    return UserSQLFactory(faker=faker, session=session)
+def user_factory(faker: Faker, sql_context: SQLContext) -> UserSQLFactory:
+    return UserSQLFactory(faker=faker, context=sql_context)
 
 
 @pytest.fixture
-def post_factory(faker: Faker, session: Session) -> PostSQLFactory:
-    return PostSQLFactory(faker=faker, session=session)
+def post_factory(faker: Faker, sql_context: SQLContext) -> PostSQLFactory:
+    return PostSQLFactory(faker=faker, context=sql_context)

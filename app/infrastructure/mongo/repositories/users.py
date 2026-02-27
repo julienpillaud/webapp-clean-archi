@@ -1,7 +1,8 @@
 from app.domain.posts.entities import Post
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.mongo.base import MongoDocument, MongoRepository
+from app.infrastructure.mongo.base import MongoRepository
+from app.infrastructure.mongo.types import MongoDocument
 
 
 class UserMongoRepository(MongoRepository[User], UserRepositoryProtocol):

@@ -22,7 +22,8 @@ from tests.factories.users import UserSQLFactory
 logger = logging.getLogger(__name__)
 
 pytest_plugins = [
-    "tests.fixtures.database",
+    "tests.fixtures.sql",
+    "tests.fixtures.mongo",
     "tests.fixtures.factories",
 ]
 

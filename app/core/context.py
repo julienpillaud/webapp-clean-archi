@@ -37,23 +37,20 @@ class Context(ContextProtocol):
 
     @cached_property
     def dummy_repository(self) -> DummyRepositoryProtocol:
-        return DummySQLRepository(session=self.uow.sql.session)
+        return DummySQLRepository(uow=self.uow.sql)
 
     @cached_property
     def post_repository(self) -> PostRepositoryProtocol:
-        return PostSQLRepository(session=self.uow.sql.session)
+        return PostSQLRepository(uow=self.uow.sql)
 
     @cached_property
     def user_repository(self) -> UserRepositoryProtocol:
-        return UserSQLRepository(session=self.uow.sql.session)
+        return UserSQLRepository(uow=self.uow.sql)
 
     @cached_property
     def item_relational_repository(self) -> ItemRepositoryProtocol:
-        return ItemSQLRepository(session=self.uow.sql.session)
+        return ItemSQLRepository(uow=self.uow.sql)
 
     @cached_property
     def item_document_repository(self) -> ItemRepositoryProtocol:
-        return ItemMongoRepository(
-            database=self.uow.mongo.database,
-            session=self.uow.mongo.session,
-        )
+        return ItemMongoRepository(uow=self.uow.mongo)

@@ -4,7 +4,8 @@ from fast_depends import Depends, dependency_provider
 
 from app.core.config import Settings
 from app.core.uow import UnitOfWork
-from app.event_handler.dependencies import get_context, get_settings, get_uow
+from app.dependencies.faststream.dependencies import get_context, get_uow
+from app.dependencies.settings import get_settings
 from tests.context import ContextTest
 from tests.dependencies.dependencies import get_settings_override
 

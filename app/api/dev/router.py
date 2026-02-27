@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from app.api.dependencies import get_domain
+from app.dependencies.fastapi.dependencies import get_domain
 from app.domain.domain import Domain
 
 router = APIRouter(tags=["dev"])
