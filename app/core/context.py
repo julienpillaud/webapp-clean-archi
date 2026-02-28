@@ -1,3 +1,5 @@
+from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
 from pymongo.client_session import ClientSession
 
 from app.core.config import Settings
@@ -13,12 +15,10 @@ from app.infrastructure.event_publisher.faststream_event_publisher import (
     FastStreamEventPublisher,
 )
 from app.infrastructure.mongo.repositories.items import ItemMongoRepository
-from app.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from app.infrastructure.sql.repositories.dummies import DummySQLRepository
 from app.infrastructure.sql.repositories.items import ItemSQLRepository
 from app.infrastructure.sql.repositories.posts import PostSQLRepository
 from app.infrastructure.sql.repositories.users import UserSQLRepository
-from app.infrastructure.sql.uow import SQLUnitOfWork
 
 
 class Context(ContextProtocol):
@@ -26,8 +26,8 @@ class Context(ContextProtocol):
         self,
         settings: Settings,
         sql_uow: SQLUnitOfWork,
-        mongo_context: MongoContext,
-        mongo_uow: MongoUnitOfWork | None = None,
+        mongo_context: MongoDBContext,
+        mongo_uow: MongoDBUnitOfWork | None = None,
     ):
         self.settings = settings
         self.sql_uow = sql_uow

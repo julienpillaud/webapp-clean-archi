@@ -1,10 +1,10 @@
+from cleanstack.infrastructure.mongodb.types import MongoDocument
 from pymongo.client_session import ClientSession
 from pymongo.database import Database
 
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
 from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
-from app.infrastructure.mongo.types import MongoDocument
 
 
 class MongoRepository[T: DomainEntity](RepositoryProtocol[T]):

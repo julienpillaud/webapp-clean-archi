@@ -1,12 +1,12 @@
 import uuid
 
+from cleanstack.infrastructure.sql.uow import SQLContext
 from sqlalchemy import select
 
 from app.core.config import Settings
 from app.core.logger import logger
 from app.infrastructure.sql.entities import OrmEntity
 from app.infrastructure.sql.models import OrmUser
-from app.infrastructure.sql.uow import SQLContext
 
 
 def initialize_app(settings: Settings) -> None:
@@ -16,7 +16,7 @@ def initialize_app(settings: Settings) -> None:
 def initialize_sql_database(settings: Settings) -> None:
     """Only used in this project for convenience."""
     logger.info("Creating SQL database tables")
-    context = SQLContext.from_settings(dsn=str(settings.postgres_dsn))
+    context = SQLContext.from_settings(url=str(settings.postgres_dsn))
     session_factory = context.session_factory
     OrmEntity.metadata.create_all(context.engine)
 
