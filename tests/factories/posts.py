@@ -31,4 +31,4 @@ class PostSQLFactory(BaseSQLFactory[Post]):
 
     @property
     def _repository(self) -> PostSQLRepository:
-        return PostSQLRepository(uow=self.uow)
+        return PostSQLRepository(session=self.uow.session)

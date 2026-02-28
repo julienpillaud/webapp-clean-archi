@@ -31,7 +31,6 @@ class MongoUnitOfWork(UnitOfWorkProtocol):
     def __init__(self, context: MongoContext) -> None:
         self._session: ClientSession | None = None
         self.client = context.client
-        self.database = context.database
 
     @property
     def session(self) -> ClientSession:

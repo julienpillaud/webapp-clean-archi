@@ -1,8 +1,10 @@
+from pymongo.client_session import ClientSession
+from pymongo.database import Database
+
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
 from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
 from app.infrastructure.mongo.types import MongoDocument
-from app.infrastructure.mongo.uow import MongoUnitOfWork
 
 
 class MongoRepository[T: DomainEntity](RepositoryProtocol[T]):
@@ -10,11 +12,14 @@ class MongoRepository[T: DomainEntity](RepositoryProtocol[T]):
     collection_name: str
     searchable_fields: tuple[str, ...]
 
-    def __init__(self, uow: MongoUnitOfWork):
-        self.uow = uow
-        self.database = uow.database
+    def __init__(
+        self,
+        database: Database[MongoDocument],
+        session: ClientSession | None = None,
+    ):
+        self.database = database
         self.collection = self.database[self.collection_name]
-        self.session = uow.session
+        self.session = session
 
     def get_all(
         self,
