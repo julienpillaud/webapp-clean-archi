@@ -62,6 +62,7 @@ class BaseSQLFactory[T: DomainEntity](BaseFactory[T], ABC):
 class BaseMongoFactory[T: DomainEntity](BaseFactory[T], ABC):
     def __init__(self, faker: Faker, context: MongoContext) -> None:
         self.faker = faker
+        self.context = context
         self.uow = MongoUnitOfWork(context=context)
 
     @contextmanager

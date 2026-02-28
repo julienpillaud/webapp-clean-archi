@@ -27,7 +27,12 @@ def create_cli_app(settings: Settings) -> typer.Typer:
         mongo_uow = MongoUnitOfWork(context=mongo_context)
 
         uow = UnitOfWork(sql=sql_uow, mongo=mongo_uow)
-        context = Context(settings=settings, uow=uow)
+        context = Context(
+            settings=settings,
+            sql_uow=sql_uow,
+            mongo_context=mongo_context,
+            mongo_uow=mongo_uow,
+        )
         domain = Domain(uow=uow, context=context)
 
         ctx.obj = {"domain": domain}

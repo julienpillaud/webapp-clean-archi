@@ -27,4 +27,4 @@ class UserSQLFactory(BaseSQLFactory[User]):
 
     @property
     def _repository(self) -> UserRepositoryProtocol:
-        return UserSQLRepository(uow=self.uow)
+        return UserSQLRepository(session=self.uow.session)

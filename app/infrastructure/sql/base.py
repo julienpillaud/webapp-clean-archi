@@ -2,14 +2,13 @@ from functools import cached_property
 from typing import Any, ClassVar
 
 from sqlalchemy import delete, select
-from sqlalchemy.orm import InstrumentedAttribute
+from sqlalchemy.orm import InstrumentedAttribute, Session
 from sqlalchemy.orm.interfaces import ORMOption
 
 from app.domain.entities import DomainEntity, EntityId, PaginatedResponse, Pagination
 from app.domain.filters import FilterEntity
 from app.domain.interfaces.repository import RepositoryProtocol
 from app.infrastructure.sql.entities import OrmEntity
-from app.infrastructure.sql.uow import SQLUnitOfWork
 from app.infrastructure.sql.utils import SQLQueryBuilder
 
 
@@ -22,9 +21,8 @@ class SQLRepository[DomainT: DomainEntity, OrmT: OrmEntity](
     filterable_fields: ClassVar[dict[str, InstrumentedAttribute[Any]]] = {}
     searchable_fields: tuple[InstrumentedAttribute[Any], ...] = ()
 
-    def __init__(self, uow: SQLUnitOfWork) -> None:
-        self.uow = uow
-        self.session = uow.session
+    def __init__(self, session: Session) -> None:
+        self.session = session
 
     @cached_property
     def query_builder(self) -> SQLQueryBuilder[OrmT]:

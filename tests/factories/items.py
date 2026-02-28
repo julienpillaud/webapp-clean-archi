@@ -22,7 +22,7 @@ class ItemSQLFactory(BaseSQLFactory[Item]):
 
     @property
     def _repository(self) -> ItemSQLRepository:
-        return ItemSQLRepository(uow=self.uow)
+        return ItemSQLRepository(session=self.uow.session)
 
 
 class ItemMongoFactory(BaseMongoFactory[Item]):
@@ -31,4 +31,7 @@ class ItemMongoFactory(BaseMongoFactory[Item]):
 
     @property
     def _repository(self) -> ItemMongoRepository:
-        return ItemMongoRepository(uow=self.uow)
+        return ItemMongoRepository(
+            database=self.context.database,
+            session=self.uow.session,
+        )

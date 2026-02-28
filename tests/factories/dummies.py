@@ -35,4 +35,4 @@ class DummySQLFactory(BaseSQLFactory[Dummy]):
 
     @property
     def _repository(self) -> DummySQLRepository:
-        return DummySQLRepository(uow=self.uow)
+        return DummySQLRepository(session=self.uow.session)

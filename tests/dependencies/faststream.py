@@ -3,18 +3,28 @@ from typing import Annotated
 from fast_depends import Depends, dependency_provider
 
 from app.core.config import Settings
-from app.core.uow import UnitOfWork
-from app.dependencies.faststream.dependencies import get_context, get_uow
+from app.dependencies.faststream.dependencies import get_context
+from app.dependencies.faststream.mongo import get_mongo_context, get_mongo_uow
+from app.dependencies.faststream.sql import get_sql_uow
 from app.dependencies.settings import get_settings
+from app.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
+from app.infrastructure.sql.uow import SQLUnitOfWork
 from tests.context import ContextTest
 from tests.dependencies.dependencies import get_settings_override
 
 
 def get_context_override(
     settings: Annotated[Settings, Depends(get_settings_override)],
-    uow: Annotated[UnitOfWork, Depends(get_uow)],
+    sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
+    mongo_context: Annotated[MongoContext, Depends(get_mongo_context)],
+    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
 ) -> ContextTest:
-    return ContextTest(settings=settings, uow=uow)
+    return ContextTest(
+        settings=settings,
+        sql_uow=sql_uow,
+        mongo_context=mongo_context,
+        mongo_uow=mongo_uow,
+    )
 
 
 def apply_faststream_overrides() -> None:
