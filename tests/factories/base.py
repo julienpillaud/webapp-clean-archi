@@ -3,12 +3,12 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
 
+from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.infrastructure.sql.uow import SQLContext, SQLUnitOfWork
 from faker import Faker
 
 from app.domain.entities import DomainEntity
 from app.domain.interfaces.repository import RepositoryProtocol
-from app.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
-from app.infrastructure.sql.uow import SQLContext, SQLUnitOfWork
 
 
 class BaseFactory[T: DomainEntity](ABC):
@@ -60,10 +60,10 @@ class BaseSQLFactory[T: DomainEntity](BaseFactory[T], ABC):
 
 
 class BaseMongoFactory[T: DomainEntity](BaseFactory[T], ABC):
-    def __init__(self, faker: Faker, context: MongoContext) -> None:
+    def __init__(self, faker: Faker, context: MongoDBContext) -> None:
         self.faker = faker
         self.context = context
-        self.uow = MongoUnitOfWork(context=context)
+        self.uow = MongoDBUnitOfWork(context=context)
 
     @contextmanager
     def _persistence_context(self) -> Iterator[None]:

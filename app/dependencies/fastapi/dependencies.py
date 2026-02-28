@@ -1,5 +1,7 @@
 from typing import Annotated
 
+from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
 
@@ -14,8 +16,6 @@ from app.dependencies.settings import get_settings
 from app.domain.domain import Domain
 from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
-from app.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
-from app.infrastructure.sql.uow import SQLUnitOfWork
 
 credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -25,7 +25,7 @@ credential_exception = HTTPException(
 
 def get_uow(
     sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
+    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
 ) -> UnitOfWork:
     return UnitOfWork(sql=sql_uow, mongo=mongo_uow)
 
@@ -33,8 +33,8 @@ def get_uow(
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
     sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_context: Annotated[MongoContext, Depends(get_mongo_context)],
-    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
+    mongo_context: Annotated[MongoDBContext, Depends(get_mongo_context)],
+    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
 ) -> Context:
     return Context(
         settings=settings,

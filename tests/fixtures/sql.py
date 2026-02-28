@@ -1,12 +1,12 @@
 from collections.abc import Iterator
 
 import pytest
+from cleanstack.infrastructure.sql.uow import SQLContext
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
 from app.infrastructure.sql.entities import OrmEntity
-from app.infrastructure.sql.uow import SQLContext
 
 
 def clean(engine: Engine) -> None:
@@ -18,7 +18,7 @@ def clean(engine: Engine) -> None:
 
 @pytest.fixture(scope="session")
 def sql_context_init(settings: Settings) -> SQLContext:
-    context = SQLContext.from_settings(dsn=str(settings.postgres_dsn))
+    context = SQLContext.from_settings(url=str(settings.postgres_dsn))
     engine = context.engine
 
     OrmEntity.metadata.drop_all(engine)

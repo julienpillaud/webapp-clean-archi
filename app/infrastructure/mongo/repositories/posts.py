@@ -1,7 +1,8 @@
+from cleanstack.infrastructure.mongodb.types import MongoDocument
+
 from app.domain.posts.entities import Post
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.infrastructure.mongo.base import MongoRepository
-from app.infrastructure.mongo.types import MongoDocument
 
 
 class PostMongoRepository(
