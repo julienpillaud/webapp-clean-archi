@@ -1,5 +1,9 @@
+from collections.abc import Iterator
+from contextlib import contextmanager
+
 from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
+from cleanstack.uow import CompositeUniOfWork, UnitOfWorkProtocol
 from pymongo.client_session import ClientSession
 
 from app.core.config import Settings
@@ -21,6 +25,23 @@ from app.infrastructure.sql.repositories.posts import PostSQLRepository
 from app.infrastructure.sql.repositories.users import UserSQLRepository
 
 
+@contextmanager
+def context_transaction(context: Context) -> Iterator[None]:
+    members: list[UnitOfWorkProtocol] = [context.sql_uow]
+    if context.mongo_uow:
+        members.append(context.mongo_uow)
+
+    uow = CompositeUniOfWork(members=members)
+    with uow.transaction():
+        try:
+            yield
+        except Exception:
+            uow.rollback()
+            raise
+
+        uow.commit()
+
+
 class Context(ContextProtocol):
     def __init__(
         self,
@@ -33,6 +54,13 @@ class Context(ContextProtocol):
         self.sql_uow = sql_uow
         self.mongo_context = mongo_context
         self.mongo_uow = mongo_uow
+        self.members = self._get_members()
+
+    def _get_members(self) -> list[UnitOfWorkProtocol]:
+        members: list[UnitOfWorkProtocol] = [self.sql_uow]
+        if self.mongo_uow:
+            members.append(self.mongo_uow)
+        return members
 
     @property
     def _mongo_session(self) -> ClientSession | None:
