@@ -2,6 +2,7 @@ from typing import Annotated
 
 from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
+from cleanstack.uow import CompositeUniOfWork
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
 
@@ -9,7 +10,6 @@ from app.api.security import decode_jwt, http_bearer
 from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.core.context import Context
-from app.core.uow import UnitOfWork
 from app.dependencies.fastapi.mongo import get_mongo_context, get_mongo_uow
 from app.dependencies.fastapi.sql import get_sql_uow
 from app.dependencies.settings import get_settings
@@ -21,13 +21,6 @@ credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Could not validate credentials.",
 )
-
-
-def get_uow(
-    sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
-) -> UnitOfWork:
-    return UnitOfWork(sql=sql_uow, mongo=mongo_uow)
 
 
 def get_context(
@@ -44,10 +37,8 @@ def get_context(
     )
 
 
-def get_domain(
-    uow: Annotated[UnitOfWork, Depends(get_uow)],
-    context: Annotated[Context, Depends(get_context)],
-) -> Domain:
+def get_domain(context: Annotated[Context, Depends(get_context)]) -> Domain:
+    uow = CompositeUniOfWork(members=context.members)
     return Domain(uow=uow, context=context)
 
 

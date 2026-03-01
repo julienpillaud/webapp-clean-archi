@@ -1,12 +1,12 @@
 import typer
 from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLContext, SQLUnitOfWork
+from cleanstack.uow import CompositeUniOfWork
 
 from app.cli.posts import app as posts_app
 from app.cli.users import app as users_app
 from app.core.config import Settings
 from app.core.context import Context
-from app.core.uow import UnitOfWork
 from app.domain.domain import Domain
 
 
@@ -26,13 +26,13 @@ def create_cli_app(settings: Settings) -> typer.Typer:
         )
         mongo_uow = MongoDBUnitOfWork(context=mongo_context)
 
-        uow = UnitOfWork(sql=sql_uow, mongo=mongo_uow)
         context = Context(
             settings=settings,
             sql_uow=sql_uow,
             mongo_context=mongo_context,
             mongo_uow=mongo_uow,
         )
+        uow = CompositeUniOfWork(members=context.members)
         domain = Domain(uow=uow, context=context)
 
         ctx.obj = {"domain": domain}

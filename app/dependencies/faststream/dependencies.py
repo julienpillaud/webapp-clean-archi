@@ -2,22 +2,15 @@ from typing import Annotated
 
 from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
+from cleanstack.uow import CompositeUniOfWork
 from fast_depends import Depends
 
 from app.core.config import Settings
 from app.core.context import Context
-from app.core.uow import UnitOfWork
 from app.dependencies.faststream.mongo import get_mongo_context, get_mongo_uow
 from app.dependencies.faststream.sql import get_sql_uow
 from app.dependencies.settings import get_settings
 from app.domain.domain import Domain
-
-
-def get_uow(
-    sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
-) -> UnitOfWork:
-    return UnitOfWork(sql=sql_uow, mongo=mongo_uow)
 
 
 def get_context(
@@ -34,8 +27,6 @@ def get_context(
     )
 
 
-def get_domain(
-    uow: Annotated[UnitOfWork, Depends(get_uow)],
-    context: Annotated[Context, Depends(get_context)],
-) -> Domain:
+def get_domain(context: Annotated[Context, Depends(get_context)]) -> Domain:
+    uow = CompositeUniOfWork(members=context.members)
     return Domain(uow=uow, context=context)
