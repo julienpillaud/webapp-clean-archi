@@ -1,6 +1,5 @@
-from cleanstack.domain import BaseDomain
-from cleanstack.handlers import CommandHandler, QueryHandler
-from cleanstack.uow import UnitOfWorkProtocol
+from cleanstack.domain import BaseDomain, UnitOfWorkProtocol
+from cleanstack.domain.handlers import CommandHandler, QueryHandler
 
 from app.domain.context import ContextProtocol
 from app.domain.dev.commands import (

@@ -1,11 +1,11 @@
 import uuid
 from typing import Any
 
+from cleanstack.factories import BaseSQLFactory
 from faker import Faker
 
 from app.domain.dummies.entities import Dummy
-from app.infrastructure.sql.repositories.dummies import DummySQLRepository
-from tests.factories.base import BaseSQLFactory
+from app.infrastructure.sql.dummies import DummySQLRepository
 
 
 def generate_dummy(faker: Faker, **kwargs: Any) -> Dummy:
@@ -20,9 +20,6 @@ def generate_dummy(faker: Faker, **kwargs: Any) -> Dummy:
         if "float_field" in kwargs
         else faker.pyfloat(),
         bool_field=kwargs["bool_field"] if "bool_field" in kwargs else faker.pybool(),
-        date_field=kwargs["date_field"]
-        if "date_field" in kwargs
-        else faker.date_object(),
         datetime_field=kwargs["datetime_field"]
         if "datetime_field" in kwargs
         else faker.date_time(),

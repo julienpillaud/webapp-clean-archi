@@ -1,9 +1,9 @@
 import uuid
 
+from cleanstack.entities import DEFAULT_PAGINATION_SIZE
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.factories.posts import PostSQLFactory
 from tests.factories.users import UserSQLFactory
 
@@ -20,7 +20,7 @@ def test_get_posts(post_factory: PostSQLFactory, client: TestClient) -> None:
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == number_of_post
-    assert result["limit"] == DEFAULT_PAGINATION_LIMIT
+    assert result["size"] == DEFAULT_PAGINATION_SIZE
     assert len(result["items"]) == number_of_post
 
 

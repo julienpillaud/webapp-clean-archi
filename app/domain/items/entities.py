@@ -1,6 +1,5 @@
+from cleanstack.entities import DomainEntity, EntityId
 from pydantic import BaseModel
-
-from app.domain.entities import DomainEntity, EntityId
 
 
 class Item(DomainEntity):

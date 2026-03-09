@@ -1,12 +1,12 @@
 import uuid
 from typing import Any
 
+from cleanstack.factories import BaseMongoFactory, BaseSQLFactory
 from faker import Faker
 
 from app.domain.items.entities import Item
-from app.infrastructure.mongo.repositories.items import ItemMongoRepository
-from app.infrastructure.sql.repositories.items import ItemSQLRepository
-from tests.factories.base import BaseMongoFactory, BaseSQLFactory
+from app.infrastructure.mongo.items import ItemMongoRepository
+from app.infrastructure.sql.items import ItemSQLRepository
 
 
 def generate_item(faker: Faker, **kwargs: Any) -> Item:

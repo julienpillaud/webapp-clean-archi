@@ -1,8 +1,8 @@
 import pytest
+from cleanstack.entities import FilterOperator
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.domain.filters import FilterOperator
 from tests.factories.dummies import DummySQLFactory
 
 
@@ -34,7 +34,7 @@ def test_unsupported_operator(client: TestClient, operator: FilterOperator) -> N
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     result = response.json()
-    assert result == {"detail": "Unsupported operator."}
+    assert result == {"detail": "Unsupported operator"}
 
 
 def test_wrong_value(client: TestClient) -> None:
@@ -43,4 +43,4 @@ def test_wrong_value(client: TestClient) -> None:
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
     result = response.json()
-    assert result == {"detail": "Invalid value format."}
+    assert result == {"detail": "Invalid value format"}

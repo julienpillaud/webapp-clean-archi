@@ -1,5 +1,5 @@
 import pytest
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext
+from cleanstack.infrastructure.mongo.uow import MongoContext
 from cleanstack.infrastructure.sql.uow import SQLContext
 from faker import Faker
 
@@ -25,7 +25,7 @@ def item_sql_factory(faker: Faker, sql_context: SQLContext) -> ItemSQLFactory:
 
 
 @pytest.fixture
-def item_mongo_factory(faker: Faker, mongo_context: MongoDBContext) -> ItemMongoFactory:
+def item_mongo_factory(faker: Faker, mongo_context: MongoContext) -> ItemMongoFactory:
     return ItemMongoFactory(faker=faker, context=mongo_context)
 
 

@@ -1,6 +1,5 @@
 import hashlib
 import json
-import logging
 from collections.abc import Callable
 from functools import wraps
 from typing import Concatenate
@@ -8,8 +7,7 @@ from typing import Concatenate
 from pydantic import BaseModel
 
 from app.domain.context import ContextProtocol
-
-logger = logging.getLogger(__name__)
+from app.domain.logger import logger
 
 
 def cached_command[**P, R: BaseModel](

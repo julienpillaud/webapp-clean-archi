@@ -1,12 +1,12 @@
 from collections.abc import Iterator
 
 import pytest
+from cleanstack.infrastructure.sql.entities import OrmEntity
 from cleanstack.infrastructure.sql.uow import SQLContext
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
-from app.infrastructure.sql.entities import OrmEntity
 
 
 def clean(engine: Engine) -> None:

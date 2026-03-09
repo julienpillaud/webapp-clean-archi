@@ -1,9 +1,9 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.domain import CompositeUniOfWork, UnitOfWorkProtocol
+from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
-from cleanstack.uow import CompositeUniOfWork, UnitOfWorkProtocol
 from pymongo.client_session import ClientSession
 
 from app.core.config import Settings
@@ -18,11 +18,11 @@ from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManag
 from app.infrastructure.event_publisher.faststream_event_publisher import (
     FastStreamEventPublisher,
 )
-from app.infrastructure.mongo.repositories.items import ItemMongoRepository
-from app.infrastructure.sql.repositories.dummies import DummySQLRepository
-from app.infrastructure.sql.repositories.items import ItemSQLRepository
-from app.infrastructure.sql.repositories.posts import PostSQLRepository
-from app.infrastructure.sql.repositories.users import UserSQLRepository
+from app.infrastructure.mongo.items import ItemMongoRepository
+from app.infrastructure.sql.dummies import DummySQLRepository
+from app.infrastructure.sql.items import ItemSQLRepository
+from app.infrastructure.sql.posts import PostSQLRepository
+from app.infrastructure.sql.users import UserSQLRepository
 
 
 @contextmanager
@@ -47,8 +47,8 @@ class Context(ContextProtocol):
         self,
         settings: Settings,
         sql_uow: SQLUnitOfWork,
-        mongo_context: MongoDBContext,
-        mongo_uow: MongoDBUnitOfWork | None = None,
+        mongo_context: MongoContext,
+        mongo_uow: MongoUnitOfWork | None = None,
     ):
         self.settings = settings
         self.sql_uow = sql_uow

@@ -1,6 +1,7 @@
 from typing import Annotated
 
 import typer
+from cleanstack.entities import DEFAULT_PAGINATION_SIZE, EntityId, Pagination
 from pydantic import PositiveInt
 
 from app.cli.utils import (
@@ -9,7 +10,6 @@ from app.cli.utils import (
     parse_entity_id,
     print_result,
 )
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT, EntityId, Pagination
 from app.domain.posts.entities import PostCreate, PostUpdate
 
 app = typer.Typer()
@@ -19,7 +19,7 @@ app = typer.Typer()
 def get_all(
     ctx: typer.Context,
     page: Annotated[PositiveInt, typer.Argument()] = 1,
-    limit: Annotated[PositiveInt, typer.Argument()] = DEFAULT_PAGINATION_LIMIT,
+    limit: Annotated[PositiveInt, typer.Argument()] = DEFAULT_PAGINATION_SIZE,
 ) -> None:
     get_posts = get_domain_method(ctx=ctx, method_name="get_posts")
     posts = get_posts(pagination=Pagination(page=page, limit=limit))

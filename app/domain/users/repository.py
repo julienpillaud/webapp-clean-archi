@@ -1,4 +1,5 @@
-from app.domain.interfaces.repository import RepositoryProtocol
+from cleanstack.domain import RepositoryProtocol
+
 from app.domain.users.entities import User
 
 

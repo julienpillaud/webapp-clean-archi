@@ -13,13 +13,14 @@ def test_pagination_request_less_than_total(
     post_factory.create_many(total_number)
 
     # Act
-    response = client.get(f"/posts?page=1&limit={request_number}")
+    params = {"page": 1, "size": request_number}
+    response = client.get("/posts", params=params)
 
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == total_number
-    assert result["limit"] == request_number
+    assert result["size"] == request_number
     assert len(result["items"]) == request_number
 
 
@@ -32,13 +33,14 @@ def test_pagination_request_more_than_total(
     post_factory.create_many(total_number)
 
     # Act
-    response = client.get(f"/posts?page=2&limit={request_number}")
+    params = {"page": 2, "size": request_number}
+    response = client.get("/posts", params=params)
 
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == total_number
-    assert result["limit"] == request_number
+    assert result["size"] == request_number
     assert len(result["items"]) == total_number - request_number
 
 
@@ -51,11 +53,12 @@ def test_pagination_out_of_range(
     post_factory.create_many(total_number)
 
     # Act
-    response = client.get(f"/posts?page=3&limit={request_number}")
+    params = {"page": 3, "size": request_number}
+    response = client.get("/posts", params=params)
 
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == total_number
-    assert result["limit"] == request_number
+    assert result["size"] == request_number
     assert len(result["items"]) == 0

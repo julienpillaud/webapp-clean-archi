@@ -1,6 +1,6 @@
+from cleanstack.entities import FilterEntity, PaginatedResponse, Pagination, SortEntity
+
 from app.domain.context import ContextProtocol
-from app.domain.entities import PaginatedResponse, Pagination
-from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
 
 
@@ -15,12 +15,14 @@ def get_user_by_provider_id_command(
 def get_users_command(
     context: ContextProtocol,
     /,
-    pagination: Pagination | None = None,
     search: str | None = None,
     filters: list[FilterEntity] | None = None,
+    sort: list[SortEntity] | None = None,
+    pagination: Pagination | None = None,
 ) -> PaginatedResponse[User]:
     return context.user_repository.get_all(
-        pagination=pagination,
         search=search,
         filters=filters,
+        sort=sort,
+        pagination=pagination,
     )

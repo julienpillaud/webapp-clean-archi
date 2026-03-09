@@ -1,17 +1,15 @@
+from cleanstack.infrastructure.sql.base import SQLRepository
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 
 from app.domain.posts.entities import Post, TagName
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.sql.base import SQLRepository
-from app.infrastructure.sql.models import OrmPost, OrmUser
+from app.infrastructure.sql.models import OrmUser
 
 
 class UserSQLRepository(SQLRepository[User, OrmUser], UserRepositoryProtocol):
-    domain_model = User
-    orm_model = OrmUser
-    select_options = (selectinload(OrmUser.posts).selectinload(OrmPost.tags),)
+    domain_entity_type = User
+    orm_model_type = OrmUser
 
     def get_by_provider_id(self, provider_id: str, /) -> User | None:
         stmt = select(OrmUser).where(OrmUser.provider_id == provider_id)

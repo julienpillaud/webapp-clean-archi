@@ -27,11 +27,10 @@ dependencies = [
 [dependency-groups]
 dev = [
     "coverage>=7.13",
-    "faker>=40.1",
+    "faker>=40.8",
     "httpx>=0.28",
     "mypy>=1.19",
     "pre-commit>=4.5",
-    "prek>=0.3",
     "pytest>=9.0",
     "ruff>=0.15",
     "ty>=0.0",
@@ -41,7 +40,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.13.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.15.0" }
 
 [tool.ruff]
 output-format = "concise"

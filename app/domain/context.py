@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from cleanstack.context import BaseContextProtocol
+from cleanstack.domain import BaseContextProtocol
 
 from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol

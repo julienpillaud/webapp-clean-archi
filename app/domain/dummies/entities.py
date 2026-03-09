@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from app.domain.entities import DomainEntity
+from cleanstack.entities import DomainEntity
 
 
 class Dummy(DomainEntity):
@@ -10,5 +10,4 @@ class Dummy(DomainEntity):
     int_field: int
     float_field: float
     bool_field: bool
-    date_field: datetime.date
     datetime_field: datetime.datetime

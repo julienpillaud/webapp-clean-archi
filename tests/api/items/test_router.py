@@ -1,9 +1,8 @@
 import pytest
+from cleanstack.entities import DEFAULT_PAGINATION_SIZE
 from fastapi import status
 from fastapi.testclient import TestClient
 from pytest import FixtureRequest
-
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 
 
 @pytest.mark.parametrize(
@@ -24,13 +23,14 @@ def test_get_items(
     factory.create_many(number_of_items)
 
     # Act
-    response = client.get(f"/items?repository={repo_type}")
+    params = {"repository": repo_type}
+    response = client.get("/items", params=params)
 
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == number_of_items
-    assert result["limit"] == DEFAULT_PAGINATION_LIMIT
+    assert result["size"] == DEFAULT_PAGINATION_SIZE
     assert len(result["items"]) == number_of_items
 
 

@@ -1,10 +1,9 @@
 import uuid
 
 import logfire
+from cleanstack.entities import FilterEntity, PaginatedResponse, Pagination, SortEntity
 
 from app.domain.context import ContextProtocol
-from app.domain.entities import PaginatedResponse, Pagination
-from app.domain.filters import FilterEntity
 from app.domain.interfaces.event_publisher import Event
 from app.domain.items.entities import Item, ItemMessage
 from app.domain.items.repository import RepositoryType
@@ -14,22 +13,25 @@ def get_items_command(
     context: ContextProtocol,
     /,
     repository: RepositoryType,
-    pagination: Pagination | None = None,
     search: str | None = None,
     filters: list[FilterEntity] | None = None,
+    sort: list[SortEntity] | None = None,
+    pagination: Pagination | None = None,
 ) -> PaginatedResponse[Item]:
     match repository:
         case RepositoryType.RELATIONAL:
             return context.item_relational_repository.get_all(
-                pagination=pagination,
                 search=search,
                 filters=filters,
+                sort=sort,
+                pagination=pagination,
             )
         case RepositoryType.DOCUMENT:
             return context.item_document_repository.get_all(
-                pagination=pagination,
                 search=search,
                 filters=filters,
+                sort=sort,
+                pagination=pagination,
             )
 
 

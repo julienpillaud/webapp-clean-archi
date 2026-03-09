@@ -1,6 +1,6 @@
+from cleanstack.entities import DomainEntity
 from pydantic import EmailStr
 
-from app.domain.entities import DomainEntity
 from app.domain.posts.entities import Post
 
 
