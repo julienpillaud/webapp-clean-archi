@@ -8,19 +8,14 @@ from pymongo.client_session import ClientSession
 
 from app.core.config import Settings
 from app.domain.context import ContextProtocol
-from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
 from app.domain.interfaces.event_publisher import EventPublisherProtocol
-from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManager
 from app.infrastructure.event_publisher.faststream_event_publisher import (
     FastStreamEventPublisher,
 )
-from app.infrastructure.mongo.items import ItemMongoRepository
-from app.infrastructure.sql.dummies import DummySQLRepository
-from app.infrastructure.sql.items import ItemSQLRepository
 from app.infrastructure.sql.posts import PostSQLRepository
 from app.infrastructure.sql.users import UserSQLRepository
 
@@ -75,24 +70,9 @@ class Context(ContextProtocol):
         return FastStreamEventPublisher(settings=self.settings)
 
     @property
-    def dummy_repository(self) -> DummyRepositoryProtocol:
-        return DummySQLRepository(session=self.sql_uow.session)
-
-    @property
     def post_repository(self) -> PostRepositoryProtocol:
         return PostSQLRepository(session=self.sql_uow.session)
 
     @property
     def user_repository(self) -> UserRepositoryProtocol:
         return UserSQLRepository(session=self.sql_uow.session)
-
-    @property
-    def item_relational_repository(self) -> ItemRepositoryProtocol:
-        return ItemSQLRepository(session=self.sql_uow.session)
-
-    @property
-    def item_document_repository(self) -> ItemRepositoryProtocol:
-        return ItemMongoRepository(
-            database=self.mongo_context.database,
-            session=self._mongo_session,
-        )

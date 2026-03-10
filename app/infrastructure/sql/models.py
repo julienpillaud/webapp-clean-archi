@@ -1,4 +1,3 @@
-import datetime
 import uuid
 
 from cleanstack.infrastructure.sql.entities import OrmEntity
@@ -43,20 +42,3 @@ class OrmTag(OrmEntity):
     __tablename__ = "tag"
 
     name: Mapped[str] = mapped_column(unique=True)
-
-
-class OrmDummy(OrmEntity):
-    __tablename__ = "dummy"
-
-    uuid_field: Mapped[uuid.UUID]
-    string_field: Mapped[str]
-    int_field: Mapped[int]
-    float_field: Mapped[float]
-    bool_field: Mapped[bool]
-    datetime_field: Mapped[datetime.datetime]
-
-
-class OrmItem(OrmEntity):
-    __tablename__ = "item"
-
-    name: Mapped[str]
