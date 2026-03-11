@@ -1,10 +1,8 @@
-import datetime
 import uuid
 
+from cleanstack.infrastructure.sql.entities import OrmEntity
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.infrastructure.sql.entities import OrmEntity
 
 post_tag = Table(
     "post_tag",
@@ -44,21 +42,3 @@ class OrmTag(OrmEntity):
     __tablename__ = "tag"
 
     name: Mapped[str] = mapped_column(unique=True)
-
-
-class OrmDummy(OrmEntity):
-    __tablename__ = "dummy"
-
-    uuid_field: Mapped[uuid.UUID]
-    string_field: Mapped[str]
-    int_field: Mapped[int]
-    float_field: Mapped[float]
-    bool_field: Mapped[bool]
-    date_field: Mapped[datetime.date]
-    datetime_field: Mapped[datetime.datetime]
-
-
-class OrmItem(OrmEntity):
-    __tablename__ = "item"
-
-    name: Mapped[str]

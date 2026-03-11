@@ -1,4 +1,4 @@
-from cleanstack.exceptions import DomainError
+from cleanstack.domain import DomainError
 
 
 class CustomError(DomainError):

@@ -1,12 +1,12 @@
 import uuid
 from typing import Any
 
+from cleanstack.factories import BaseSQLFactory
 from faker import Faker
 
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.sql.repositories.users import UserSQLRepository
-from tests.factories.base import BaseSQLFactory
+from app.infrastructure.sql.users import UserSQLRepository
 
 
 def generate_user(faker: Faker, **kwargs: Any) -> User:

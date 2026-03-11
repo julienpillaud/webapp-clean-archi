@@ -1,8 +1,9 @@
 from typing import Annotated
 
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.domain import CompositeUniOfWork
+from cleanstack.entities import FilterEntity, SortEntity
+from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
-from cleanstack.uow import CompositeUniOfWork
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
 
@@ -14,7 +15,6 @@ from app.dependencies.fastapi.mongo import get_mongo_context, get_mongo_uow
 from app.dependencies.fastapi.sql import get_sql_uow
 from app.dependencies.settings import get_settings
 from app.domain.domain import Domain
-from app.domain.filters import FilterEntity
 from app.domain.users.entities import User
 
 credential_exception = HTTPException(
@@ -26,8 +26,8 @@ credential_exception = HTTPException(
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
     sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_context: Annotated[MongoDBContext, Depends(get_mongo_context)],
-    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
+    mongo_context: Annotated[MongoContext, Depends(get_mongo_context)],
+    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
 ) -> Context:
     return Context(
         settings=settings,
@@ -74,3 +74,7 @@ def get_filters(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Invalid filter format.",
         ) from error
+
+
+def get_sort_entities() -> list[SortEntity]:
+    return []

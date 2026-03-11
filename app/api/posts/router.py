@@ -1,5 +1,6 @@
 from typing import Annotated, Any
 
+from cleanstack.entities import EntityId, FilterEntity, Pagination, SortEntity
 from fastapi import APIRouter, Depends, status
 
 from app.api.posts.dtos import PostDTO
@@ -8,10 +9,9 @@ from app.dependencies.fastapi.dependencies import (
     get_current_user,
     get_domain,
     get_filters,
+    get_sort_entities,
 )
 from app.domain.domain import Domain
-from app.domain.entities import EntityId, Pagination
-from app.domain.filters import FilterEntity
 from app.domain.posts.entities import PostCreate, PostUpdate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -26,9 +26,15 @@ def get_posts(
     domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[Pagination, Depends()],
     filters: Annotated[list[FilterEntity], Depends(get_filters)],
+    sort: Annotated[list[SortEntity], Depends(get_sort_entities)],
     search: str | None = None,
 ) -> Any:
-    return domain.get_posts(pagination=pagination, search=search, filters=filters)
+    return domain.get_posts(
+        search=search,
+        filters=filters,
+        sort=sort,
+        pagination=pagination,
+    )
 
 
 @router.get(

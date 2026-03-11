@@ -1,7 +1,7 @@
+from cleanstack.entities import DEFAULT_PAGINATION_SIZE
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from app.domain.entities import DEFAULT_PAGINATION_LIMIT
 from tests.factories.users import UserSQLFactory
 
 
@@ -17,5 +17,5 @@ def test_get_users(user_factory: UserSQLFactory, client: TestClient) -> None:
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
     assert result["total"] == number_of_user + 1  # first user for authentication
-    assert result["limit"] == DEFAULT_PAGINATION_LIMIT
+    assert result["size"] == DEFAULT_PAGINATION_SIZE
     assert len(result["items"]) == number_of_user + 1  # first user for authentication

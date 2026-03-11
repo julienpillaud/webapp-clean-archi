@@ -1,7 +1,7 @@
 import typer
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.domain import CompositeUniOfWork
+from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLContext, SQLUnitOfWork
-from cleanstack.uow import CompositeUniOfWork
 
 from app.cli.posts import app as posts_app
 from app.cli.users import app as users_app
@@ -20,11 +20,11 @@ def create_cli_app(settings: Settings) -> typer.Typer:
         sql_context = SQLContext.from_settings(url=str(settings.postgres_dsn))
         sql_uow = SQLUnitOfWork(context=sql_context)
 
-        mongo_context = MongoDBContext.from_settings(
+        mongo_context = MongoContext.from_settings(
             host=settings.mongo_uri,
             database_name=settings.mongo_database,
         )
-        mongo_uow = MongoDBUnitOfWork(context=mongo_context)
+        mongo_uow = MongoUnitOfWork(context=mongo_context)
 
         context = Context(
             settings=settings,

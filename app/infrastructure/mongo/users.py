@@ -1,13 +1,13 @@
-from cleanstack.infrastructure.mongodb.types import MongoDocument
+from cleanstack.infrastructure.mongo.base import MongoRepository
+from cleanstack.infrastructure.mongo.types import MongoDocument
 
 from app.domain.posts.entities import Post
 from app.domain.users.entities import User
 from app.domain.users.repository import UserRepositoryProtocol
-from app.infrastructure.mongo.base import MongoRepository
 
 
 class UserMongoRepository(MongoRepository[User], UserRepositoryProtocol):
-    domain_model = User
+    domain_entity_type = User
     collection_name = "users"
 
     def get_by_email(self, email: str) -> User | None:

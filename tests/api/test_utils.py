@@ -1,7 +1,7 @@
 import pytest
+from cleanstack.entities import FilterEntity, FilterOperator
 
 from app.api.utils import parse_filters
-from app.domain.filters import FilterEntity, FilterOperator
 
 
 @pytest.mark.parametrize(

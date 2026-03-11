@@ -1,4 +1,4 @@
-from cleanstack.exceptions import DomainError
+from cleanstack.domain import DomainError
 
 from app.domain.context import ContextProtocol
 from app.domain.exceptions import CustomError

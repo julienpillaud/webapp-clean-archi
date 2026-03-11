@@ -1,10 +1,15 @@
 import uuid
 
-from cleanstack.exceptions import NotFoundError
+from cleanstack.domain import NotFoundError
+from cleanstack.entities import (
+    EntityId,
+    FilterEntity,
+    PaginatedResponse,
+    Pagination,
+    SortEntity,
+)
 
 from app.domain.context import ContextProtocol
-from app.domain.entities import EntityId, PaginatedResponse, Pagination
-from app.domain.filters import FilterEntity
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 
@@ -42,14 +47,16 @@ def get_post_command(context: ContextProtocol, /, post_id: EntityId) -> Post:
 def get_posts_command(
     context: ContextProtocol,
     /,
-    pagination: Pagination | None = None,
     search: str | None = None,
     filters: list[FilterEntity] | None = None,
+    sort: list[SortEntity] | None = None,
+    pagination: Pagination | None = None,
 ) -> PaginatedResponse[Post]:
     return context.post_repository.get_all(
-        pagination=pagination,
         search=search,
         filters=filters,
+        sort=sort,
+        pagination=pagination,
     )
 
 

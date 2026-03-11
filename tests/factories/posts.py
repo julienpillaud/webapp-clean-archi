@@ -1,11 +1,11 @@
 import uuid
 from typing import Any
 
+from cleanstack.factories import BaseSQLFactory
 from faker import Faker
 
 from app.domain.posts.entities import Post
-from app.infrastructure.sql.repositories.posts import PostSQLRepository
-from tests.factories.base import BaseSQLFactory
+from app.infrastructure.sql.posts import PostSQLRepository
 from tests.factories.users import UserSQLFactory
 
 

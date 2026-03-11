@@ -1,6 +1,7 @@
 from typing import Protocol
 
-from app.domain.interfaces.repository import RepositoryProtocol
+from cleanstack.domain import RepositoryProtocol
+
 from app.domain.posts.entities import Post
 
 

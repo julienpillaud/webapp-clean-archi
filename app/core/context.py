@@ -1,28 +1,23 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.domain import CompositeUniOfWork, UnitOfWorkProtocol
+from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
-from cleanstack.uow import CompositeUniOfWork, UnitOfWorkProtocol
 from pymongo.client_session import ClientSession
 
 from app.core.config import Settings
 from app.domain.context import ContextProtocol
-from app.domain.dummies.repository import DummyRepositoryProtocol
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
 from app.domain.interfaces.event_publisher import EventPublisherProtocol
-from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.cache_manager.redis_cache_manager import RedisCacheManager
 from app.infrastructure.event_publisher.faststream_event_publisher import (
     FastStreamEventPublisher,
 )
-from app.infrastructure.mongo.repositories.items import ItemMongoRepository
-from app.infrastructure.sql.repositories.dummies import DummySQLRepository
-from app.infrastructure.sql.repositories.items import ItemSQLRepository
-from app.infrastructure.sql.repositories.posts import PostSQLRepository
-from app.infrastructure.sql.repositories.users import UserSQLRepository
+from app.infrastructure.sql.posts import PostSQLRepository
+from app.infrastructure.sql.users import UserSQLRepository
 
 
 @contextmanager
@@ -47,8 +42,8 @@ class Context(ContextProtocol):
         self,
         settings: Settings,
         sql_uow: SQLUnitOfWork,
-        mongo_context: MongoDBContext,
-        mongo_uow: MongoDBUnitOfWork | None = None,
+        mongo_context: MongoContext,
+        mongo_uow: MongoUnitOfWork | None = None,
     ):
         self.settings = settings
         self.sql_uow = sql_uow
@@ -75,24 +70,9 @@ class Context(ContextProtocol):
         return FastStreamEventPublisher(settings=self.settings)
 
     @property
-    def dummy_repository(self) -> DummyRepositoryProtocol:
-        return DummySQLRepository(session=self.sql_uow.session)
-
-    @property
     def post_repository(self) -> PostRepositoryProtocol:
         return PostSQLRepository(session=self.sql_uow.session)
 
     @property
     def user_repository(self) -> UserRepositoryProtocol:
         return UserSQLRepository(session=self.sql_uow.session)
-
-    @property
-    def item_relational_repository(self) -> ItemRepositoryProtocol:
-        return ItemSQLRepository(session=self.sql_uow.session)
-
-    @property
-    def item_document_repository(self) -> ItemRepositoryProtocol:
-        return ItemMongoRepository(
-            database=self.mongo_context.database,
-            session=self._mongo_session,
-        )

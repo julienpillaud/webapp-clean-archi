@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from cleanstack.infrastructure.mongodb.uow import MongoDBContext, MongoDBUnitOfWork
+from cleanstack.domain import CompositeUniOfWork
+from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
 from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
-from cleanstack.uow import CompositeUniOfWork
 from fast_depends import Depends
 
 from app.core.config import Settings
@@ -16,8 +16,8 @@ from app.domain.domain import Domain
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
     sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_context: Annotated[MongoDBContext, Depends(get_mongo_context)],
-    mongo_uow: Annotated[MongoDBUnitOfWork, Depends(get_mongo_uow)],
+    mongo_context: Annotated[MongoContext, Depends(get_mongo_context)],
+    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
 ) -> Context:
     return Context(
         settings=settings,

@@ -1,11 +1,11 @@
 import uuid
 
+from cleanstack.infrastructure.sql.entities import OrmEntity
 from cleanstack.infrastructure.sql.uow import SQLContext
 from sqlalchemy import select
 
 from app.core.config import Settings
 from app.core.logger import logger
-from app.infrastructure.sql.entities import OrmEntity
 from app.infrastructure.sql.models import OrmUser
 
 

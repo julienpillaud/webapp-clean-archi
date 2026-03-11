@@ -1,24 +1,22 @@
 import uuid
 
+from cleanstack.infrastructure.sql.base import SQLRepository
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 
 from app.domain.posts.entities import Post, TagName
 from app.domain.posts.repository import PostRepositoryProtocol
-from app.infrastructure.sql.base import SQLRepository
 from app.infrastructure.sql.models import OrmPost, OrmTag
 
 
 class PostSQLRepository(SQLRepository[Post, OrmPost], PostRepositoryProtocol):
-    domain_model = Post
-    orm_model = OrmPost
-    select_options = (selectinload(OrmPost.tags),)
-    searchable_fields = (OrmPost.title, OrmPost.content)
+    domain_entity_type = Post
+    orm_model_type = OrmPost
+    searchable_fields = ("title", "content")
 
     def update(self, entity: Post, /) -> Post:
         assert entity.id is not None
 
-        db_entity = self._get_db_entity(entity_id=entity.id)
+        db_entity = self._get_orm_entity(entity.id)
         if not db_entity:
             raise RuntimeError()
 

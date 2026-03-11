@@ -4,13 +4,12 @@ from collections.abc import Callable
 from typing import Any
 
 import typer
-from cleanstack.exceptions import ConflictError, NotFoundError
+from cleanstack.domain import ConflictError, NotFoundError
+from cleanstack.entities import EntityId
 from pydantic import BaseModel, ValidationError
 from rich import print
 from rich.panel import Panel
 from rich.pretty import Pretty
-
-from app.domain.entities import EntityId
 
 object_id_pattern = re.compile(r"^[a-fA-F0-9]{24}$")
 
