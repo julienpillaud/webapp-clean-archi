@@ -7,16 +7,15 @@ dependencies = [
     "cleanstack[mongo, sql]",
     "fastapi>=0.135",
     "faststream[cli,rabbit]>=0.6",
-    "logfire[fastapi,pymongo,redis,sqlalchemy]>=4.27",
+    "logfire[fastapi,pymongo,redis,sqlalchemy]>=4.29",
     "psycopg[binary]>=3.3",
     "pydantic-settings>=2.13",
     "pydantic[email]>=2.12",
-    "pyjwt>=2.11",
+    "pyjwt>=2.12",
     "pymongo>=4.16",
     "python-multipart>=0.0",
     "redis>=7.3",
     "sqlalchemy>=2.0",
-    "typer>=0.21",
     # Server
     "gunicorn>=25.1",
     "httptools>=0.7",
@@ -40,7 +39,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.15.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.17.0" }
 
 [tool.ruff]
 output-format = "concise"
@@ -81,5 +80,5 @@ ignore_no_config = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 log_cli = true
+log_cli_level = "info"
 log_cli_format = "%(asctime)s [%(levelname)8s] %(name)30s - %(message)s"
-#log_cli_level = "debug"

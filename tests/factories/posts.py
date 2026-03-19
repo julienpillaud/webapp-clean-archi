@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 
-from cleanstack.factories import BaseSQLFactory
+from cleanstack.factories.sql import BaseSQLFactory
 from faker import Faker
 
 from app.domain.posts.entities import Post
