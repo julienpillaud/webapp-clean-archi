@@ -20,7 +20,7 @@ class OrmUser(OrmEntity):
     __tablename__ = "user"
 
     provider_id: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str]
     username: Mapped[str]
 
     posts: Mapped[list[OrmPost]] = relationship(cascade="all, delete-orphan")

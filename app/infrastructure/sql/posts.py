@@ -4,11 +4,10 @@ from cleanstack.infrastructure.sql.base import SQLRepository
 from sqlalchemy import select
 
 from app.domain.posts.entities import Post, TagName
-from app.domain.posts.repository import PostRepositoryProtocol
 from app.infrastructure.sql.models import OrmPost, OrmTag
 
 
-class PostSQLRepository(SQLRepository[Post, OrmPost], PostRepositoryProtocol):
+class PostSQLRepository(SQLRepository[Post, OrmPost]):
     domain_entity_type = Post
     orm_model_type = OrmPost
     searchable_fields = ("title", "content")

@@ -2,18 +2,17 @@ import uuid
 from typing import Any
 
 from cleanstack.factories.sql import BaseSQLFactory
-from faker import Faker
 
 from app.domain.posts.entities import Post
 from app.infrastructure.sql.posts import PostSQLRepository
 from tests.factories.users import UserSQLFactory
 
 
-def generate_post(faker: Faker, **kwargs: Any) -> Post:
+def generate_post(**kwargs: Any) -> Post:
     return Post(
         id=uuid.uuid7(),
-        title=kwargs["title"] if "title" in kwargs else faker.sentence(),
-        content=kwargs["content"] if "content" in kwargs else faker.text(),
+        title=kwargs.get("title", "Post Title"),
+        content=kwargs.get("content", "post content"),
         author_id=kwargs["author_id"],
         tags=[],
     )
@@ -22,12 +21,12 @@ def generate_post(faker: Faker, **kwargs: Any) -> Post:
 class PostSQLFactory(BaseSQLFactory[Post]):
     @property
     def user_factory(self) -> UserSQLFactory:
-        return UserSQLFactory(faker=self.faker, context=self.context)
+        return UserSQLFactory(context=self.context)
 
     def build(self, **kwargs: Any) -> Post:
         if "author_id" not in kwargs:
             kwargs["author_id"] = self.user_factory.create_one().id
-        return generate_post(faker=self.faker, **kwargs)
+        return generate_post(**kwargs)
 
     @property
     def _repository(self) -> PostSQLRepository:

@@ -1,12 +1,11 @@
-from cleanstack.infrastructure.mongo.base import MongoRepository
+from cleanstack.infrastructure.mongo import SyncMongoRepository
 from cleanstack.infrastructure.mongo.types import MongoDocument
 
 from app.domain.posts.entities import Post
 from app.domain.users.entities import User
-from app.domain.users.repository import UserRepositoryProtocol
 
 
-class UserMongoRepository(MongoRepository[User], UserRepositoryProtocol):
+class UserMongoRepository(SyncMongoRepository[User]):
     domain_entity_type = User
     collection_name = "users"
 
