@@ -1,14 +1,9 @@
-from cleanstack.infrastructure.mongo.base import MongoRepository
-from cleanstack.infrastructure.mongo.types import MongoDocument
+from cleanstack.infrastructure.mongo import MongoDocument, SyncMongoRepository
 
 from app.domain.posts.entities import Post
-from app.domain.posts.repository import PostRepositoryProtocol
 
 
-class PostMongoRepository(
-    MongoRepository[Post],
-    PostRepositoryProtocol,
-):
+class PostMongoRepository(SyncMongoRepository[Post]):
     domain_entity_type = Post
     collection_name = "posts"
     searchable_fields = ("title", "content")

@@ -8,9 +8,6 @@ init:
     uv sync --all-extras
     uv run pre-commit install
 
-migrate:
-    uv run alembic upgrade head
-
 run-app port="8000":
     uv run uvicorn app.core.app:app \
     --port {{ port }} \
@@ -23,11 +20,6 @@ lint:
 
 tests *options="--log-cli-level=INFO":
     uv run pytest {{ options }}
-
-coverage source="app":
-    uv run coverage run --source={{ source }} -m pytest
-    uv run coverage report --show-missing
-    uv run coverage html
 
 # Command line interface
 cli *options="":
