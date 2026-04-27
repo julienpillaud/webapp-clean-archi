@@ -5,17 +5,17 @@ requires-python = ">=3.14"
 dependencies = [
     "cleanstack[mongo, sql]",
     "faststream[cli,rabbit]>=0.6.7",
-    "logfire[fastapi,pymongo,redis,sqlalchemy]>=4.31.0",
+    "logfire[fastapi,pymongo,redis,sqlalchemy]>=4.32.1",
     "pyjwt>=2.12.1",
     "redis>=7.4.0",
 ]
 
 [dependency-groups]
 dev = [
-    "mypy>=1.20.0",
-    "pre-commit>=4.5.1",
-    "pytest>=9.0.2",
-    "ruff>=0.15.9",
+    "mypy>=1.20.2",
+    "pre-commit>=4.6.0",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
 ]
 
 [tool.uv.sources]
