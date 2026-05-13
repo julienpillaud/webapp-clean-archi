@@ -5,17 +5,17 @@ requires-python = ">=3.14"
 dependencies = [
     "cleanstack[mongo, sql]",
     "faststream[cli,rabbit]==0.6.7",
-    "logfire[fastapi,pymongo,redis,sqlalchemy]==4.32.1",
+    "logfire[fastapi,pymongo,redis,sqlalchemy]==4.33.0",
     "pyjwt==2.12.1",
     "redis==7.4.0",
 ]
 
 [dependency-groups]
 dev = [
-    "mypy>=1.20",
-    "pre-commit>=4.6",
-    "pytest>=9.0",
-    "ruff>=0.15",
+    "mypy==2.1.0",
+    "pytest==9.0.3",
+    "ruff==0.15.12",
+    "ty==0.0.35",
 ]
 
 [tool.uv.sources]
@@ -34,14 +34,25 @@ select = [
     "I", # isort
     "PL", # Pylint
     "RUF",
+    "ANN", # flake8-annotations
 ]
 ignore = [
+    "ANN401", # any-type
     "PLR0911", # Too many return statements (7 > 6)
     "PLR0913", # Too many arguments in function definition (6 > 5)
 ]
 
+[tool.ty.terminal]
+output-format = "concise"
+
 [tool.mypy]
 strict = true
+disable_error_code = [
+    # Decorators on top of @property are not supported,
+    # but pydantic use it
+    "prop-decorator",
+    "unused-ignore",
+]
 plugins = ['pydantic.mypy']
 
 [tool.logfire]

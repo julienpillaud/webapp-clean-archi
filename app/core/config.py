@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     rabbitmq_port: int = 5672
     rabbitmq_vhost: str = "/"
 
-    @computed_field  # type: ignore
+    @computed_field
     @property
     def postgres_dsn(self) -> PostgresDsn:
         return PostgresDsn.build(
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
             path=self.postgres_db,
         )
 
-    @computed_field  # type: ignore
+    @computed_field
     @property
     def mongo_uri(self) -> str:
         return (
@@ -61,7 +61,7 @@ class Settings(BaseSettings):
             f"?replicaSet={self.mongo_rs_name}"
         )
 
-    @computed_field  # type: ignore
+    @computed_field
     @property
     def redis_dsn(self) -> RedisDsn:
         return RedisDsn.build(
@@ -71,7 +71,7 @@ class Settings(BaseSettings):
             path=self.redis_db,
         )
 
-    @computed_field  # type: ignore
+    @computed_field
     @property
     def rabbitmq_dsn(self) -> AmqpDsn:
         return AmqpDsn.build(

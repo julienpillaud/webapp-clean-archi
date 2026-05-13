@@ -22,7 +22,7 @@ def get_all(
     limit: Annotated[PositiveInt, typer.Argument()] = DEFAULT_PAGINATION_SIZE,
 ) -> None:
     get_posts = get_domain_method(ctx=ctx, method_name="get_posts")
-    posts = get_posts(pagination=Pagination(page=page, limit=limit))
+    posts = get_posts(pagination=Pagination(page=page, size=limit))
     print_result(result=posts, title="Posts")
 
 

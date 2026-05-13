@@ -6,7 +6,7 @@ from app.infrastructure.cache_manager.provider import RedisProvider
 
 
 class RedisCacheManager(CacheManagerProtocol):
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         RedisProvider.init(settings)
         self.client = RedisProvider.get_client()
 
@@ -32,4 +32,4 @@ class RedisCacheManager(CacheManagerProtocol):
         if not keys_to_delete:
             return
 
-        self.client.delete(*keys_to_delete, tag_key)  # type: ignore[misc]
+        self.client.delete(*keys_to_delete, tag_key)  # type: ignore[misc, ty:not-iterable]

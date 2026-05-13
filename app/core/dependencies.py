@@ -6,7 +6,7 @@ T = TypeVar("T")
 
 
 class Dependency:
-    def __init__(self, dependency: Callable[..., Any]):
+    def __init__(self, dependency: Callable[..., Any]) -> None:
         self.dependency = dependency
 
 
