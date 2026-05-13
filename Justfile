@@ -16,7 +16,9 @@ run-app port="8000":
 
 # Development tools
 lint:
-    uv run pre-commit run --all-files
+    uv run ruff check --fix
+    uv run ruff format
+    uv run ty check
 
 tests *options="--log-cli-level=INFO":
     uv run pytest {{ options }}

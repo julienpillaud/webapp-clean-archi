@@ -5,7 +5,7 @@ from pathlib import Path
 from app.cli.app import create_cli_app
 from app.core.config import Settings
 
-settings = Settings(_env_file=".env")
+settings = Settings(_env_file=".env")  # ty: ignore[missing-argument, unknown-argument]
 
 
 if __name__ == "__main__":

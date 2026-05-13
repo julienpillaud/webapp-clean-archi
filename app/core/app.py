@@ -5,7 +5,7 @@ from app.core.config import Settings
 from app.core.core import initialize_app
 from app.core.logger import logger
 
-settings = Settings()
+settings = Settings()  # ty: ignore[missing-argument]
 logfire.configure(
     send_to_logfire="if-token-present",
     token=settings.logfire_token,

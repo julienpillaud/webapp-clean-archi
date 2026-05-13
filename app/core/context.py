@@ -44,7 +44,7 @@ class Context(ContextProtocol):
         sql_uow: SQLUnitOfWork,
         mongo_context: MongoContext,
         mongo_uow: MongoUnitOfWork | None = None,
-    ):
+    ) -> None:
         self.settings = settings
         self.sql_uow = sql_uow
         self.mongo_context = mongo_context

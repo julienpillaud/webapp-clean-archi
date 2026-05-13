@@ -28,14 +28,14 @@ def cached_command[**P, R: BaseModel](
             *args: P.args,
             **kwargs: P.kwargs,
         ) -> R:
-            key = build_cache_key(func, *args, **kwargs)
+            key = build_cache_key(func, *args, **kwargs)  # ty: ignore[invalid-argument-type]
             cached = context.cache_manager.get(key=key)
             if cached:
                 logger.debug(f"Cache hit for key: {key}")
                 return response_model.model_validate_json(cached)
             logger.debug(f"Cache miss for key: {key}")
 
-            result = func(context, *args, **kwargs)
+            result = func(context, *args, **kwargs)  # ty: ignore[invalid-argument-type]
             context.cache_manager.set(
                 key=key,
                 value=result.model_dump_json(),
@@ -44,9 +44,9 @@ def cached_command[**P, R: BaseModel](
             )
             return result
 
-        return wrapper
+        return wrapper  # ty: ignore[invalid-return-type]
 
-    return decorator
+    return decorator  # ty: ignore[invalid-return-type]
 
 
 def build_cache_key[**P, R: BaseModel](
@@ -64,4 +64,5 @@ def build_cache_key[**P, R: BaseModel](
     )
 
     digest = hashlib.sha256(payload.encode()).hexdigest()[:16]
-    return f"{func.__name__}:{digest}"
+    name = getattr(func, "__name__", "unknown")
+    return f"{name}:{digest}"

@@ -6,7 +6,7 @@ from app.infrastructure.event_publisher.provider import RabbitMQProvider
 
 
 class FastStreamEventPublisher(EventPublisherProtocol):
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         RabbitMQProvider.init(settings)
         self.broker = RabbitMQProvider.get_broker()
 

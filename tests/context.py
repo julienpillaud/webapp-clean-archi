@@ -10,7 +10,7 @@ from app.event_handler.app import create_broker
 
 
 class InMemoryEventPublisher(EventPublisherProtocol):
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings) -> None:
         broker = create_broker(settings=settings)
         self.broker = TestRabbitBroker(broker)
 

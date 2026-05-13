@@ -19,5 +19,5 @@ def get_all(
     limit: Annotated[PositiveInt, typer.Argument()] = DEFAULT_PAGINATION_SIZE,
 ) -> None:
     get_users = get_domain_method(ctx=ctx, method_name="get_users")
-    users = get_users(pagination=Pagination(page=page, limit=limit))
+    users = get_users(pagination=Pagination(page=page, size=limit))
     print_result(result=users, title="Users")
