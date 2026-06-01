@@ -41,4 +41,4 @@ class OrmPost(OrmEntity):
 class OrmTag(OrmEntity):
     __tablename__ = "tag"
 
-    name: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str]

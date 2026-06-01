@@ -1,21 +1,20 @@
+from collections.abc import Iterator
 from typing import Annotated
 
-from cleanstack.domain import CompositeUniOfWork
 from cleanstack.entities import FilterEntity, SortEntity
-from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
-from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
 from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
+from sqlalchemy.orm import Session
+from starlette.requests import Request
 
 from app.api.security import decode_jwt, http_bearer
 from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.core.context import Context
-from app.dependencies.fastapi.mongo import get_mongo_context, get_mongo_uow
-from app.dependencies.fastapi.sql import get_sql_uow
 from app.dependencies.settings import get_settings
-from app.domain.domain import Domain
+from app.domain.users.commands import get_user_by_provider_id_command
 from app.domain.users.entities import User
+from app.infrastructure.sql.utils import managed_session
 
 credential_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -23,28 +22,21 @@ credential_exception = HTTPException(
 )
 
 
+def get_session(request: Request) -> Iterator[Session]:
+    with managed_session(request.app.state.sql_session_factory) as session:
+        yield session
+
+
 def get_context(
     settings: Annotated[Settings, Depends(get_settings)],
-    sql_uow: Annotated[SQLUnitOfWork, Depends(get_sql_uow)],
-    mongo_context: Annotated[MongoContext, Depends(get_mongo_context)],
-    mongo_uow: Annotated[MongoUnitOfWork, Depends(get_mongo_uow)],
+    session: Annotated[Session, Depends(get_session)],
 ) -> Context:
-    return Context(
-        settings=settings,
-        sql_uow=sql_uow,
-        mongo_context=mongo_context,
-        mongo_uow=mongo_uow,
-    )
-
-
-def get_domain(context: Annotated[Context, Depends(get_context)]) -> Domain:
-    uow = CompositeUniOfWork(members=context.members)
-    return Domain(uow=uow, context=context)
+    return Context(settings=settings, session=session)
 
 
 async def get_current_user(
     settings: Annotated[Settings, Depends(get_settings)],
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(http_bearer)],
 ) -> User:
     if not credentials:
@@ -54,7 +46,7 @@ async def get_current_user(
     if not payload:
         raise credential_exception
 
-    user = domain.get_user_by_provider_id(provider_id=payload.sub)
+    user = get_user_by_provider_id_command(context, provider_id=payload.sub)
     if user is None:
         raise credential_exception
 

@@ -4,14 +4,13 @@ from cleanstack.entities import DEFAULT_PAGINATION_SIZE
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from tests.factories.posts import PostSQLFactory
-from tests.factories.users import UserSQLFactory
+from tests.plugins.factories import Factory
 
 
-def test_get_posts(post_factory: PostSQLFactory, client: TestClient) -> None:
+def test_get_posts(factory: Factory, client: TestClient) -> None:
     # Arrange
-    number_of_post = 5
-    post_factory.create_many(number_of_post)
+    posts_count = 5
+    factory.posts.create_many(posts_count)
 
     # Act
     response = client.get("/posts")
@@ -19,14 +18,14 @@ def test_get_posts(post_factory: PostSQLFactory, client: TestClient) -> None:
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
-    assert result["total"] == number_of_post
+    assert result["total"] == posts_count
     assert result["size"] == DEFAULT_PAGINATION_SIZE
-    assert len(result["items"]) == number_of_post
+    assert len(result["items"]) == posts_count
 
 
-def test_get_post(post_factory: PostSQLFactory, client: TestClient) -> None:
+def test_get_post(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     response = client.get(f"/posts/{post.id}")
@@ -43,7 +42,7 @@ def test_get_post(post_factory: PostSQLFactory, client: TestClient) -> None:
 
 def test_get_post_not_found(client: TestClient) -> None:
     # Act
-    entity_id = uuid.uuid4()
+    entity_id = uuid.uuid7()
     response = client.get(f"/posts/{entity_id}")
 
     # Assert
@@ -51,9 +50,9 @@ def test_get_post_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"Post '{entity_id}' not found"}
 
 
-def test_create_post(user_factory: UserSQLFactory, client: TestClient) -> None:
+def test_create_post(factory: Factory, client: TestClient) -> None:
     # Arrange
-    user = user_factory.create_one()
+    user = factory.users.create_one()
 
     # Act
     data = {
@@ -88,9 +87,9 @@ def test_create_post_user_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"User '{data['author_id']}' not found."}
 
 
-def test_update_post(post_factory: PostSQLFactory, client: TestClient) -> None:
+def test_update_post(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     data = {"title": "Post Updated"}
@@ -106,9 +105,9 @@ def test_update_post(post_factory: PostSQLFactory, client: TestClient) -> None:
     assert result["tags"] == post.tags
 
 
-def test_update_post_add_tag(post_factory: PostSQLFactory, client: TestClient) -> None:
+def test_update_post_add_tag(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     data = {"tags": [*post.tags, "new_tag"]}
@@ -120,11 +119,9 @@ def test_update_post_add_tag(post_factory: PostSQLFactory, client: TestClient) -
     assert result["tags"] == data["tags"]
 
 
-def test_update_post_replace_tags(
-    post_factory: PostSQLFactory, client: TestClient
-) -> None:
+def test_update_post_replace_tags(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     data = {"tags": ["new_tag1", "new_tag2"]}
@@ -136,11 +133,9 @@ def test_update_post_replace_tags(
     assert result["tags"] == data["tags"]
 
 
-def test_update_post_remove_tag(
-    post_factory: PostSQLFactory, client: TestClient
-) -> None:
+def test_update_post_remove_tag(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one(tags=["Python", "FastAPI"])
 
     # Act
     data = {"tags": post.tags[:-1]}  # Remove last tag
@@ -152,11 +147,9 @@ def test_update_post_remove_tag(
     assert result["tags"] == data["tags"]
 
 
-def test_update_post_remove_all_tags(
-    post_factory: PostSQLFactory, client: TestClient
-) -> None:
+def test_update_post_remove_all_tags(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     data: dict[str, list[str]] = {"tags": []}  # Remove all tags
@@ -179,9 +172,9 @@ def test_update_post_not_found(client: TestClient) -> None:
     assert response.json() == {"detail": f"Post '{entity_id}' not found"}
 
 
-def test_delete_post(post_factory: PostSQLFactory, client: TestClient) -> None:
+def test_delete_post(factory: Factory, client: TestClient) -> None:
     # Arrange
-    post = post_factory.create_one()
+    post = factory.posts.create_one()
 
     # Act
     response = client.delete(f"/posts/{post.id}")
@@ -196,7 +189,7 @@ def test_delete_post(post_factory: PostSQLFactory, client: TestClient) -> None:
 
 def test_delete_post_not_found(client: TestClient) -> None:
     # Act
-    entity_id = uuid.uuid4()
+    entity_id = uuid.uuid7()
     response = client.delete(f"/posts/{entity_id}")
 
     # Assert

@@ -2,13 +2,13 @@ from cleanstack.entities import DEFAULT_PAGINATION_SIZE
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from tests.factories.users import UserSQLFactory
+from tests.plugins.factories import Factory
 
 
-def test_get_users(user_factory: UserSQLFactory, client: TestClient) -> None:
+def test_get_users(factory: Factory, client: TestClient) -> None:
     # Arrange
     number_of_user = 5
-    user_factory.create_many(number_of_user)
+    factory.users.create_many(number_of_user)
 
     # Act
     response = client.get("/users")

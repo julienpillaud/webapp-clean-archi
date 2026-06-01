@@ -5,13 +5,20 @@ from fastapi import APIRouter, Depends, status
 
 from app.api.posts.dtos import PostDTO
 from app.api.utils import PaginatedResponseDTO
+from app.core.context import Context
 from app.dependencies.fastapi.dependencies import (
+    get_context,
     get_current_user,
-    get_domain,
     get_filters,
     get_sort_entities,
 )
-from app.domain.domain import Domain
+from app.domain.posts.commands import (
+    create_post_command,
+    delete_post_command,
+    get_post_command,
+    get_posts_command,
+    update_post_command,
+)
 from app.domain.posts.entities import PostCreate, PostUpdate
 
 router = APIRouter(prefix="/posts", tags=["posts"])
@@ -23,13 +30,14 @@ router = APIRouter(prefix="/posts", tags=["posts"])
     dependencies=[Depends(get_current_user)],
 )
 def get_posts(
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     pagination: Annotated[Pagination, Depends()],
     filters: Annotated[list[FilterEntity], Depends(get_filters)],
     sort: Annotated[list[SortEntity], Depends(get_sort_entities)],
     search: str | None = None,
 ) -> Any:
-    return domain.get_posts(
+    return get_posts_command(
+        context,
         search=search,
         filters=filters,
         sort=sort,
@@ -43,10 +51,10 @@ def get_posts(
     dependencies=[Depends(get_current_user)],
 )
 def get_post(
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     post_id: EntityId,
 ) -> Any:
-    return domain.get_post(post_id=post_id)
+    return get_post_command(context, post_id=post_id)
 
 
 @router.post(
@@ -56,10 +64,10 @@ def get_post(
     dependencies=[Depends(get_current_user)],
 )
 def create_post(
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     data: PostCreate,
 ) -> Any:
-    return domain.create_post(data=data)
+    return create_post_command(context, data=data)
 
 
 @router.patch(
@@ -68,11 +76,11 @@ def create_post(
     dependencies=[Depends(get_current_user)],
 )
 def update_post(
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     post_id: EntityId,
     data: PostUpdate,
 ) -> Any:
-    return domain.update_post(post_id=post_id, data=data)
+    return update_post_command(context, post_id=post_id, data=data)
 
 
 @router.delete(
@@ -81,7 +89,7 @@ def update_post(
     dependencies=[Depends(get_current_user)],
 )
 def delete_post(
-    domain: Annotated[Domain, Depends(get_domain)],
+    context: Annotated[Context, Depends(get_context)],
     post_id: EntityId,
 ) -> None:
-    domain.delete_post(post_id=post_id)
+    delete_post_command(context, post_id=post_id)

@@ -1,16 +1,13 @@
-from cleanstack.fastapi.exceptions import ExceptionRegistry, add_exception_handler
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 
-from app.api.dev.router import router as dev_router
-from app.api.logger import logger
+from app.api.exceptions import add_exception_handlers
+from app.api.lifespan import lifespan_factory
 from app.api.posts.router import router as posts_router
 from app.api.users.router import router as users_router
 from app.core.config import Settings
-from app.domain.exceptions import CustomError
 
 
 def create_fastapi_app(settings: Settings) -> FastAPI:
-    logger.info("Creating FastAPI app")
     app = FastAPI(
         title=settings.project_name,
         version=settings.api_version,
@@ -19,12 +16,11 @@ def create_fastapi_app(settings: Settings) -> FastAPI:
             "displayRequestDuration": True,
             "persistAuthorization": True,
         },
+        lifespan=lifespan_factory(settings=settings),
     )
 
-    ExceptionRegistry.register(CustomError, status.HTTP_418_IM_A_TEAPOT)
-    add_exception_handler(app=app)
+    add_exception_handlers(app=app)
 
-    app.include_router(dev_router)
     app.include_router(posts_router)
     app.include_router(users_router)
 
