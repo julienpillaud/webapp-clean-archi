@@ -32,4 +32,4 @@ class RedisCacheManager(CacheManagerProtocol):
         if not keys_to_delete:
             return
 
-        self.client.delete(*keys_to_delete, tag_key)  # type: ignore[misc, ty:not-iterable]
+        self.client.delete(*keys_to_delete, tag_key)

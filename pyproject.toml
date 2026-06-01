@@ -5,21 +5,20 @@ requires-python = ">=3.14"
 dependencies = [
     "cleanstack[mongo, sql]",
     "faststream[cli,rabbit]==0.6.7",
-    "logfire[fastapi,pymongo,redis,sqlalchemy]==4.33.0",
-    "pyjwt==2.12.1",
-    "redis==7.4.0",
+    "pyjwt==2.13.0",
+    "redis==8.0.0",
 ]
 
 [dependency-groups]
 dev = [
     "mypy==2.1.0",
     "pytest==9.0.3",
-    "ruff==0.15.12",
-    "ty==0.0.35",
+    "ruff==0.15.15",
+    "ty==0.0.40",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.20.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.24.0" }
 
 [tool.ruff]
 output-format = "concise"
@@ -40,6 +39,7 @@ ignore = [
     "ANN401", # any-type
     "PLR0911", # Too many return statements (7 > 6)
     "PLR0913", # Too many arguments in function definition (6 > 5)
+    "SIM117", # multiple-with-statements
 ]
 
 [tool.ty.terminal]

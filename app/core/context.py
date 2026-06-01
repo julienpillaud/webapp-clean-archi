@@ -1,10 +1,6 @@
-from collections.abc import Iterator
-from contextlib import contextmanager
+from functools import cached_property
 
-from cleanstack.domain import CompositeUniOfWork, UnitOfWorkProtocol
-from cleanstack.infrastructure.mongo.uow import MongoContext, MongoUnitOfWork
-from cleanstack.infrastructure.sql.uow import SQLUnitOfWork
-from pymongo.client_session import ClientSession
+from sqlalchemy.orm import Session
 
 from app.core.config import Settings
 from app.domain.context import ContextProtocol
@@ -20,59 +16,23 @@ from app.infrastructure.sql.posts import PostSQLRepository
 from app.infrastructure.sql.users import UserSQLRepository
 
 
-@contextmanager
-def context_transaction(context: Context) -> Iterator[None]:
-    members: list[UnitOfWorkProtocol] = [context.sql_uow]
-    if context.mongo_uow:
-        members.append(context.mongo_uow)
-
-    uow = CompositeUniOfWork(members=members)
-    with uow.transaction():
-        try:
-            yield
-        except Exception:
-            uow.rollback()
-            raise
-
-        uow.commit()
-
-
 class Context(ContextProtocol):
-    def __init__(
-        self,
-        settings: Settings,
-        sql_uow: SQLUnitOfWork,
-        mongo_context: MongoContext,
-        mongo_uow: MongoUnitOfWork | None = None,
-    ) -> None:
+    def __init__(self, settings: Settings, session: Session) -> None:
         self.settings = settings
-        self.sql_uow = sql_uow
-        self.mongo_context = mongo_context
-        self.mongo_uow = mongo_uow
-        self.members = self._get_members()
+        self.session = session
 
-    def _get_members(self) -> list[UnitOfWorkProtocol]:
-        members: list[UnitOfWorkProtocol] = [self.sql_uow]
-        if self.mongo_uow:
-            members.append(self.mongo_uow)
-        return members
-
-    @property
-    def _mongo_session(self) -> ClientSession | None:
-        return self.mongo_uow.session if self.mongo_uow else None
-
-    @property
+    @cached_property
     def cache_manager(self) -> CacheManagerProtocol:
         return RedisCacheManager(settings=self.settings)
 
-    @property
+    @cached_property
     def event_publisher(self) -> EventPublisherProtocol:
         return FastStreamEventPublisher(settings=self.settings)
 
-    @property
+    @cached_property
     def post_repository(self) -> PostRepositoryProtocol:
-        return PostSQLRepository(session=self.sql_uow.session)
+        return PostSQLRepository(session=self.session)
 
-    @property
+    @cached_property
     def user_repository(self) -> UserRepositoryProtocol:
-        return UserSQLRepository(session=self.sql_uow.session)
+        return UserSQLRepository(session=self.session)

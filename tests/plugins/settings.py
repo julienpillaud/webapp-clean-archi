@@ -1,12 +1,13 @@
 import secrets
 from functools import lru_cache
 
+import pytest
 from pydantic import SecretStr
 
 from app.core.config import Settings
 
 
-@lru_cache(maxsize=1)
+@lru_cache
 def get_settings_override() -> Settings:
     return Settings(
         environment="test",
@@ -24,3 +25,8 @@ def get_settings_override() -> Settings:
         rabbitmq_password="password",
         rabbitmq_host="localhost",
     )
+
+
+@pytest.fixture(scope="session")
+def settings() -> Settings:
+    return get_settings_override()

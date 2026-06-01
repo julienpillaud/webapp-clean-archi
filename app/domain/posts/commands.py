@@ -25,7 +25,9 @@ def create_post_command(context: ContextProtocol, /, data: PostCreate) -> Post:
         author_id=author.id,
         tags=data.tags,
     )
-    return context.post_repository.create(post)
+
+    context.post_repository.save(post)
+    return post
 
 
 def delete_post_command(context: ContextProtocol, /, post_id: EntityId) -> None:
@@ -33,7 +35,7 @@ def delete_post_command(context: ContextProtocol, /, post_id: EntityId) -> None:
     if not post:
         raise NotFoundError(f"Post '{post_id}' not found.")
 
-    context.post_repository.delete(post)
+    context.post_repository.remove(post)
 
 
 def get_post_command(context: ContextProtocol, /, post_id: EntityId) -> Post:
@@ -70,4 +72,5 @@ def update_post_command(
     for key, value in data.model_dump(exclude_none=True).items():
         setattr(post, key, value)
 
-    return context.post_repository.update(post)
+    context.post_repository.update(post)
+    return post

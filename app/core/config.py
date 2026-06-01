@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import AmqpDsn, PostgresDsn, RedisDsn, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -17,13 +19,12 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_audience: str
 
-    logfire_token: str = ""
-
     postgres_user: str
     postgres_password: SecretStr
     postgres_host: str
     postgres_port: int = 5432
     postgres_db: str
+    postgres_params: dict[str, Any] = {}
 
     mongo_host: str
     mongo_port: int = 27017

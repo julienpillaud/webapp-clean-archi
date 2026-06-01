@@ -1,14 +1,12 @@
 from typing import Protocol
 
-from cleanstack.domain import BaseContextProtocol
-
 from app.domain.interfaces.cache_manager import CacheManagerProtocol
 from app.domain.interfaces.event_publisher import EventPublisherProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 
 
-class ContextProtocol(BaseContextProtocol, Protocol):
+class ContextProtocol(Protocol):
     @property
     def cache_manager(self) -> CacheManagerProtocol: ...
 
