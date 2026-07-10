@@ -1,18 +1,10 @@
 from typing import Protocol
 
-from app.domain.interfaces.cache_manager import CacheManagerProtocol
-from app.domain.interfaces.event_publisher import EventPublisherProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 
 
 class ContextProtocol(Protocol):
-    @property
-    def cache_manager(self) -> CacheManagerProtocol: ...
-
-    @property
-    def event_publisher(self) -> EventPublisherProtocol: ...
-
     @property
     def post_repository(self) -> PostRepositoryProtocol: ...
 

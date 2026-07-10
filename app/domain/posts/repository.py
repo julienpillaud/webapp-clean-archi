@@ -1,8 +1,7 @@
 from typing import Protocol
 
-from cleanstack.domain import SyncRepositoryProtocol
-
+from app.domain.interfaces.repository import RepositoryProtocol
 from app.domain.posts.entities import Post
 
 
-class PostRepositoryProtocol(SyncRepositoryProtocol[Post], Protocol): ...
+class PostRepositoryProtocol(RepositoryProtocol[Post], Protocol): ...

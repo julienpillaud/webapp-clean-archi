@@ -1,6 +1,5 @@
 import uuid
 
-from cleanstack.domain import NotFoundError
 from cleanstack.entities import (
     EntityId,
     FilterEntity,
@@ -10,6 +9,7 @@ from cleanstack.entities import (
 )
 
 from app.domain.context import ContextProtocol
+from app.domain.exceptions import NotFoundError
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 

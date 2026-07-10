@@ -3,22 +3,19 @@ name = "webapp-clean-archi"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
-    "cleanstack[mongo, sql]",
-    "faststream[cli,rabbit]==0.6.7",
-    "pyjwt==2.13.0",
-    "redis==8.0.0",
+    "cleanstack[sql]",
 ]
 
 [dependency-groups]
 dev = [
-    "mypy==2.1.0",
-    "pytest==9.0.3",
-    "ruff==0.15.15",
-    "ty==0.0.40",
+    "mypy==2.2.0",
+    "pytest==9.1.1",
+    "ruff==0.15.21",
+    "ty==0.0.58",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.24.0" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.27.1" }
 
 [tool.ruff]
 output-format = "concise"
@@ -35,12 +32,7 @@ select = [
     "RUF",
     "ANN", # flake8-annotations
 ]
-ignore = [
-    "ANN401", # any-type
-    "PLR0911", # Too many return statements (7 > 6)
-    "PLR0913", # Too many arguments in function definition (6 > 5)
-    "SIM117", # multiple-with-statements
-]
+ignore = []
 
 [tool.ty.terminal]
 output-format = "concise"
@@ -48,10 +40,7 @@ output-format = "concise"
 [tool.mypy]
 strict = true
 disable_error_code = [
-    # Decorators on top of @property are not supported,
-    # but pydantic use it
     "prop-decorator",
-    "unused-ignore",
 ]
 plugins = ['pydantic.mypy']
 
