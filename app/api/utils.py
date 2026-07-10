@@ -1,16 +1,6 @@
 import re
 
 from cleanstack.entities import FilterEntity, FilterOperator
-from pydantic import BaseModel, NonNegativeInt, PositiveInt
-
-
-class PaginatedResponseDTO[T: BaseModel](BaseModel):
-    page: PositiveInt
-    size: PositiveInt
-    pages: NonNegativeInt
-    total: NonNegativeInt
-    items: list[T]
-
 
 SEPARATOR = "="
 OPERATORS = "|".join(value for value in FilterOperator if value != FilterOperator.EQ)

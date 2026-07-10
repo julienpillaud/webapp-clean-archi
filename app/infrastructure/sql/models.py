@@ -1,6 +1,6 @@
 import uuid
 
-from cleanstack.infrastructure.sql.entities import OrmEntity
+from cleanstack.sql.entities import OrmEntity
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,7 +19,6 @@ post_tag = Table(
 class OrmUser(OrmEntity):
     __tablename__ = "user"
 
-    provider_id: Mapped[str] = mapped_column(unique=True)
     email: Mapped[str]
     username: Mapped[str]
 

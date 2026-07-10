@@ -16,6 +16,6 @@ def test_get_users(factory: Factory, client: TestClient) -> None:
     # Assert
     assert response.status_code == status.HTTP_200_OK
     result = response.json()
-    assert result["total"] == number_of_user + 1  # first user for authentication
+    assert result["total"] == number_of_user
     assert result["size"] == DEFAULT_PAGINATION_SIZE
-    assert len(result["items"]) == number_of_user + 1  # first user for authentication
+    assert len(result["items"]) == number_of_user

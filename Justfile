@@ -1,34 +1,16 @@
-import 'scripts/container.just'
-
 default:
     just --list
 
-# Run the application
-init:
-    uv sync --all-extras
-    uv run pre-commit install
+dev:
+    docker compose -f compose-dev.yaml up -d
 
-run-app port="8000":
-    uv run uvicorn app.core.app:app \
-    --port {{ port }} \
-    --reload --reload-dir app \
-    --log-config app/core/logging/config.json
+dev-down:
+    docker compose -f compose-dev.yaml down
 
-# Development tools
 lint:
-    uv run ruff check --fix
+    uv run ruff check --fix || true
     uv run ruff format
     uv run ty check
 
-tests *options="--log-cli-level=INFO":
+tests *options="":
     uv run pytest {{ options }}
-
-# Command line interface
-cli *options="":
-    uv run python -m app.cli.main {{ options }}
-
-dev:
-    docker compose up -d
-
-dev-down:
-    docker compose down

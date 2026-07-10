@@ -1,16 +1,16 @@
 from collections.abc import Iterator
 
 import pytest
-from cleanstack.infrastructure.sql.entities import OrmEntity
+from cleanstack.sql.entities import OrmEntity
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings
-from app.infrastructure.sql.utils import SQLResource, create_sql_resource
+from app.infrastructure.sql.utils import SQLResource
 
 
 @pytest.fixture(scope="session")
 def init_resource(settings: Settings) -> Iterator[SQLResource]:
-    resource = create_sql_resource(settings=settings)
+    resource = SQLResource.from_settings(settings)
     OrmEntity.metadata.drop_all(resource.engine)
     OrmEntity.metadata.create_all(resource.engine)
 

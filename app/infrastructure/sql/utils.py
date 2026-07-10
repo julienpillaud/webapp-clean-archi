@@ -1,7 +1,7 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 
-from cleanstack.infrastructure.sql.entities import OrmEntity
+from cleanstack.sql.entities import OrmEntity
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
@@ -16,6 +16,37 @@ class SQLResource(BaseModel):
     engine: Engine
     session_factory: sessionmaker[Session]
 
+    @classmethod
+    def from_settings(cls, settings: Settings, /) -> SQLResource:
+        engine = create_engine(
+            url=str(settings.postgres_dsn),
+            **settings.postgres_params,
+        )
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+        logger.info("SQL engine up")
+        return cls(
+            engine=engine,
+            session_factory=sessionmaker(bind=engine),
+        )
+
+    def start_transaction(self) -> Session:
+        return self.session_factory()
+
+    @staticmethod
+    def end_transaction(
+        session: Session,
+        exc_val: BaseException | None,
+    ) -> None:
+        if session.is_active:
+            if exc_val is None:
+                session.commit()
+                logger.info("Transaction committed")
+            else:
+                session.rollback()
+                logger.info("Transaction rollback")
+        session.close()
+
     def release(self) -> None:
         logger.info("SQL engine released")
         self.engine.dispose()
@@ -25,20 +56,6 @@ class SQLResource(BaseModel):
             for table in reversed(OrmEntity.metadata.sorted_tables):
                 session.execute(table.delete())
             session.commit()
-
-
-def create_sql_resource(settings: Settings) -> SQLResource:
-    engine = create_engine(
-        url=str(settings.postgres_dsn),
-        **settings.postgres_params,
-    )
-    with engine.connect() as connection:
-        connection.execute(text("SELECT 1"))
-    logger.info("SQL engine up")
-    return SQLResource(
-        engine=engine,
-        session_factory=sessionmaker(bind=engine),
-    )
 
 
 @contextmanager

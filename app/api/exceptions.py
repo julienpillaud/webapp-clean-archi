@@ -1,4 +1,8 @@
-from cleanstack.domain.exceptions import (
+from fastapi import FastAPI, status
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse, Response
+
+from app.domain.exceptions import (
     BadRequestError,
     ConflictError,
     DomainError,
@@ -6,9 +10,6 @@ from cleanstack.domain.exceptions import (
     NotFoundError,
     UnprocessableContentError,
 )
-from fastapi import FastAPI, status
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse, Response
 
 ERROR_MAPPING: dict[type[DomainError], int] = {
     BadRequestError: status.HTTP_400_BAD_REQUEST,

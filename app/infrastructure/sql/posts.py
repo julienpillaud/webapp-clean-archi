@@ -1,6 +1,6 @@
 import uuid
 
-from cleanstack.infrastructure.sql.synchronous.repository import SyncSQLRepository
+from cleanstack.sql import SyncSQLRepository
 
 from app.domain.posts.entities import Post, TagName
 from app.infrastructure.sql.models import OrmPost, OrmTag
