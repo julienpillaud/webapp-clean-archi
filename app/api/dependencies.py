@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from functools import lru_cache
 from typing import Annotated
 
@@ -9,13 +9,25 @@ from starlette.requests import Request
 
 from app.api.utils import parse_filters
 from app.core.config import Settings
-from app.core.context import Context, ContextFactory
+from app.core.context import Context
 from app.core.domain import Domain
+from app.domain.context import ContextProtocol
+from app.infrastructure.sql.utils import SQLResource
+
+type ContextFactory = Callable[[Session], ContextProtocol]
 
 
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+def get_sql_resource(request: Request) -> SQLResource:
+    resource = request.app.state.sql_resource
+    if not isinstance(resource, SQLResource):
+        raise RuntimeError()
+
+    return resource
 
 
 def get_context_factory(
@@ -29,10 +41,9 @@ def get_context_factory(
 
 
 def get_domain(
-    request: Request,
+    sql_resource: Annotated[SQLResource, Depends(get_sql_resource)],
     context_factory: Annotated[ContextFactory, Depends(get_context_factory)],
 ) -> Iterator[Domain]:
-    sql_resource = request.app.state.sql_resource
     with Domain(
         resource=sql_resource,
         context_factory=context_factory,

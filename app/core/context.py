@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from functools import cached_property
 
 from sqlalchemy.orm import Session
@@ -9,8 +8,6 @@ from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
 from app.infrastructure.sql.posts import PostSQLRepository
 from app.infrastructure.sql.users import UserSQLRepository
-
-type ContextFactory = Callable[[Session], ContextProtocol]
 
 
 class Context(ContextProtocol):

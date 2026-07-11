@@ -35,10 +35,14 @@ class SQLResource(BaseModel):
 
     @staticmethod
     def end_transaction(
-        session: Session,
+        session: Session | None,
         exc_val: BaseException | None,
         is_mutation: bool,
     ) -> None:
+        # for protocol compliance
+        if session is None:
+            raise RuntimeError()
+
         if session.is_active:
             if exc_val is None and is_mutation:
                 session.commit()
