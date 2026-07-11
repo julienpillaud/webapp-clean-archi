@@ -1,20 +1,7 @@
-from functools import lru_cache
-
 import pytest
-from pydantic import SecretStr
 
 from app.core.config import Settings
-
-
-@lru_cache
-def get_settings_override() -> Settings:
-    return Settings(
-        postgres_user="user",
-        postgres_password=SecretStr("password"),
-        postgres_host="localhost",
-        postgres_port=5432,
-        postgres_db="test",
-    )
+from tests.conftest import get_settings_override
 
 
 @pytest.fixture(scope="session")

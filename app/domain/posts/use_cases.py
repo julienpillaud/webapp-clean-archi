@@ -13,7 +13,7 @@ from app.domain.exceptions import NotFoundError
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 
 
-def create_post_command(context: ContextProtocol, /, data: PostCreate) -> Post:
+def create_post(context: ContextProtocol, /, data: PostCreate) -> Post:
     author = context.user_repository.get_by_id(data.author_id)
     if not author:
         raise NotFoundError(f"User '{data.author_id}' not found.")
@@ -30,7 +30,7 @@ def create_post_command(context: ContextProtocol, /, data: PostCreate) -> Post:
     return post
 
 
-def delete_post_command(context: ContextProtocol, /, post_id: EntityId) -> None:
+def delete_post(context: ContextProtocol, /, post_id: EntityId) -> None:
     post = context.post_repository.get_by_id(post_id)
     if not post:
         raise NotFoundError(f"Post '{post_id}' not found.")
@@ -38,7 +38,7 @@ def delete_post_command(context: ContextProtocol, /, post_id: EntityId) -> None:
     context.post_repository.remove(post)
 
 
-def get_post_command(context: ContextProtocol, /, post_id: EntityId) -> Post:
+def get_post(context: ContextProtocol, /, post_id: EntityId) -> Post:
     post = context.post_repository.get_by_id(post_id)
     if not post:
         raise NotFoundError(f"Post '{post_id}' not found")
@@ -46,7 +46,7 @@ def get_post_command(context: ContextProtocol, /, post_id: EntityId) -> Post:
     return post
 
 
-def get_posts_command(
+def get_posts(
     context: ContextProtocol,
     /,
     search: str | None = None,
@@ -62,7 +62,7 @@ def get_posts_command(
     )
 
 
-def update_post_command(
+def update_post(
     context: ContextProtocol, /, post_id: EntityId, data: PostUpdate
 ) -> Post:
     post = context.post_repository.get_by_id(post_id)

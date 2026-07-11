@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from app.api.app import create_fastapi_app
 from app.api.dependencies import get_settings
 from app.core.config import Settings
-from tests.plugins.settings import get_settings_override
+from tests.conftest import get_settings_override
 
 
 @pytest.fixture
