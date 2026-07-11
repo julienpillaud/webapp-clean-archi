@@ -4,7 +4,7 @@ from app.domain.context import ContextProtocol
 from app.domain.users.entities import User
 
 
-def get_users_command(
+def get_users(
     context: ContextProtocol,
     /,
     search: str | None = None,

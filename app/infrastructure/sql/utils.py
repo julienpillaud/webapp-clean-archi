@@ -37,9 +37,10 @@ class SQLResource(BaseModel):
     def end_transaction(
         session: Session,
         exc_val: BaseException | None,
+        is_mutation: bool,
     ) -> None:
         if session.is_active:
-            if exc_val is None:
+            if exc_val is None and is_mutation:
                 session.commit()
                 logger.info("Transaction committed")
             else:
