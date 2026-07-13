@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 
 from app.core.config import Settings
 from app.domain.context import ContextProtocol
+from app.domain.items.repository import ItemRepositoryProtocol
 from app.domain.posts.repository import PostRepositoryProtocol
 from app.domain.users.repository import UserRepositoryProtocol
+from app.infrastructure.sql.items import ItemSQLRepository
 from app.infrastructure.sql.posts import PostSQLRepository
 from app.infrastructure.sql.users import UserSQLRepository
 
@@ -22,3 +24,7 @@ class Context(ContextProtocol):
     @cached_property
     def user_repository(self) -> UserRepositoryProtocol:
         return UserSQLRepository(session=self.session)
+
+    @cached_property
+    def item_repository(self) -> ItemRepositoryProtocol:
+        return ItemSQLRepository(session=self.session)
