@@ -41,3 +41,9 @@ class OrmTag(OrmEntity):
     __tablename__ = "tag"
 
     name: Mapped[str]
+
+
+class OrmItem(OrmEntity):
+    __tablename__ = "item"
+
+    name: Mapped[str]

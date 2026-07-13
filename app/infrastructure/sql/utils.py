@@ -35,21 +35,19 @@ class SQLResource(BaseModel):
 
     @staticmethod
     def end_transaction(
-        session: Session | None,
+        session: Session,
         exc_val: BaseException | None,
         is_mutation: bool,
     ) -> None:
-        # for protocol compliance
-        if session is None:
-            raise RuntimeError()
-
         if session.is_active:
-            if exc_val is None and is_mutation:
+            if exc_val:
+                session.rollback()
+                logger.info(
+                    f"Transaction rollback: {type(exc_val).__name__}({exc_val})"
+                )
+            elif is_mutation:
                 session.commit()
                 logger.info("Transaction committed")
-            else:
-                session.rollback()
-                logger.info("Transaction rollback")
         session.close()
 
     def release(self) -> None:
