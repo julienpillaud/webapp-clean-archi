@@ -1,6 +1,6 @@
 import pytest
 
-from app.infrastructure.sql.utils import SQLResource
+from app.infrastructure.sql.resource import SQLResource
 from tests.factories.posts import PostSQLFactory
 from tests.factories.users import UserSQLFactory
 

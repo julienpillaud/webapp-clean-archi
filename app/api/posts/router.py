@@ -4,8 +4,12 @@ from cleanstack import PaginatedResponse
 from cleanstack.entities import EntityId, FilterEntity, Pagination, SortEntity
 from fastapi import APIRouter, Depends, status
 
-from app.api.dependencies import get_domain, get_filters, get_sort_entities
-from app.core.domain import Domain
+from app.api.dependencies import (
+    DomainProvider,
+    get_filters,
+    get_sort_entities,
+)
+from app.core.domain.synchronous import Domain
 from app.domain.posts.entities import Post, PostCreate, PostUpdate
 from app.domain.posts.use_cases import (
     create_post,
@@ -20,13 +24,13 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 
 @router.get("")
 def get_posts_endpoint(
-    domain: Annotated[Domain, Depends(get_domain)],
+    domain: Annotated[Domain, Depends(DomainProvider())],
     pagination: Annotated[Pagination, Depends()],
     filters: Annotated[list[FilterEntity], Depends(get_filters)],
     sort: Annotated[list[SortEntity], Depends(get_sort_entities)],
     search: str | None = None,
 ) -> PaginatedResponse[Post]:
-    return domain.query(
+    return domain.run(
         get_posts,
         search=search,
         filters=filters,
@@ -37,32 +41,32 @@ def get_posts_endpoint(
 
 @router.get("/{post_id}")
 def get_post_endpoint(
-    domain: Annotated[Domain, Depends(get_domain)],
+    domain: Annotated[Domain, Depends(DomainProvider())],
     post_id: EntityId,
 ) -> Post:
-    return domain.query(get_post, post_id=post_id)
+    return domain.run(get_post, post_id=post_id)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_post_endpoint(
-    domain: Annotated[Domain, Depends(get_domain)],
+    domain: Annotated[Domain, Depends(DomainProvider(transactional=True))],
     data: PostCreate,
 ) -> Post:
-    return domain.command(create_post, data=data)
+    return domain.run(create_post, data=data)
 
 
 @router.patch("/{post_id}")
 def update_post_endpoint(
-    domain: Annotated[Domain, Depends(get_domain)],
+    domain: Annotated[Domain, Depends(DomainProvider(transactional=True))],
     post_id: EntityId,
     data: PostUpdate,
 ) -> Post:
-    return domain.command(update_post, post_id=post_id, data=data)
+    return domain.run(update_post, post_id=post_id, data=data)
 
 
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post_endpoint(
-    domain: Annotated[Domain, Depends(get_domain)],
+    domain: Annotated[Domain, Depends(DomainProvider(transactional=True))],
     post_id: EntityId,
 ) -> None:
-    domain.command(delete_post, post_id=post_id)
+    domain.run(delete_post, post_id=post_id)
