@@ -16,7 +16,10 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int = 5432
     postgres_db: str
-    postgres_params: dict[str, Any] = {}
+    postgres_params: dict[str, Any] = {
+        "pool_size": 20,
+        "max_overflow": 50,
+    }
 
     @computed_field
     @property

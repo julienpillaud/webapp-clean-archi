@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "colored": {
+      "()": "app.core.logging.formatter.ColoredFormatter"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "formatter": "colored"
+    }
+  },
+  "loggers": {
+    "httpcore": {
+      "level": "INFO"
+    },
+    "uvicorn.error": {
+      "level": "WARNING"
+    },
+    "watchfiles": {
+      "level": "WARNING"
+    }
+  },
+  "root": {
+    "level": "DEBUG",
+    "handlers": [
+      "console"
+    ]
+  }
+}

@@ -8,10 +8,7 @@ def get_items(context: ContextProtocol, /) -> list[Item]:
     return context.item_repository.get_all().items
 
 
-def create_item(context: ContextProtocol, /, name: str) -> None:
-    context.item_repository.save(Item(id=uuid.uuid7(), name=name))
-
-
-def create_item_then_fail(context: ContextProtocol, /, name: str) -> None:
-    context.item_repository.save(Item(id=uuid.uuid4(), name=name))
-    raise ValueError("boom")
+def create_item(context: ContextProtocol, /, name: str) -> Item:
+    item = Item(id=uuid.uuid7(), name=name)
+    context.item_repository.save(item)
+    return item

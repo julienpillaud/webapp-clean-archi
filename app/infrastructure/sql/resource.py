@@ -1,23 +1,21 @@
-from collections.abc import Iterator
-from contextlib import contextmanager
-
 from cleanstack.sql.entities import OrmEntity
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
+from app.core.domain.synchronous import ResourceProtocol
 from app.infrastructure.sql.logger import logger
 
 
-class SQLResource(BaseModel):
+class SQLEngine(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     engine: Engine
     session_factory: sessionmaker[Session]
 
     @classmethod
-    def from_settings(cls, settings: Settings, /) -> SQLResource:
+    def from_settings(cls, settings: Settings, /) -> SQLEngine:
         engine = create_engine(
             url=str(settings.postgres_dsn),
             **settings.postgres_params,
@@ -30,26 +28,6 @@ class SQLResource(BaseModel):
             session_factory=sessionmaker(bind=engine),
         )
 
-    def start_transaction(self) -> Session:
-        return self.session_factory()
-
-    @staticmethod
-    def end_transaction(
-        session: Session,
-        exc_val: BaseException | None,
-        is_mutation: bool,
-    ) -> None:
-        if session.is_active:
-            if exc_val:
-                session.rollback()
-                logger.info(
-                    f"Transaction rollback: {type(exc_val).__name__}({exc_val})"
-                )
-            elif is_mutation:
-                session.commit()
-                logger.info("Transaction committed")
-        session.close()
-
     def release(self) -> None:
         logger.info("SQL engine released")
         self.engine.dispose()
@@ -61,14 +39,30 @@ class SQLResource(BaseModel):
             session.commit()
 
 
-@contextmanager
-def managed_session(session_factory: sessionmaker[Session]) -> Iterator[Session]:
-    session = session_factory()
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+class SQLResource(ResourceProtocol):
+    def __init__(self, sql_engine: SQLEngine, /) -> None:
+        self.session_factory = sql_engine.session_factory
+        self.session: Session | None = None
+
+    def start_transaction(self, transactional: bool) -> None:
+        self.session = self.session_factory()
+
+    def end_transaction(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        transactional: bool,
+    ) -> None:
+        if not self.session:
+            return
+
+        if self.session.is_active:
+            if exc_type and exc_val:
+                self.session.rollback()
+                logger.info(f"Transaction rollback: {exc_type.__name__}({exc_val})")
+            elif transactional:
+                self.session.commit()
+                logger.info("Transaction committed")
+
+        self.session.close()
+        self.session = None
