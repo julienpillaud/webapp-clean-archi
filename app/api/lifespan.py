@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from app.api.logger import logger
 from app.core.config import Settings
-from app.infrastructure.sql.resource import SQLEngine
+from app.infrastructure.sql.resource import SQLResource
 
 
 def lifespan_factory(
@@ -14,12 +14,12 @@ def lifespan_factory(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        app.state.sql_engine = SQLEngine.from_settings(settings)
+        app.state.sql_resource = SQLResource.from_settings(settings)
         logger.info("Application startup complete")
 
         yield
 
-        app.state.sql_engine.release()
+        app.state.sql_resource.release()
         logger.info("Application shutdown complete")
 
     return lifespan

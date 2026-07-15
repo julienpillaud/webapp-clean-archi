@@ -1091,11 +1091,11 @@ source = { virtual = "." }
 dependencies = [
     { name = "cleanstack", extra = ["sql"] },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx2" },
 ]
 
 [package.dev-dependencies]
 dev = [
-    { name = "httpx2" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
@@ -1106,11 +1106,11 @@ dev = [
 requires-dist = [
     { name = "cleanstack", extras = ["sql"], git = "https://github.com/julienpillaud/cleanstack?tag=0.27.1" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.139.0" },
+    { name = "httpx2", specifier = "==2.6.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "httpx2", specifier = "==2.6.0" },
     { name = "mypy", specifier = "==2.3.0" },
     { name = "pytest", specifier = "==9.1.1" },
     { name = "ruff", specifier = "==0.15.21" },

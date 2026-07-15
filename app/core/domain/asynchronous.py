@@ -7,20 +7,15 @@ from app.core.logger import logger
 from app.domain.context import ContextProtocol
 
 
-class ResourceProtocol(Protocol):
-    async def start_transaction(self, transactional: bool) -> None: ...
+class TransactionProtocol(Protocol):
+    async def start(self) -> None: ...
 
-    async def end_transaction(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        transactional: bool,
-    ) -> None: ...
+    async def end(self, error: BaseException | None) -> None: ...
 
 
 class Domain:
     def __init__(self, context: ContextProtocol) -> None:
-        self.context = context
+        self._context = context
 
     async def run[**P, R](
         self,
@@ -32,32 +27,26 @@ class Domain:
         name = getattr(func, "__name__", "unknown")
         start = time.perf_counter()
         try:
-            return await func(self.context, *args, **kwargs)
+            return await func(self._context, *args, **kwargs)
         finally:
             elapsed = (time.perf_counter() - start) * 1000
             logger.info(f"{name} [{elapsed:.1f} ms]")
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__} ({id(self)})"
 
-
-class DomainManager:
+class DomainContext:
     def __init__(
         self,
-        resource: ResourceProtocol,
-        context_provider: Callable[[ResourceProtocol], ContextProtocol],
-        transactional: bool = False,
+        transaction: TransactionProtocol,
+        context_provider: Callable[[TransactionProtocol], ContextProtocol],
     ) -> None:
-        self._resource = resource
+        self._transaction = transaction
         self._context_provider = context_provider
-        self._transactional = transactional
 
     async def __aenter__(self) -> Domain:
-        await self._resource.start_transaction(transactional=self._transactional)
-        self._context = self._context_provider(self._resource)
-        self._bound_domain = Domain(context=self._context)
-        logger.debug(f"{self._bound_domain} (Enter)")
-        return self._bound_domain
+        await self._transaction.start()
+        self._context = self._context_provider(self._transaction)
+        self._domain = Domain(context=self._context)
+        return self._domain
 
     async def __aexit__(
         self,
@@ -65,9 +54,4 @@ class DomainManager:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        await self._resource.end_transaction(
-            exc_type=exc_type,
-            exc_val=exc_val,
-            transactional=self._transactional,
-        )
-        logger.debug(f"{self._bound_domain} (Exit)")
+        await self._transaction.end(error=exc_val)

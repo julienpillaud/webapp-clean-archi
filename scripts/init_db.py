@@ -8,12 +8,12 @@ from app.infrastructure.sql.models import (  # noqa
     OrmUser,
     post_tag,
 )
-from app.infrastructure.sql.resource import SQLEngine
+from app.infrastructure.sql.resource import SQLResource
 
 
 def main() -> None:
     settings = Settings(postgres_params={"echo": True})
-    resource = SQLEngine.from_settings(settings)
+    resource = SQLResource.from_settings(settings)
     OrmEntity.metadata.drop_all(resource.engine)
     OrmEntity.metadata.create_all(resource.engine)
 

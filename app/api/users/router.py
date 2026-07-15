@@ -5,7 +5,7 @@ from cleanstack.entities import FilterEntity, Pagination, SortEntity
 from fastapi import APIRouter, Depends
 
 from app.api.dependencies import (
-    DomainProvider,
+    get_domain,
     get_filters,
     get_sort_entities,
 )
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("")
 def get_users_endpoint(
-    domain: Annotated[Domain, Depends(DomainProvider())],
+    domain: Annotated[Domain, Depends(get_domain)],
     pagination: Annotated[Pagination, Depends()],
     filters: Annotated[list[FilterEntity], Depends(get_filters)],
     sort: Annotated[list[SortEntity], Depends(get_sort_entities)],
