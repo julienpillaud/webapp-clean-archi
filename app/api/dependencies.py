@@ -9,9 +9,9 @@ from starlette.requests import Request
 from app.api.utils import parse_filters
 from app.core.config import Settings
 from app.core.context import ContextProvider
-from app.core.domain.synchronous import Domain, DomainManager, ResourceProtocol
+from app.core.domain.synchronous import Domain, DomainContext, TransactionProtocol
 from app.domain.context import ContextProtocol
-from app.infrastructure.sql.resource import SQLResource
+from app.infrastructure.sql.resource import SQLTransaction
 
 
 @lru_cache
@@ -19,54 +19,29 @@ def get_settings() -> Settings:
     return Settings()
 
 
-def get_sql_resource(request: Request) -> SQLResource:
-    sql_engine = request.app.state.sql_engine
-    return SQLResource(sql_engine)
+def get_sql_transaction(request: Request) -> SQLTransaction:
+    sql_engine = request.app.state.sql_resource
+    return SQLTransaction(sql_engine)
 
 
 def get_context_provider(
     settings: Annotated[Settings, Depends(get_settings)],
-) -> Callable[[ResourceProtocol], ContextProtocol]:
+) -> Callable[[TransactionProtocol], ContextProtocol]:
     return ContextProvider(settings=settings)
 
 
-class DomainProvider:
-    def __init__(
-        self,
-        transactional: bool = False,
-        scope: str = "domain",
-    ) -> None:
-        self._transactional = transactional
-        self._scope = scope
-
-    def __call__(
-        self,
-        request: Request,
-        sql_resource: Annotated[SQLResource, Depends(get_sql_resource)],
-        context_provider: Annotated[
-            Callable[[ResourceProtocol], ContextProtocol],
-            Depends(get_context_provider),
-        ],
-    ) -> Iterator[Domain]:
-        if not hasattr(request.state, "domains_cache"):
-            request.state.domains_cache = {}
-
-        existing_domain = request.state.domains_cache.get(self._scope)
-        if existing_domain is not None:
-            yield existing_domain
-            return
-
-        with DomainManager(
-            resource=sql_resource,
-            context_provider=context_provider,
-            transactional=self._transactional,
-        ) as domain:
-            request.state.domains_cache[self._scope] = domain
-
-            try:
-                yield domain
-            finally:
-                request.state.domains_cache.pop(self._scope, None)
+def get_domain(
+    sql_resource: Annotated[SQLTransaction, Depends(get_sql_transaction)],
+    context_provider: Annotated[
+        Callable[[TransactionProtocol], ContextProtocol],
+        Depends(get_context_provider),
+    ],
+) -> Iterator[Domain]:
+    with DomainContext(
+        transaction=sql_resource,
+        context_provider=context_provider,
+    ) as domain:
+        yield domain
 
 
 def get_filters(

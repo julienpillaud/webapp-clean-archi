@@ -4,18 +4,18 @@ from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import Settings
-from app.core.domain.synchronous import ResourceProtocol
+from app.core.domain.synchronous import TransactionProtocol
 from app.infrastructure.sql.logger import logger
 
 
-class SQLEngine(BaseModel):
+class SQLResource(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     engine: Engine
     session_factory: sessionmaker[Session]
 
     @classmethod
-    def from_settings(cls, settings: Settings, /) -> SQLEngine:
+    def from_settings(cls, settings: Settings, /) -> SQLResource:
         engine = create_engine(
             url=str(settings.postgres_dsn),
             **settings.postgres_params,
@@ -39,28 +39,23 @@ class SQLEngine(BaseModel):
             session.commit()
 
 
-class SQLResource(ResourceProtocol):
-    def __init__(self, sql_engine: SQLEngine, /) -> None:
-        self.session_factory = sql_engine.session_factory
+class SQLTransaction(TransactionProtocol):
+    def __init__(self, resource: SQLResource, /) -> None:
+        self.resource = resource
         self.session: Session | None = None
 
-    def start_transaction(self, transactional: bool) -> None:
-        self.session = self.session_factory()
+    def start(self) -> None:
+        self.session = self.resource.session_factory()
 
-    def end_transaction(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        transactional: bool,
-    ) -> None:
+    def end(self, error: BaseException | None) -> None:
         if not self.session:
             return
 
         if self.session.is_active:
-            if exc_type and exc_val:
+            if error:
                 self.session.rollback()
-                logger.info(f"Transaction rollback: {exc_type.__name__}({exc_val})")
-            elif transactional:
+                logger.warning(f"Transaction rollback: {type(error).__name__}({error})")
+            else:
                 self.session.commit()
                 logger.info("Transaction committed")
 

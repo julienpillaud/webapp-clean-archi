@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.api.exceptions import add_exception_handlers
 from app.api.items.router import router as items_router
 from app.api.lifespan import lifespan_factory
+from app.api.middlewares import add_timing_middleware
 from app.api.posts.router import router as posts_router
 from app.api.users.router import router as users_router
 from app.core.config import Settings
@@ -18,6 +19,7 @@ def create_fastapi_app(settings: Settings) -> FastAPI:
         lifespan=lifespan_factory(settings=settings),
     )
 
+    add_timing_middleware(app)
     add_exception_handlers(app=app)
 
     app.include_router(posts_router)
