@@ -25,11 +25,11 @@ class Domain:
         **kwargs: P.kwargs,
     ) -> R:
         name = getattr(func, "__name__", "unknown")
-        start = time.perf_counter()
+        start_time = time.perf_counter()
         try:
             return await func(self._context, *args, **kwargs)
         finally:
-            elapsed = (time.perf_counter() - start) * 1000
+            elapsed = (time.perf_counter() - start_time) * 1000
             logger.info(f"{name} [{elapsed:.1f} ms]")
 
 
@@ -43,6 +43,8 @@ class DomainContext:
         self._context_provider = context_provider
 
     async def __aenter__(self) -> Domain:
+        logger.debug("Start Use case")
+        self._start_time = time.perf_counter()
         await self._transaction.start()
         self._context = self._context_provider(self._transaction)
         self._domain = Domain(context=self._context)
@@ -55,3 +57,5 @@ class DomainContext:
         exc_tb: TracebackType | None,
     ) -> None:
         await self._transaction.end(error=exc_val)
+        elapsed = (time.perf_counter() - self._start_time) * 1000
+        logger.info(f"Use case [{elapsed:.1f} ms]")
