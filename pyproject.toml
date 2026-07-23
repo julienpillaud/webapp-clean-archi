@@ -4,20 +4,20 @@ version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
     "cleanstack[sql]",
-    "fastapi[standard]==0.139.0",
-    "httpx2==2.6.0",
+    "fastapi[standard]==0.139.2",
+    "httpx2==2.7.0",
 ]
 
 [dependency-groups]
 dev = [
     "mypy==2.3.0",
     "pytest==9.1.1",
-    "ruff==0.15.21",
-    "ty==0.0.59",
+    "ruff==0.15.22",
+    "ty==0.0.62",
 ]
 
 [tool.uv.sources]
-cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.27.1" }
+cleanstack = { git = "https://github.com/julienpillaud/cleanstack", tag = "0.28.0" }
 
 [tool.ruff]
 output-format = "concise"

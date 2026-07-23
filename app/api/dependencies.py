@@ -31,14 +31,14 @@ def get_context_provider(
 
 
 def get_domain(
-    sql_resource: Annotated[SQLTransaction, Depends(get_sql_transaction)],
+    sql_transaction: Annotated[SQLTransaction, Depends(get_sql_transaction)],
     context_provider: Annotated[
         Callable[[TransactionProtocol], ContextProtocol],
         Depends(get_context_provider),
     ],
 ) -> Iterator[Domain]:
     with DomainContext(
-        transaction=sql_resource,
+        transaction=sql_transaction,
         context_provider=context_provider,
     ) as domain:
         yield domain
