@@ -8,13 +8,20 @@ from app.api.app import create_fastapi_app
 from app.api.dependencies import get_settings
 from app.core.config import Settings
 from app.infrastructure.sql.resource import SQLTransaction
-from tests.conftest import get_settings_override
+
+
+class SettingsOverride:
+    def __init__(self, settings: Settings) -> None:
+        self.settings = settings
+
+    def __call__(self) -> Settings:
+        return self.settings
 
 
 @pytest.fixture
 def app(settings: Settings, db_resource: SQLTransaction) -> FastAPI:
     app = create_fastapi_app(settings=settings)
-    app.dependency_overrides[get_settings] = get_settings_override
+    app.dependency_overrides[get_settings] = SettingsOverride(settings=settings)
     return app
 
 
